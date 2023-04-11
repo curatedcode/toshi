@@ -99,6 +99,7 @@ model Product {
     name        String
     price       Float
     quantity    Int
+    description String  @db.Text
     companyId   String
     company     Company @relation(fields: [companyId], references: [id])
     tags        Tag[]
