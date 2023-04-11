@@ -72,9 +72,9 @@ model Company {
     products    Product[]
 }
 
-model Tag {
+model Category {
     id          String    @id @default(cuid())
-    name        String
+    name        String    @unique
     products    Product[]
 }
 
@@ -96,6 +96,7 @@ model Review {
 
 model ProductImage {
     id          String     @id @default(cuid())
+    url         String
     productId   String
     product     Product    @relation(fields: [productId], references: [id])
     createdAt   DateTime   @default(now())
@@ -104,16 +105,17 @@ model ProductImage {
 }
 
 model Product {
-    id          String          @id @default(cuid())
+    id          String              @id @default(cuid())
     name        String
     price       Float
     quantity    Int
-    description String          @db.Text
+    description String              @db.Text
     companyId   String
-    company     Company         @relation(fields: [companyId], references: [id])
-    tags        Tag[]
+    company     Company             @relation(fields: [companyId], references: [id])
+    categories  Category[]
     reviews     Review[]
     images      ProductImage[]
+    createdAt   DateTime            @default(now())
 
     @@index([companyId])
 }
