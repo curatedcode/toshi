@@ -94,6 +94,15 @@ model Review {
     @@unique([productId, userId])
 }
 
+model ProductImage {
+    id          String     @id @default(cuid())
+    productId   String
+    product     Product    @relation(fields: [productId], references: [id])
+    createdAt   DateTime   @default(now())
+
+    @@index([productId])
+}
+
 model Product {
     id          String  @id @default(cuid())
     name        String
@@ -104,6 +113,7 @@ model Product {
     company     Company @relation(fields: [companyId], references: [id])
     tags        Tag[]
     reviews     Review[]
+    images      ProductImage[]
 
     @@index([companyId])
 }
