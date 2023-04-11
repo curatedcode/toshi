@@ -82,8 +82,8 @@ model Review {
     id          String    @id @default(cuid())
     rating      Int
     body        String?   @db.Text
-    userId   String
-    user     User      @relation(fields: [userId], references: [id])
+    userId      String
+    user        User      @relation(fields: [userId], references: [id])
     productId   String
     product     Product   @relation(fields: [productId], references: [id])
     createdAt   DateTime  @default(now())
@@ -104,13 +104,13 @@ model ProductImage {
 }
 
 model Product {
-    id          String  @id @default(cuid())
+    id          String          @id @default(cuid())
     name        String
     price       Float
     quantity    Int
-    description String  @db.Text
+    description String          @db.Text
     companyId   String
-    company     Company @relation(fields: [companyId], references: [id])
+    company     Company         @relation(fields: [companyId], references: [id])
     tags        Tag[]
     reviews     Review[]
     images      ProductImage[]
