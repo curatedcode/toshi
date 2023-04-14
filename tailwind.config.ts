@@ -8,6 +8,9 @@ export default {
         "toshi-red": "#a91101",
         "web-white": "#e3e6e6",
       },
+      screens: {
+        xs: "420px",
+      },
     },
   },
   plugins: [],
