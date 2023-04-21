@@ -11,7 +11,9 @@ import PaginationButtons from "~/components/Search/PaginationButtons";
 
 const SearchPage: NextPage = () => {
   const { query } = useRouter();
-  const slug = typeof query.slug === "string" ? query.slug : undefined;
+
+  const searchText = typeof query.slug === "string" ? query.slug : undefined;
+  const searchPage = typeof query.page === "string" ? Number(query.page) : 1;
 
   const queryClient = useQueryClient();
 
@@ -35,12 +37,10 @@ const SearchPage: NextPage = () => {
   const [categoriesOnPage, setCategoriesOnPage] = useState<string[]>([]);
 
   const [totalPages, setTotalPages] = useState<number>();
-  const [currentPage, setCurrentPage] = useState(1);
-  const prevPage = useRef(currentPage);
 
   const { data, isFetching, refetch } = api.product.search.useQuery(
     {
-      text: slug,
+      text: searchText,
       filters: {
         price: priceListChoice,
         rating: reviewListChoice,
@@ -48,7 +48,7 @@ const SearchPage: NextPage = () => {
         includeOutOfStock,
       },
       categoriesOnPage,
-      page: currentPage,
+      page: searchPage,
     },
     {
       keepPreviousData: true,
@@ -60,13 +60,9 @@ const SearchPage: NextPage = () => {
   const categoryNames = data?.categories.map((category) => category);
 
   useEffect(() => {
-    if (currentPage > 1) return;
-    if (prevPage.current !== currentPage) {
-      prevPage.current = currentPage;
-      return void refetch();
-    }
+    if (data && data.totalPages === totalPages) return;
     setTotalPages(data?.totalPages ?? 0);
-  }, [data, currentPage, refetch]);
+  }, [data, totalPages]);
 
   useEffect(() => {
     if (!categoryNames) return;
@@ -113,25 +109,21 @@ const SearchPage: NextPage = () => {
   useEffect(() => {
     if (isFetching) return;
 
-    function resetQuery() {
-      setCurrentPage(1);
-      return void refetch();
-    }
     if (priceListChoice !== prevPriceListChoice.current) {
       prevPriceListChoice.current = priceListChoice;
-      resetQuery();
+      return void refetch();
     }
     if (reviewListChoice !== prevReviewListChoice.current) {
       prevReviewListChoice.current = reviewListChoice;
-      resetQuery();
+      return void refetch();
     }
     if (categoryListChoice !== prevCategoryListChoice.current) {
       prevCategoryListChoice.current = categoryListChoice;
-      resetQuery();
+      return void refetch();
     }
     if (includeOutOfStock !== prevIncludeOutOfStock.current) {
       prevIncludeOutOfStock.current = includeOutOfStock;
-      resetQuery();
+      return void refetch();
     }
   }, [
     priceListChoice,
@@ -145,8 +137,8 @@ const SearchPage: NextPage = () => {
 
   return (
     <Layout
-      title={`Search Toshi | ${slug ?? ""}`}
-      description={`Search results for ${slug ?? ""} | Toshi`}
+      title={`Search Toshi | ${searchText ?? ""}`}
+      description={`Search results for ${searchText ?? ""} | Toshi`}
       className="flex flex-col"
     >
       <div className="flex">
@@ -231,8 +223,8 @@ const SearchPage: NextPage = () => {
         </div>
       </div>
       <PaginationButtons
-        currentPage={currentPage}
-        setPage={setCurrentPage}
+        currentPage={searchPage}
+        searchText={searchText}
         totalPages={totalPages}
       />
     </Layout>

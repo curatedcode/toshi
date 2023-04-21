@@ -39,11 +39,9 @@ const productRouter = createTRPCRouter({
         includeOutOfStock,
       } = filters;
 
-      let productResultPageCount;
       const queryLike = `%${text}%`;
       // get count of total results for jumping pagination
-      if (page === 1) {
-        const allProducts: object[] = await prisma.$queryRaw`
+      const allProducts: object[] = await prisma.$queryRaw`
         SELECT p.id
         FROM Product p
         JOIN _CategoryToProduct ctp
@@ -54,8 +52,8 @@ const productRouter = createTRPCRouter({
         AND p.price <= ${price.max ?? 9999999}
         AND p.quantity >= ${includeOutOfStock ? 0 : 1}
         ORDER BY p.id DESC`;
-        productResultPageCount = Math.ceil(allProducts.length / limit);
-      }
+
+      const productResultPageCount = Math.ceil(allProducts.length / limit);
 
       const productSearchResult: ProductSearchResult = await prisma.$queryRaw`
         SELECT p.id, p.name, p.price, ctp.A AS "categoryId"

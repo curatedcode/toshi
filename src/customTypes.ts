@@ -1,7 +1,7 @@
 import type { Placement } from "@floating-ui/react";
 import type { Category, Prisma, ProductImage, Review } from "@prisma/client";
 import type { EmblaCarouselType } from "embla-carousel-react";
-import type { ChangeEventHandler, Dispatch, SetStateAction } from "react";
+import type { ChangeEventHandler } from "react";
 
 export declare type Variants = "filled" | "outline" | "default";
 export declare type BorderRadii =
@@ -133,10 +133,15 @@ export declare type ProductSearchQuery = (
   | Prisma.Prisma__CategoryClient<Category | null, null>
 )[];
 
-export declare type PaginationButtons = {
+export declare type PaginationButtonsProps = {
   totalPages: number | undefined;
   currentPage: number;
-  setPage: Dispatch<SetStateAction<number>>;
+  searchText: string | undefined;
+};
+
+export declare type NavButtonProps = {
+  href: string;
+  name: "Previous" | "Next";
 };
 
 export declare type PriceInput = {

@@ -1,5 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { PaginationButtons } from "~/customTypes";
+import Link from "next/link";
+import type { NavButtonProps, PaginationButtonsProps } from "~/customTypes";
 
 function Container({ children }: { children: React.ReactNode }) {
   return (
@@ -9,164 +10,123 @@ function Container({ children }: { children: React.ReactNode }) {
   );
 }
 
-function NavButton({
-  onClick,
-  name,
-  disabled,
-}: {
-  onClick: () => void;
-  name: "Previous" | "Next";
-  disabled: boolean;
-}) {
+function NavButton({ name, href }: NavButtonProps) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`inline-flex items-center gap-1 bg-white transition-colors hover:bg-web-white disabled:text-neutral-400 disabled:hover:bg-white ${
+    <Link
+      href={href}
+      className={`inline-flex items-center gap-1 bg-white transition-colors hover:bg-neutral-100 ${
         name === "Previous"
           ? "rounded-l-md pl-1 pr-2 md:pl-3 md:pr-4"
           : "rounded-r-md pl-2 pr-1 md:pl-4 md:pr-3"
       }`}
-      disabled={disabled}
     >
       {name === "Previous" && <ChevronLeftIcon className="w-6" />}
       {name}
       {name === "Next" && <ChevronRightIcon className="w-6" />}
-    </button>
+    </Link>
   );
 }
 
 function PaginationButtons({
   totalPages,
   currentPage,
-  setPage,
-}: PaginationButtons) {
-  if (!totalPages) return <></>;
+  searchText,
+}: PaginationButtonsProps) {
+  if (!totalPages || !searchText) return <></>;
 
   const className =
-    "aspect-square w-8 border transition-colors disabled:hover:bg-white bg-white hover:bg-web-white md:py-2 px-4 md:px-6 font-semibold flex items-center justify-center disabled:text-neutral-400 h-fit";
+    "aspect-square w-8 border transition-colors bg-white hover:bg-neutral-100 md:py-2 px-4 md:px-6 font-semibold flex items-center justify-center h-fit";
+
+  const baseLink = `/search/${searchText}?page=`;
 
   if (totalPages > 3) {
     if (currentPage === 1) {
       return (
         <Container>
-          <NavButton
-            name="Previous"
-            onClick={() => setPage(currentPage - 1)}
-            disabled
-          />
-          <button
-            type="button"
-            onClick={() => setPage(1)}
+          <NavButton name="Previous" href={`${baseLink}${currentPage - 1}`} />
+          <Link
+            href={`${baseLink}${1}`}
             className={`${className} border-black`}
-            disabled
           >
             {1}
-          </button>
-          <button
-            type="button"
-            onClick={() => setPage(2)}
+          </Link>
+          <Link
+            href={`${baseLink}${2}`}
             className={`${className} border-transparent`}
           >
             {2}
-          </button>
-          <button
-            type="button"
-            onClick={() => setPage(3)}
+          </Link>
+          <Link
+            href={`${baseLink}${3}`}
             className={`${className} border-transparent`}
           >
             {3}
-          </button>
+          </Link>
           <div className="flex aspect-square w-8 justify-center border border-transparent bg-white px-4 font-medium text-neutral-400 md:px-6 md:py-2">
             ...
           </div>
           <div className="flex aspect-square w-8 items-center justify-center border border-transparent bg-white px-4 font-medium text-neutral-400 md:px-6 md:py-2">
             {totalPages}
           </div>
-          <NavButton
-            name="Next"
-            onClick={() => setPage(currentPage + 1)}
-            disabled={currentPage + 1 > totalPages}
-          />
+          <NavButton name="Next" href={`${baseLink}${currentPage + 1}`} />
         </Container>
       );
     }
 
     return (
       <Container>
-        <NavButton
-          name="Previous"
-          onClick={() => setPage(currentPage - 1)}
-          disabled={currentPage - 1 > 1}
-        />
-        <button
-          type="button"
-          onClick={() => setPage(currentPage - 1)}
+        <NavButton name="Previous" href={`${baseLink}${currentPage - 1}`} />
+        <Link
+          href={`${baseLink}${currentPage - 1}`}
           className={`${className} border-transparent`}
         >
           {currentPage - 1}
-        </button>
-        <button
-          type="button"
-          onClick={() => setPage(currentPage)}
+        </Link>
+        <Link
+          href={`${baseLink}${currentPage}`}
           className={`${className} border-black`}
-          disabled
         >
           {currentPage}
-        </button>
-        <button
-          type="button"
-          onClick={() => setPage(currentPage + 1)}
+        </Link>
+        <Link
+          href={`${baseLink}${currentPage + 1}`}
           className={`${className} border-transparent`}
         >
           {currentPage + 1}
-        </button>
+        </Link>
         <div className="flex aspect-square w-8 justify-center border border-transparent bg-white px-4 font-medium text-neutral-400 md:px-6 md:py-2">
           ...
         </div>
         <div className="flex aspect-square w-8 items-center justify-center border bg-white px-6 py-2 font-medium opacity-50">
           {totalPages}
         </div>
-        <NavButton
-          name="Next"
-          onClick={() => setPage(currentPage + 1)}
-          disabled={currentPage + 1 > totalPages}
-        />
+        <NavButton name="Next" href={`${baseLink}${currentPage + 1}`} />
       </Container>
     );
   }
 
   return (
     <Container>
-      <NavButton
-        name="Previous"
-        onClick={() => setPage(currentPage - 1)}
-        disabled={currentPage - 1 > 1}
-      />
+      <NavButton name="Previous" href={`${currentPage - 1}`} />
       {Array.from({ length: totalPages })
         .fill(null)
         .map((_, i) => {
           const pageIndex = i + 1;
           return (
-            <button
+            <Link
               key={pageIndex}
-              type="button"
-              onClick={() => setPage(pageIndex)}
+              href={`${baseLink}${pageIndex}`}
               className={`${className} ${
-                pageIndex === currentPage
+                currentPage === pageIndex
                   ? "border-black"
                   : "border-transparent"
               }`}
             >
               {pageIndex}
-            </button>
+            </Link>
           );
         })}
-      <NavButton
-        name="Next"
-        onClick={() => setPage(currentPage + 1)}
-        disabled={currentPage + 1 > totalPages}
-      />
+      <NavButton name="Next" href={`${baseLink}${currentPage + 1}`} />
     </Container>
   );
 }
