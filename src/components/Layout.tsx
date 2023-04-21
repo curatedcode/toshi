@@ -50,7 +50,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
   ));
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="relative flex min-h-screen flex-col">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -126,10 +126,10 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
           </Link>
         </div>
       </nav>
-      <main className={`h-full ${font.className} ${className}`}>
+      <main className={`min-h-full pb-36 ${font.className} ${className}`}>
         {children}
       </main>
-      <footer className="relative bottom-0 mt-12 inline-flex w-full items-center justify-center bg-toshi-red py-12 text-white">
+      <footer className="absolute bottom-0 mt-12 inline-flex w-full items-center justify-center bg-toshi-red py-12 text-white">
         FOOTER
       </footer>
     </div>
