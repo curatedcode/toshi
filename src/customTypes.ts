@@ -1,7 +1,7 @@
 import type { Placement } from "@floating-ui/react";
 import type { Category, Prisma, ProductImage, Review } from "@prisma/client";
 import type { EmblaCarouselType } from "embla-carousel-react";
-import type { ChangeEventHandler } from "react";
+import type { CSSProperties, ChangeEventHandler } from "react";
 
 export declare type Variants = "filled" | "outline" | "default";
 export declare type BorderRadii =
@@ -77,6 +77,8 @@ export declare type ImageProps = {
   height?: number | string;
   width?: number | string;
   loading?: "lazy" | "eager";
+  style?: CSSProperties;
+  onClick?: () => void;
 };
 
 export declare interface SliderProps extends Partial<SliderOptions> {
@@ -87,9 +89,15 @@ export declare type SliderOptions = {
   controls: boolean;
 };
 
+export declare interface CarouselProps extends Partial<SliderOptions> {
+  slides: { url: string }[];
+  productName: string;
+}
+
 export declare type SliderControlProps = {
   api: EmblaCarouselType | undefined;
   visible: boolean;
+  type?: "filled" | "shallow";
 };
 
 export declare type ProductProps = {
@@ -147,4 +155,13 @@ export declare type NavButtonProps = {
 export declare type PriceInput = {
   name: "Min" | "Max";
   onChange: ChangeEventHandler<HTMLInputElement>;
+};
+
+export declare type CarouselThumbProps = {
+  onClick: () => void;
+  selected: boolean;
+  src: string;
+  productName: string;
+  slideCount: number;
+  index: number;
 };

@@ -26,6 +26,7 @@
     "@trpc/next": "^10.18.0",
     "@trpc/react-query": "^10.18.0",
     "@trpc/server": "^10.18.0",
+    "dayjs": "^1.11.7",
     "embla-carousel-react": "^7.1.0",
     "framer-motion": "^10.12.2",
     "next": "^13.2.4",

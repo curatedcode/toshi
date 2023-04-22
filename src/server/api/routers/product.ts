@@ -7,6 +7,45 @@ import type {
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 const productRouter = createTRPCRouter({
+  getOne: publicProcedure
+    .input(z.object({ productId: z.string().nullish() }))
+    .query(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { productId } = input;
+
+      if (!productId) return;
+
+      const productData = await prisma.product.findUnique({
+        where: { id: productId },
+        include: {
+          company: { select: { name: true, id: true } },
+          images: { select: { url: true } },
+          reviews: {
+            select: {
+              body: true,
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              user: { select: { name: true, image: true } },
+              rating: true,
+            },
+          },
+        },
+      });
+
+      if (!productData) return;
+
+      const { reviews } = productData;
+
+      return {
+        ...productData,
+        reviews: {
+          data: reviews,
+          rating: getProductRating(reviews),
+          _count: reviews.length,
+        },
+      };
+    }),
   search: publicProcedure
     .input(
       z.object({

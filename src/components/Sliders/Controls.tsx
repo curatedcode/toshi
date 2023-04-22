@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { SliderControlProps } from "~/customTypes";
 
-function Controls({ api, visible }: SliderControlProps) {
+function Controls({ api, visible, type = "filled" }: SliderControlProps) {
   const scrollPrev = useCallback(() => api && api.scrollPrev(), [api]);
   const scrollNext = useCallback(() => api && api.scrollNext(), [api]);
 
@@ -18,7 +18,9 @@ function Controls({ api, visible }: SliderControlProps) {
         >
           <button
             type="button"
-            className="absolute left-0 top-1/2 flex h-20 -translate-y-1/2 items-center justify-center rounded-md border-2 border-transparent bg-white focus-within:border-sky-400"
+            className={`absolute left-0 top-1/2 flex h-20 -translate-y-1/2 items-center justify-center rounded-md border-2 border-transparent focus-within:border-sky-400 ${
+              type === "filled" ? "bg-white" : "bg-white bg-opacity-30"
+            }`}
             onClick={scrollPrev}
             aria-label="previous"
           >
@@ -26,7 +28,9 @@ function Controls({ api, visible }: SliderControlProps) {
           </button>
           <button
             type="button"
-            className="absolute right-0 top-1/2 flex h-20 -translate-y-1/2 items-center justify-center rounded-md border-2 border-transparent bg-white focus-within:border-sky-400"
+            className={`absolute right-0 top-1/2 flex h-20 -translate-y-1/2 items-center justify-center rounded-md border-2 border-transparent focus-within:border-sky-400 ${
+              type === "filled" ? "bg-white" : "bg-white bg-opacity-30"
+            }`}
             onClick={scrollNext}
             aria-label="next"
           >
