@@ -8,6 +8,7 @@ import RatingStars from "~/components/RatingStars";
 import PriceInput from "~/components/Search/PriceInput";
 import PaginationButtons from "~/components/Search/PaginationButtons";
 import Link from "next/link";
+import type { getLinkWithAllParamsProps } from "~/customTypes";
 
 const SearchPage: NextPage = () => {
   const { query } = useRouter();
@@ -31,42 +32,54 @@ const SearchPage: NextPage = () => {
         : false
       : false;
 
-  const [priceListChoice, setPriceListChoice] = useState({
-    min: queryParamPriceMin ? Number(queryParamPriceMin) : undefined,
-    max: queryParamPriceMax ? Number(queryParamPriceMax) : undefined,
+  const [priceFilter, setPriceFilter] = useState({
+    min: undefined,
+    max: undefined,
   } as { min: number | undefined; max: number | undefined });
-
-  const [reviewListChoice, setReviewListChoice] = useState(
-    queryParamRating ? Number(queryParamRating) : undefined
-  );
-
-  const [categoryListChoice, setCategoryListChoice] =
-    useState(queryParamCategory);
-
-  const [includeOutOfStock, setIncludeOutOfStock] = useState(
-    queryParamIncludeOutOfStock
-  );
 
   const [categoriesOnPage, setCategoriesOnPage] = useState<string[]>([]);
 
   const [totalPages, setTotalPages] = useState<number>();
 
-  const linkWithAllParams = `/search/${
-    queryParamText ?? ""
-  }?page=${queryParamPage}&dept=${queryParamCategory ?? ""}&rating=${
-    reviewListChoice ?? ""
-  }&pmin=${priceListChoice.min ?? ""}&pmax=${
-    priceListChoice.max ?? ""
-  }&includeOutOfStock=${includeOutOfStock ? "true" : "false"}`;
+  function getLinkWithAllParams({
+    text,
+    page,
+    category,
+    rating,
+    price,
+    includeOutOfStock,
+  }: getLinkWithAllParamsProps) {
+    const searchText = text ? text : queryParamText ?? "";
+    const searchPage = page ? page : queryParamPage;
+    const searchCategory = category ? category : queryParamCategory ?? "";
+    const searchRating = rating ?? "";
+    const searchPrice = price ?? priceFilter;
+    const searchIncludeOutOfStock = includeOutOfStock
+      ? includeOutOfStock
+      : queryParamIncludeOutOfStock;
 
-  const { data } = api.product.search.useQuery(
+    const link = `/search/${searchText}?page=${searchPage}&dept=${searchCategory}&rating=${searchRating}&pmin=${
+      searchPrice.min ?? ""
+    }&pmax=${searchPrice.max ?? ""}&includeOutOfStock=${String(
+      searchIncludeOutOfStock
+    )}`;
+
+    return link;
+  }
+
+  const [queryEnabled, setQueryEnabled] = useState(true);
+
+  const { data, isLoading } = api.product.search.useQuery(
     {
       text: queryParamText,
       filters: {
-        price: priceListChoice,
-        rating: reviewListChoice,
-        category: categoryListChoice,
-        includeOutOfStock: includeOutOfStock,
+        price: {
+          min: queryParamPriceMin ? Number(queryParamPriceMin) : undefined,
+          max: queryParamPriceMax ? Number(queryParamPriceMax) : undefined,
+        },
+        rating: queryParamRating ? Number(queryParamRating) : undefined,
+        category: queryParamCategory,
+        includeOutOfStock: queryParamIncludeOutOfStock,
       },
       categoriesOnPage,
       page: queryParamPage,
@@ -75,8 +88,14 @@ const SearchPage: NextPage = () => {
       keepPreviousData: true,
       staleTime: Infinity,
       onSuccess: () => window.scrollTo({ top: 0, left: 0 }),
+      enabled: queryEnabled,
     }
   );
+
+  useEffect(() => {
+    if (isLoading) return;
+    setQueryEnabled(false);
+  }, [isLoading]);
 
   const categoryNames = data?.categories.map((category) => category);
 
@@ -105,7 +124,7 @@ const SearchPage: NextPage = () => {
     e: ChangeEvent<HTMLInputElement>,
     type: "min" | "max"
   ) {
-    const { max } = priceListChoice;
+    const { max } = priceFilter;
 
     const numberToSet = Number(e.currentTarget.value);
 
@@ -116,12 +135,12 @@ const SearchPage: NextPage = () => {
     if (max && type === "min" && numberToSet > max) return;
 
     if (type === "min")
-      return setPriceListChoice((prev) => ({
+      return setPriceFilter((prev) => ({
         ...prev,
         min: numberToSet,
       }));
 
-    return setPriceListChoice((prev) => ({
+    return setPriceFilter((prev) => ({
       ...prev,
       max: numberToSet,
     }));
@@ -154,7 +173,7 @@ const SearchPage: NextPage = () => {
                 onChange={(e) => setPriceListValues(e, "max")}
               />
               <Link
-                href={linkWithAllParams}
+                href={getLinkWithAllParams({ price: priceFilter })}
                 className="ml-1 h-8 rounded-md border border-black border-opacity-60 bg-white px-2 text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
               >
                 Go
@@ -164,67 +183,60 @@ const SearchPage: NextPage = () => {
           <div className="flex flex-col gap-1">
             <span className="text-lg font-semibold">Customer Reviews</span>
             <div className="grid">
-              <button
-                type="button"
+              <Link
+                href={getLinkWithAllParams({ rating: 4 })}
                 aria-label="4 stars and up"
-                onClick={() => setReviewListChoice(4)}
                 className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
                 <RatingStars rating={4} />
                 <span>& Up</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href={getLinkWithAllParams({ rating: 3 })}
                 aria-label="3 stars and up"
-                onClick={() => setReviewListChoice(3)}
                 className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
                 <RatingStars rating={3} />
                 <span>& Up</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href={getLinkWithAllParams({ rating: 2 })}
                 aria-label="2 stars and up"
-                onClick={() => setReviewListChoice(2)}
                 className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
                 <RatingStars rating={2} />
                 <span>& Up</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href={getLinkWithAllParams({ rating: 1 })}
                 aria-label="1 star and up"
-                onClick={() => setReviewListChoice(1)}
                 className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
                 <RatingStars rating={1} />
                 <span>& Up</span>
-              </button>
+              </Link>
             </div>
           </div>
           <div>
             <span className="text-lg font-semibold">Department</span>
             <div className="grid">
               {data?.categories.map((category) => (
-                <button
-                  type="button"
-                  value={category}
-                  onClick={() => setCategoryListChoice(category)}
+                <Link
+                  href={getLinkWithAllParams({ category })}
                   key={category}
                   className="transition-colors hover:text-toshi-red"
                 >
                   {category}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
-          <button
-            type="button"
+          <Link
+            href={getLinkWithAllParams({ includeOutOfStock: true })}
             className="transition-colors hover:text-toshi-red"
-            onClick={() => setIncludeOutOfStock(true)}
           >
             Include out of stock
-          </button>
+          </Link>
         </div>
         <div className="grid w-full">
           {data?.products.map((product) =>
@@ -237,7 +249,7 @@ const SearchPage: NextPage = () => {
       <PaginationButtons
         currentPage={queryParamPage}
         totalPages={totalPages}
-        linkTo={linkWithAllParams}
+        linkTo={getLinkWithAllParams({})}
       />
     </Layout>
   );

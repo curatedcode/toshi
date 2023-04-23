@@ -166,3 +166,15 @@ export declare type CarouselThumbProps = {
   slideCount: number;
   index: number;
 };
+
+export declare type getLinkWithAllParamsProps = {
+  text?: string;
+  page?: number;
+  category?: string;
+  rating?: number;
+  price?: {
+    min?: number;
+    max?: number;
+  };
+  includeOutOfStock?: boolean;
+};
