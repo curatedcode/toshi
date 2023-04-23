@@ -80,8 +80,6 @@ const SearchPage: NextPage = () => {
     setCategoriesOnPage((prev) => prev.concat(newCategories));
   }, [categoryNames, categoriesOnPage]);
 
-  const ratings = [4, 3, 2, 1];
-
   function resetFilters() {
     setPriceListChoice({ min: undefined, max: undefined });
     setReviewListChoice(undefined);
@@ -176,18 +174,42 @@ const SearchPage: NextPage = () => {
           <div className="flex flex-col gap-1">
             <span className="text-lg font-semibold">Customer Reviews</span>
             <div className="grid">
-              {ratings.map((rating) => (
-                <button
-                  type="button"
-                  key={rating}
-                  aria-label={`${rating} stars and up`}
-                  onClick={() => setReviewListChoice(rating)}
-                  className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
-                >
-                  <RatingStars rating={rating} />
-                  <span>& Up</span>
-                </button>
-              ))}
+              <button
+                type="button"
+                aria-label="4 stars and up"
+                onClick={() => setReviewListChoice(4)}
+                className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+              >
+                <RatingStars rating={4} />
+                <span>& Up</span>
+              </button>
+              <button
+                type="button"
+                aria-label="3 stars and up"
+                onClick={() => setReviewListChoice(3)}
+                className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+              >
+                <RatingStars rating={3} />
+                <span>& Up</span>
+              </button>
+              <button
+                type="button"
+                aria-label="2 stars and up"
+                onClick={() => setReviewListChoice(2)}
+                className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+              >
+                <RatingStars rating={2} />
+                <span>& Up</span>
+              </button>
+              <button
+                type="button"
+                aria-label="1 star and up"
+                onClick={() => setReviewListChoice(1)}
+                className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+              >
+                <RatingStars rating={1} />
+                <span>& Up</span>
+              </button>
             </div>
           </div>
           <div>
