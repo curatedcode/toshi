@@ -144,7 +144,7 @@ export declare type ProductSearchQuery = (
 export declare type PaginationButtonsProps = {
   totalPages: number | undefined;
   currentPage: number;
-  searchText: string | undefined;
+  linkTo: string;
 };
 
 export declare type NavButtonProps = {

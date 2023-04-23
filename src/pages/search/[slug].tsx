@@ -8,47 +8,77 @@ import RatingStars from "~/components/RatingStars";
 import { useQueryClient } from "@tanstack/react-query";
 import PriceInput from "~/components/Search/PriceInput";
 import PaginationButtons from "~/components/Search/PaginationButtons";
+import Link from "next/link";
 
 const SearchPage: NextPage = () => {
   const { query } = useRouter();
 
-  const searchText = typeof query.slug === "string" ? query.slug : undefined;
-  const searchPage = typeof query.page === "string" ? Number(query.page) : 1;
+  const queryParamText =
+    typeof query.slug === "string" ? query.slug : undefined;
+  const queryParamPage =
+    typeof query.page === "string" ? Number(query.page) : 1;
+  const queryParamCategory =
+    typeof query.dept === "string" ? query.dept : undefined;
+  const queryParamRating =
+    typeof query.rating === "string" ? query.rating : undefined;
+  const queryParamPriceMin =
+    typeof query.pmin === "string" ? query.pmin : undefined;
+  const queryParamPriceMax =
+    typeof query.pmax === "string" ? query.pmax : undefined;
+  const queryParamIncludeOutOfStock =
+    typeof query.includeOutOfStock === "string"
+      ? query.includeOutOfStock === "true"
+        ? true
+        : false
+      : false;
 
   const queryClient = useQueryClient();
 
   const [priceListChoice, setPriceListChoice] = useState({
-    min: undefined,
-    max: undefined,
+    min: queryParamPriceMin,
+    max: queryParamPriceMax,
   } as { min: number | undefined; max: number | undefined });
   const prevPriceListChoice = useRef(priceListChoice);
   const [priceMin, setPriceMin] = useState<number>();
   const [priceMax, setPriceMax] = useState<number>();
 
-  const [reviewListChoice, setReviewListChoice] = useState<number>();
+  const [reviewListChoice, setReviewListChoice] = useState(
+    queryParamRating ? Number(queryParamRating) : undefined
+  );
   const prevReviewListChoice = useRef(reviewListChoice);
 
-  const [categoryListChoice, setCategoryListChoice] = useState<string>();
+  const [categoryListChoice, setCategoryListChoice] =
+    useState(queryParamCategory);
   const prevCategoryListChoice = useRef(categoryListChoice);
 
-  const [includeOutOfStock, setIncludeOutOfStock] = useState(false);
+  const [includeOutOfStock, setIncludeOutOfStock] = useState(
+    queryParamIncludeOutOfStock
+  );
   const prevIncludeOutOfStock = useRef(includeOutOfStock);
 
   const [categoriesOnPage, setCategoriesOnPage] = useState<string[]>([]);
 
   const [totalPages, setTotalPages] = useState<number>();
 
+  const linkWithAllParams = `/search/${
+    queryParamText ?? ""
+  }?page=${queryParamPage}&dept=${queryParamCategory ?? ""}&rating=${
+    reviewListChoice ?? ""
+  }&pmin=${priceListChoice.min ?? ""}&pmax=${
+    priceListChoice.max ?? ""
+  }&includeOutOfStock=${includeOutOfStock ? "true" : "false"}`;
+
   const { data, isFetching, refetch } = api.product.search.useQuery(
     {
-      text: searchText,
+      text: queryParamText,
       filters: {
         price: priceListChoice,
         rating: reviewListChoice,
         category: categoryListChoice,
-        includeOutOfStock,
+        includeOutOfStock: includeOutOfStock,
       },
       categoriesOnPage,
-      page: searchPage,
+      page: queryParamPage,
     },
     {
       keepPreviousData: true,
@@ -79,15 +109,6 @@ const SearchPage: NextPage = () => {
     if (newCategories === categoriesOnPage) return;
     setCategoriesOnPage((prev) => prev.concat(newCategories));
   }, [categoryNames, categoriesOnPage]);
-
-  function resetFilters() {
-    setPriceListChoice({ min: undefined, max: undefined });
-    setReviewListChoice(undefined);
-    setCategoryListChoice(undefined);
-    setIncludeOutOfStock(false);
-    void queryClient.invalidateQueries(["product", "search"]);
-    return void refetch();
-  }
 
   function setPriceListValues(
     e: ChangeEvent<HTMLInputElement>,
@@ -135,19 +156,18 @@ const SearchPage: NextPage = () => {
 
   return (
     <Layout
-      title={`Search Toshi | ${searchText ?? ""}`}
-      description={`Search results for ${searchText ?? ""} | Toshi`}
+      title={`Search Toshi | ${queryParamText ?? ""}`}
+      description={`Search results for ${queryParamText ?? ""} | Toshi`}
       className="flex flex-col"
     >
       <div className="flex">
         <div className="hidden w-fit bg-white md:flex md:flex-col">
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="rounded-md border border-black border-opacity-60 bg-white px-2 text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
+          <Link
+            href={`/search/${queryParamText ?? ""}`}
+            className="rounded-md border border-black border-opacity-60 bg-white px-2 text-center text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
           >
             Reset filters
-          </button>
+          </Link>
           <div className="flex flex-col gap-1">
             <label className="text-lg font-semibold">Price</label>
             <div className="inline-flex items-center gap-1">
@@ -219,7 +239,7 @@ const SearchPage: NextPage = () => {
                 <button
                   type="button"
                   value={category}
-                  onChange={() => setCategoryListChoice(category)}
+                  onClick={() => setCategoryListChoice(category)}
                   key={category}
                   className="transition-colors hover:text-toshi-red"
                 >
@@ -245,9 +265,9 @@ const SearchPage: NextPage = () => {
         </div>
       </div>
       <PaginationButtons
-        currentPage={searchPage}
-        searchText={searchText}
+        currentPage={queryParamPage}
         totalPages={totalPages}
+        linkTo={linkWithAllParams}
       />
     </Layout>
   );

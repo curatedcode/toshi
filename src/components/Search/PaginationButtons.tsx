@@ -30,14 +30,20 @@ function NavButton({ name, href, disabled }: NavButtonProps) {
 function PaginationButtons({
   totalPages,
   currentPage,
-  searchText,
+  linkTo,
 }: PaginationButtonsProps) {
-  if (!totalPages || !searchText) return <></>;
+  if (!totalPages) return <></>;
 
   const className =
     "aspect-square w-8 border transition-colors bg-white hover:bg-neutral-100 md:py-2 px-4 md:px-6 font-semibold flex items-center justify-center h-fit";
 
-  const baseLink = `/search/${searchText}?page=`;
+  const baseLinks = linkTo.split(`page=${currentPage}`);
+  console.log(baseLinks);
+  function pageLink(page: number): string {
+    const linkWithPage = baseLinks[0]?.concat(`page=${page.toString()}`);
+    const finalLink = linkWithPage?.concat(baseLinks[1] ?? "");
+    return finalLink ?? "";
+  }
 
   if (totalPages > 3) {
     if (currentPage === 1) {
@@ -45,23 +51,20 @@ function PaginationButtons({
         <Container>
           <NavButton
             name="Previous"
-            href={`${baseLink}${currentPage - 1}`}
+            href={pageLink(currentPage - 1)}
             disabled
           />
-          <Link
-            href={`${baseLink}${1}`}
-            className={`${className} border-black`}
-          >
+          <Link href={pageLink(1)} className={`${className} border-black`}>
             {1}
           </Link>
           <Link
-            href={`${baseLink}${2}`}
+            href={pageLink(2)}
             className={`${className} border-transparent`}
           >
             {2}
           </Link>
           <Link
-            href={`${baseLink}${3}`}
+            href={pageLink(3)}
             className={`${className} border-transparent`}
           >
             {3}
@@ -74,7 +77,7 @@ function PaginationButtons({
           </div>
           <NavButton
             name="Next"
-            href={`${baseLink}${currentPage + 1}`}
+            href={pageLink(currentPage + 1)}
             disabled={false}
           />
         </Container>
@@ -85,23 +88,23 @@ function PaginationButtons({
       <Container>
         <NavButton
           name="Previous"
-          href={`${baseLink}${currentPage - 1}`}
+          href={pageLink(currentPage - 1)}
           disabled={currentPage - 1 < 1}
         />
         <Link
-          href={`${baseLink}${currentPage - 1}`}
+          href={pageLink(currentPage - 1)}
           className={`${className} border-transparent`}
         >
           {currentPage - 1}
         </Link>
         <Link
-          href={`${baseLink}${currentPage}`}
+          href={pageLink(currentPage)}
           className={`${className} border-black`}
         >
           {currentPage}
         </Link>
         <Link
-          href={`${baseLink}${currentPage + 1}`}
+          href={pageLink(currentPage + 1)}
           className={`${className} border-transparent`}
         >
           {currentPage + 1}
@@ -114,7 +117,7 @@ function PaginationButtons({
         </div>
         <NavButton
           name="Next"
-          href={`${baseLink}${currentPage + 1}`}
+          href={pageLink(currentPage + 1)}
           disabled={currentPage + 1 > totalPages}
         />
       </Container>
@@ -135,7 +138,7 @@ function PaginationButtons({
           return (
             <Link
               key={pageIndex}
-              href={`${baseLink}${pageIndex}`}
+              href={pageLink(pageIndex)}
               className={`${className} ${
                 currentPage === pageIndex
                   ? "border-black"
@@ -148,7 +151,7 @@ function PaginationButtons({
         })}
       <NavButton
         name="Next"
-        href={`${baseLink}${currentPage + 1}`}
+        href={pageLink(currentPage + 1)}
         disabled={currentPage + 1 > totalPages}
       />
     </Container>
