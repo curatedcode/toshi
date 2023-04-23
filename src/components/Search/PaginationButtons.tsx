@@ -10,7 +10,7 @@ function Container({ children }: { children: React.ReactNode }) {
   );
 }
 
-function NavButton({ name, href }: NavButtonProps) {
+function NavButton({ name, href, disabled }: NavButtonProps) {
   return (
     <Link
       href={href}
@@ -18,7 +18,7 @@ function NavButton({ name, href }: NavButtonProps) {
         name === "Previous"
           ? "rounded-l-md pl-1 pr-2 md:pl-3 md:pr-4"
           : "rounded-r-md pl-2 pr-1 md:pl-4 md:pr-3"
-      }`}
+      } ${disabled ? "pointer-events-none text-neutral-400" : ""}`}
     >
       {name === "Previous" && <ChevronLeftIcon className="w-6" />}
       {name}
@@ -43,7 +43,11 @@ function PaginationButtons({
     if (currentPage === 1) {
       return (
         <Container>
-          <NavButton name="Previous" href={`${baseLink}${currentPage - 1}`} />
+          <NavButton
+            name="Previous"
+            href={`${baseLink}${currentPage - 1}`}
+            disabled
+          />
           <Link
             href={`${baseLink}${1}`}
             className={`${className} border-black`}
@@ -68,14 +72,22 @@ function PaginationButtons({
           <div className="flex aspect-square w-8 items-center justify-center border border-transparent bg-white px-4 font-medium text-neutral-400 md:px-6 md:py-2">
             {totalPages}
           </div>
-          <NavButton name="Next" href={`${baseLink}${currentPage + 1}`} />
+          <NavButton
+            name="Next"
+            href={`${baseLink}${currentPage + 1}`}
+            disabled={false}
+          />
         </Container>
       );
     }
 
     return (
       <Container>
-        <NavButton name="Previous" href={`${baseLink}${currentPage - 1}`} />
+        <NavButton
+          name="Previous"
+          href={`${baseLink}${currentPage - 1}`}
+          disabled={currentPage - 1 < 1}
+        />
         <Link
           href={`${baseLink}${currentPage - 1}`}
           className={`${className} border-transparent`}
@@ -100,14 +112,22 @@ function PaginationButtons({
         <div className="flex aspect-square w-8 items-center justify-center border bg-white px-6 py-2 font-medium opacity-50">
           {totalPages}
         </div>
-        <NavButton name="Next" href={`${baseLink}${currentPage + 1}`} />
+        <NavButton
+          name="Next"
+          href={`${baseLink}${currentPage + 1}`}
+          disabled={currentPage + 1 > totalPages}
+        />
       </Container>
     );
   }
 
   return (
     <Container>
-      <NavButton name="Previous" href={`${currentPage - 1}`} />
+      <NavButton
+        name="Previous"
+        href={`${currentPage - 1}`}
+        disabled={currentPage - 1 < 1}
+      />
       {Array.from({ length: totalPages })
         .fill(null)
         .map((_, i) => {
@@ -126,7 +146,11 @@ function PaginationButtons({
             </Link>
           );
         })}
-      <NavButton name="Next" href={`${baseLink}${currentPage + 1}`} />
+      <NavButton
+        name="Next"
+        href={`${baseLink}${currentPage + 1}`}
+        disabled={currentPage + 1 > totalPages}
+      />
     </Container>
   );
 }

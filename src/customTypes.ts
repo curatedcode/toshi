@@ -150,6 +150,7 @@ export declare type PaginationButtonsProps = {
 export declare type NavButtonProps = {
   href: string;
   name: "Previous" | "Next";
+  disabled: boolean;
 };
 
 export declare type PriceInput = {
