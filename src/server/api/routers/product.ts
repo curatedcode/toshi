@@ -88,7 +88,7 @@ const productRouter = createTRPCRouter({
         WHERE p.name
         LIKE ${queryLike}
         AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9999999}
+        AND p.price <= ${price.max ?? 9_999_999}
         AND p.quantity >= ${includeOutOfStock ? 0 : 1}
         ORDER BY p.id DESC`;
 

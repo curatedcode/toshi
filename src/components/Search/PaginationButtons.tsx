@@ -38,7 +38,7 @@ function PaginationButtons({
     "aspect-square w-8 border transition-colors bg-white hover:bg-neutral-100 md:py-2 px-4 md:px-6 font-semibold flex items-center justify-center h-fit";
 
   const baseLinks = linkTo.split(`page=${currentPage}`);
-  console.log(baseLinks);
+
   function pageLink(page: number): string {
     const linkWithPage = baseLinks[0]?.concat(`page=${page.toString()}`);
     const finalLink = linkWithPage?.concat(baseLinks[1] ?? "");

@@ -3,9 +3,8 @@ import { useRouter } from "next/router";
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import Product from "~/components/Product";
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import RatingStars from "~/components/RatingStars";
-import { useQueryClient } from "@tanstack/react-query";
 import PriceInput from "~/components/Search/PriceInput";
 import PaginationButtons from "~/components/Search/PaginationButtons";
 import Link from "next/link";
@@ -32,29 +31,21 @@ const SearchPage: NextPage = () => {
         : false
       : false;
 
-  const queryClient = useQueryClient();
-
   const [priceListChoice, setPriceListChoice] = useState({
-    min: queryParamPriceMin,
-    max: queryParamPriceMax,
+    min: queryParamPriceMin ? Number(queryParamPriceMin) : undefined,
+    max: queryParamPriceMax ? Number(queryParamPriceMax) : undefined,
   } as { min: number | undefined; max: number | undefined });
-  const prevPriceListChoice = useRef(priceListChoice);
-  const [priceMin, setPriceMin] = useState<number>();
-  const [priceMax, setPriceMax] = useState<number>();
 
   const [reviewListChoice, setReviewListChoice] = useState(
     queryParamRating ? Number(queryParamRating) : undefined
   );
-  const prevReviewListChoice = useRef(reviewListChoice);
 
   const [categoryListChoice, setCategoryListChoice] =
     useState(queryParamCategory);
-  const prevCategoryListChoice = useRef(categoryListChoice);
 
   const [includeOutOfStock, setIncludeOutOfStock] = useState(
     queryParamIncludeOutOfStock
   );
-  const prevIncludeOutOfStock = useRef(includeOutOfStock);
 
   const [categoriesOnPage, setCategoriesOnPage] = useState<string[]>([]);
 
@@ -68,7 +59,7 @@ const SearchPage: NextPage = () => {
     priceListChoice.max ?? ""
   }&includeOutOfStock=${includeOutOfStock ? "true" : "false"}`;
 
-  const { data, isFetching, refetch } = api.product.search.useQuery(
+  const { data } = api.product.search.useQuery(
     {
       text: queryParamText,
       filters: {
@@ -114,45 +105,27 @@ const SearchPage: NextPage = () => {
     e: ChangeEvent<HTMLInputElement>,
     type: "min" | "max"
   ) {
+    const { max } = priceListChoice;
+
     const numberToSet = Number(e.currentTarget.value);
+
     if (numberToSet < 0) return;
     if (numberToSet > 9_999_999) return;
 
     // don't let min value go over max value
-    if (priceMax && type === "min" && numberToSet > priceMax) return;
+    if (max && type === "min" && numberToSet > max) return;
 
-    if (type === "min") return setPriceMin(numberToSet);
-    setPriceMax(numberToSet);
+    if (type === "min")
+      return setPriceListChoice((prev) => ({
+        ...prev,
+        min: numberToSet,
+      }));
+
+    return setPriceListChoice((prev) => ({
+      ...prev,
+      max: numberToSet,
+    }));
   }
-
-  useEffect(() => {
-    if (isFetching) return;
-
-    if (priceListChoice !== prevPriceListChoice.current) {
-      prevPriceListChoice.current = priceListChoice;
-      return void refetch();
-    }
-    if (reviewListChoice !== prevReviewListChoice.current) {
-      prevReviewListChoice.current = reviewListChoice;
-      return void refetch();
-    }
-    if (categoryListChoice !== prevCategoryListChoice.current) {
-      prevCategoryListChoice.current = categoryListChoice;
-      return void refetch();
-    }
-    if (includeOutOfStock !== prevIncludeOutOfStock.current) {
-      prevIncludeOutOfStock.current = includeOutOfStock;
-      return void refetch();
-    }
-  }, [
-    priceListChoice,
-    reviewListChoice,
-    categoryListChoice,
-    includeOutOfStock,
-    refetch,
-    isFetching,
-    queryClient,
-  ]);
 
   return (
     <Layout
@@ -180,15 +153,12 @@ const SearchPage: NextPage = () => {
                 name="Max"
                 onChange={(e) => setPriceListValues(e, "max")}
               />
-              <button
-                type="button"
+              <Link
+                href={linkWithAllParams}
                 className="ml-1 h-8 rounded-md border border-black border-opacity-60 bg-white px-2 text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
-                onClick={() =>
-                  setPriceListChoice({ min: priceMin, max: priceMax })
-                }
               >
                 Go
-              </button>
+              </Link>
             </div>
           </div>
           <div className="flex flex-col gap-1">
