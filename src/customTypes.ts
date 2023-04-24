@@ -121,7 +121,9 @@ export declare type ProductSearchResult = {
   id: string;
   name: string;
   price: number;
-  categoryId: string;
+  rating: number;
+  reviewCount: number;
+  category?: string;
 }[];
 
 export declare type ProductSearchWithReviews = {

@@ -37,8 +37,6 @@ const SearchPage: NextPage = () => {
     max: undefined,
   } as { min: number | undefined; max: number | undefined });
 
-  const [categoriesOnPage, setCategoriesOnPage] = useState<string[]>([]);
-
   const [totalPages, setTotalPages] = useState<number>();
 
   function getLinkWithAllParams({
@@ -52,7 +50,7 @@ const SearchPage: NextPage = () => {
     const searchText = text ? text : queryParamText ?? "";
     const searchPage = page ? page : queryParamPage;
     const searchCategory = category ? category : queryParamCategory ?? "";
-    const searchRating = rating ?? "";
+    const searchRating = rating ? rating : Number(queryParamRating);
     const searchPrice = price ?? priceFilter;
     const searchIncludeOutOfStock = includeOutOfStock
       ? includeOutOfStock
@@ -81,7 +79,6 @@ const SearchPage: NextPage = () => {
         category: queryParamCategory,
         includeOutOfStock: queryParamIncludeOutOfStock,
       },
-      categoriesOnPage,
       page: queryParamPage,
     },
     {
@@ -97,28 +94,10 @@ const SearchPage: NextPage = () => {
     setQueryEnabled(false);
   }, [isLoading]);
 
-  const categoryNames = data?.categories.map((category) => category);
-
   useEffect(() => {
     if (data && data.totalPages === totalPages) return;
     setTotalPages(data?.totalPages ?? 0);
   }, [data, totalPages]);
-
-  useEffect(() => {
-    if (!categoryNames) return;
-    if (categoryNames.length < 1) return;
-    if (categoryNames === categoriesOnPage) return;
-
-    const newCategories: string[] = [];
-    for (const category of categoryNames) {
-      if (typeof category !== "string") continue;
-      if (!categoriesOnPage.includes(category)) continue;
-      newCategories.push(category);
-    }
-    if (newCategories.length < 1) return;
-    if (newCategories === categoriesOnPage) return;
-    setCategoriesOnPage((prev) => prev.concat(newCategories));
-  }, [categoryNames, categoriesOnPage]);
 
   function setPriceListValues(
     e: ChangeEvent<HTMLInputElement>,
@@ -173,7 +152,7 @@ const SearchPage: NextPage = () => {
                 onChange={(e) => setPriceListValues(e, "max")}
               />
               <Link
-                href={getLinkWithAllParams({ price: priceFilter })}
+                href={getLinkWithAllParams({ price: priceFilter, page: 1 })}
                 className="ml-1 h-8 rounded-md border border-black border-opacity-60 bg-white px-2 text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
               >
                 Go
@@ -184,7 +163,7 @@ const SearchPage: NextPage = () => {
             <span className="text-lg font-semibold">Customer Reviews</span>
             <div className="grid">
               <Link
-                href={getLinkWithAllParams({ rating: 4 })}
+                href={getLinkWithAllParams({ rating: 4, page: 1 })}
                 aria-label="4 stars and up"
                 className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
@@ -192,7 +171,7 @@ const SearchPage: NextPage = () => {
                 <span>& Up</span>
               </Link>
               <Link
-                href={getLinkWithAllParams({ rating: 3 })}
+                href={getLinkWithAllParams({ rating: 3, page: 1 })}
                 aria-label="3 stars and up"
                 className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
@@ -200,7 +179,7 @@ const SearchPage: NextPage = () => {
                 <span>& Up</span>
               </Link>
               <Link
-                href={getLinkWithAllParams({ rating: 2 })}
+                href={getLinkWithAllParams({ rating: 2, page: 1 })}
                 aria-label="2 stars and up"
                 className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
@@ -208,7 +187,7 @@ const SearchPage: NextPage = () => {
                 <span>& Up</span>
               </Link>
               <Link
-                href={getLinkWithAllParams({ rating: 1 })}
+                href={getLinkWithAllParams({ rating: 1, page: 1 })}
                 aria-label="1 star and up"
                 className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
@@ -222,7 +201,7 @@ const SearchPage: NextPage = () => {
             <div className="grid">
               {data?.categories.map((category) => (
                 <Link
-                  href={getLinkWithAllParams({ category })}
+                  href={getLinkWithAllParams({ category, page: 1 })}
                   key={category}
                   className="transition-colors hover:text-toshi-red"
                 >
@@ -232,7 +211,7 @@ const SearchPage: NextPage = () => {
             </div>
           </div>
           <Link
-            href={getLinkWithAllParams({ includeOutOfStock: true })}
+            href={getLinkWithAllParams({ includeOutOfStock: true, page: 1 })}
             className="transition-colors hover:text-toshi-red"
           >
             Include out of stock

@@ -1,3 +1,4 @@
+import { type ProductImage } from "@prisma/client";
 import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
 import type {
@@ -60,8 +61,6 @@ const productRouter = createTRPCRouter({
           category: z.string().nullish(),
           includeOutOfStock: z.boolean(),
         }),
-        categoriesOnPage: z.array(z.string()),
-        totalPages: z.number().nullish(),
         page: z.number().min(1),
       })
     )
@@ -69,8 +68,7 @@ const productRouter = createTRPCRouter({
       if (typeof input.text !== "string") return;
 
       const { prisma } = ctx;
-      const { limit, text, filters, categoriesOnPage, page, totalPages } =
-        input;
+      const { limit, text, filters, page } = input;
       const {
         rating: ratingFilter,
         price,
@@ -78,74 +76,114 @@ const productRouter = createTRPCRouter({
         includeOutOfStock,
       } = filters;
 
-      const queryLike = `%${text}%`;
-      // get count of total results for jumping pagination
-      const allProducts: object[] = await prisma.$queryRaw`
-        SELECT p.id
-        FROM Product p
-        JOIN _CategoryToProduct ctp
-        ON p.id = ctp.B
-        WHERE p.name
-        LIKE ${queryLike}
-        AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9_999_999}
-        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-        ORDER BY p.id DESC`;
+      const querySearchText = `%${text}%`;
 
-      const productResultPageCount = Math.ceil(allProducts.length / limit);
+      let allProducts: object[];
+      let productSearchResult: ProductSearchResult;
 
-      const productSearchResult: ProductSearchResult = await prisma.$queryRaw`
-        SELECT p.id, p.name, p.price, ctp.A AS "categoryId"
+      if (categoryFilter) {
+        const category = await prisma.category.findUnique({
+          where: { name: categoryFilter },
+        });
+
+        allProducts = await prisma.$queryRaw`
+        SELECT p.id, AVG(r.rating) AS 'rating'
         FROM Product p
-        JOIN _CategoryToProduct ctp
-        ON p.id = ctp.B
+        JOIN _CategoryToProduct ctp ON p.id = ctp.B
+        JOIN Review r ON p.id = r.productId
+        JOIN Category c ON c.id = ${category?.id}
         WHERE p.name
-        LIKE ${queryLike}
+        LIKE ${querySearchText}
         AND p.price >= ${price.min ?? 0}
         AND p.price <= ${price.max ?? 9999999}
         AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+        AND rating >= ${ratingFilter ?? 0}
+        GROUP BY p.id
+        ORDER BY p.id DESC`;
+
+        productSearchResult = await prisma.$queryRaw`
+        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+        FROM Product p
+        JOIN _CategoryToProduct ctp ON p.id = ctp.B
+        JOIN Review r ON p.id = r.productId
+        JOIN Category c ON c.id = ${category?.id}
+        WHERE p.name
+        LIKE ${querySearchText}
+        AND p.price >= ${price.min ?? 0}
+        AND p.price <= ${price.max ?? 9999999}
+        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+        AND rating >= ${ratingFilter ?? 0}
+        GROUP BY p.id
         ORDER BY p.id DESC
         LIMIT ${(page - 1) * limit},${limit}`;
+      } else {
+        allProducts = await prisma.$queryRaw`
+        SELECT p.id, AVG(r.rating) AS 'rating'
+        FROM Product p
+        JOIN _CategoryToProduct ctp ON p.id = ctp.B
+        JOIN Review r ON p.id = r.productId
+        WHERE p.name
+        LIKE ${querySearchText}
+        AND p.price >= ${price.min ?? 0}
+        AND p.price <= ${price.max ?? 9999999}
+        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+        AND rating >= ${ratingFilter ?? 0}
+        GROUP BY p.id
+        ORDER BY p.id DESC`;
+
+        productSearchResult = await prisma.$queryRaw`
+        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+        FROM Product p
+        JOIN _CategoryToProduct ctp ON p.id = ctp.B
+        JOIN Review r ON p.id = r.productId
+        WHERE p.name
+        LIKE ${querySearchText}
+        AND p.price >= ${price.min ?? 0}
+        AND p.price <= ${price.max ?? 9999999}
+        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+        AND rating >= ${ratingFilter ?? 0}
+        GROUP BY p.id
+        ORDER BY p.id DESC
+        LIMIT ${(page - 1) * limit},${limit}`;
+      }
+
+      const productResultPageCount = Math.ceil(allProducts.length / limit);
 
       const productsWithRatings: ProductSearchWithReviews = [];
 
-      const categoryIds: string[] = [];
       const categories: string[] = [];
 
       for (const product of productSearchResult) {
-        const { id, name, price, categoryId: rawCategoryId } = product;
-        const productId = id;
-        let categoryId = "";
+        const { id, name, price, rating, reviewCount, category } = product;
 
-        if (!categoryIds.includes(rawCategoryId) && categoryIds.length < 5) {
-          categoryId = rawCategoryId;
+        let data:
+          | [ProductImage | null]
+          | [ProductImage | null, [{ id: string }]];
+        let categoryName = category;
+
+        if (category) {
+          data = await prisma.$transaction([
+            prisma.productImage.findFirst({ where: { productId: id } }),
+          ]);
+        } else {
+          data = await prisma.$transaction([
+            prisma.productImage.findFirst({ where: { productId: id } }),
+            prisma.$queryRaw`
+              SELECT A AS 'id'
+              FROM _CategoryToProduct
+              WHERE B = ${id}`,
+          ]);
+
+          const categoryData = await prisma.category.findUnique({
+            where: { id: data[1][0].id },
+          });
+          categoryName = categoryData?.name;
         }
 
-        const data = await prisma.$transaction([
-          prisma.review.findMany({ where: { productId } }),
-          prisma.productImage.findFirst({ where: { productId } }),
-          prisma.category.findUnique({ where: { id: categoryId } }),
-        ]);
+        const firstImage = data[0];
 
-        const reviews = data[0];
-        const firstImage = data[1];
-        const category = data[2];
-
-        const rating = getProductRating(reviews);
-
-        // skip over current product if any of these filters match
-        if (ratingFilter) {
-          if (!rating) continue;
-          if (rating < ratingFilter) continue;
-        }
-        if (category && categoryFilter) {
-          if (category.name !== categoryFilter) {
-            continue;
-          }
-        }
-        if (category && !categories.includes(category.name)) {
-          if (categoriesOnPage.includes(category.name)) continue;
-          categories.push(category.name);
+        if (categoryName && !categories.includes(categoryName)) {
+          categories.push(categoryName);
         }
 
         productsWithRatings.push({
@@ -155,7 +193,7 @@ const productRouter = createTRPCRouter({
           image: firstImage ?? undefined,
           reviews: {
             rating,
-            _count: reviews.length,
+            _count: reviewCount,
           },
         });
       }
@@ -163,7 +201,7 @@ const productRouter = createTRPCRouter({
       return {
         products: productsWithRatings,
         categories,
-        totalPages: productResultPageCount ?? totalPages,
+        totalPages: productResultPageCount,
       };
     }),
 });
