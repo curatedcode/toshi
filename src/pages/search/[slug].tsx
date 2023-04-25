@@ -3,12 +3,13 @@ import { useRouter } from "next/router";
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import Product from "~/components/Product";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent, useRef } from "react";
 import RatingStars from "~/components/RatingStars";
 import PriceInput from "~/components/Search/PriceInput";
 import PaginationButtons from "~/components/Search/PaginationButtons";
 import Link from "next/link";
 import type { getLinkWithAllParamsProps } from "~/customTypes";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SearchPage: NextPage = () => {
   const { query } = useRouter();
@@ -65,9 +66,7 @@ const SearchPage: NextPage = () => {
     return link;
   }
 
-  const [queryEnabled, setQueryEnabled] = useState(true);
-
-  const { data, isLoading } = api.product.search.useQuery(
+  const { data } = api.product.search.useQuery(
     {
       text: queryParamText,
       filters: {
@@ -85,14 +84,15 @@ const SearchPage: NextPage = () => {
       keepPreviousData: true,
       staleTime: Infinity,
       onSuccess: () => window.scrollTo({ top: 0, left: 0 }),
-      enabled: queryEnabled,
     }
   );
 
-  useEffect(() => {
-    if (isLoading) return;
-    setQueryEnabled(false);
-  }, [isLoading]);
+  const client = useQueryClient();
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  function resetFilters() {
+    void client.invalidateQueries(["product", "search"]);
+    linkRef.current?.click();
+  }
 
   useEffect(() => {
     if (data && data.totalPages === totalPages) return;
@@ -135,10 +135,17 @@ const SearchPage: NextPage = () => {
         <div className="hidden w-fit bg-white md:flex md:flex-col">
           <Link
             href={`/search/${queryParamText ?? ""}`}
+            aria-hidden
+            className="hidden"
+            ref={linkRef}
+          />
+          <button
+            type="button"
+            onClick={resetFilters}
             className="rounded-md border border-black border-opacity-60 bg-white px-2 text-center text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
           >
             Reset filters
-          </Link>
+          </button>
           <div className="flex flex-col gap-1">
             <label className="text-lg font-semibold">Price</label>
             <div className="inline-flex items-center gap-1">
