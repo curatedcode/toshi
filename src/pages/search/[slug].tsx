@@ -10,6 +10,7 @@ import PaginationButtons from "~/components/Search/PaginationButtons";
 import Link from "next/link";
 import type { getLinkWithAllParamsProps } from "~/customTypes";
 import { useQueryClient } from "@tanstack/react-query";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 const SearchPage: NextPage = () => {
   const { query } = useRouter();
@@ -32,6 +33,8 @@ const SearchPage: NextPage = () => {
         ? true
         : false
       : false;
+
+  const [showFilters, setShowFilters] = useState(false);
 
   const [priceFilter, setPriceFilter] = useState({
     min: undefined,
@@ -131,8 +134,27 @@ const SearchPage: NextPage = () => {
       description={`Search results for ${queryParamText ?? ""} | Toshi`}
       className="flex flex-col"
     >
-      <div className="flex">
-        <div className="hidden w-fit bg-white md:flex md:flex-col">
+      <div className="relative flex flex-col md:flex-row">
+        <button
+          type="button"
+          className="flex w-fit select-none items-center gap-1 self-end px-2 py-1 font-medium text-toshi-red md:hidden"
+          onClick={() => setShowFilters((prev) => !prev)}
+        >
+          <span>Filters</span>
+          <ChevronDownIcon
+            className={`w-4  ${showFilters ? "hidden" : ""}`}
+            aria-hidden
+          />
+          <ChevronUpIcon
+            className={`w-4  ${showFilters ? "" : "hidden"}`}
+            aria-hidden
+          />
+        </button>
+        <div
+          className={`grid w-full auto-rows-min grid-cols-1 bg-white md:relative md:top-0 md:flex md:w-fit md:flex-col ${
+            showFilters ? "" : "hidden"
+          }`}
+        >
           <Link
             href={`/search/${queryParamText ?? ""}`}
             aria-hidden
@@ -142,9 +164,9 @@ const SearchPage: NextPage = () => {
           <button
             type="button"
             onClick={resetFilters}
-            className="rounded-md border border-black border-opacity-60 bg-white px-2 text-center text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
+            className="col-span-full h-fit rounded-md border border-black border-opacity-60 bg-white px-2 text-center text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
           >
-            Reset filters
+            Clear filters
           </button>
           <div className="flex flex-col gap-1">
             <label className="text-lg font-semibold">Price</label>
@@ -210,7 +232,7 @@ const SearchPage: NextPage = () => {
                 <Link
                   href={getLinkWithAllParams({ category, page: 1 })}
                   key={category}
-                  className="transition-colors hover:text-toshi-red"
+                  className="h-fit transition-colors hover:text-toshi-red"
                 >
                   {category}
                 </Link>
@@ -219,7 +241,7 @@ const SearchPage: NextPage = () => {
           </div>
           <Link
             href={getLinkWithAllParams({ includeOutOfStock: true, page: 1 })}
-            className="transition-colors hover:text-toshi-red"
+            className="h-fit transition-colors hover:text-toshi-red"
           >
             Include out of stock
           </Link>
