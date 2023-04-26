@@ -79,6 +79,7 @@ async function run() {
   const companyData = Array.from({ length: COMPANIES_TO_CREATE }).map(() => ({
     name: faker.company.name(),
     location: faker.address.country(),
+    logoURL: faker.image.abstract(),
     about: faker.company.catchPhrase(),
   }));
 
@@ -171,6 +172,7 @@ async function run() {
           userId,
           productId: product.id,
           rating: getRandomRating(),
+          title: faker.lorem.sentence(),
           body: getRandomBody(),
           createdAt: getRandomDate(),
         },
