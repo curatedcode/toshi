@@ -36,7 +36,7 @@ function getRandomDate() {
 }
 
 function getRandomRating() {
-  let randomRating = Math.round(Math.random() * 5);
+  let randomRating = Math.round(Math.random() * 5 * 1e1) / 1e1;
 
   if (randomRating < 1) randomRating += 1;
 
