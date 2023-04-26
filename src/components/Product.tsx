@@ -19,57 +19,76 @@ function Product({
 
   if (type === "alternate") {
     return (
-      <Link href={link} className="inline-flex max-w-full bg-white">
-        <Image
-          src={image?.url}
-          alt={name}
-          loading="eager"
-          className="bg-white"
-          height={150}
-          width={200}
-        />
+      <div className="inline-flex max-w-full bg-white">
+        <Link href={link} aria-label={`Visit product page for ${name}`}>
+          <Image
+            src={image?.url}
+            alt={name}
+            loading="eager"
+            className="bg-white"
+            height={150}
+            width={200}
+          />
+        </Link>
         <div className="flex w-full flex-col">
-          <span className="line-clamp-2 text-xl font-medium transition-colors hover:text-toshi-red">
+          <Link
+            href={link}
+            className="line-clamp-2 text-xl font-medium transition-colors hover:text-toshi-red"
+          >
             {name}
-          </span>
-          <div className="flex w-fit items-center gap-1" title={reviewTitle}>
+          </Link>
+          <Link
+            href={`${link}#reviews`}
+            className="flex w-fit items-center gap-1"
+            title={reviewTitle}
+          >
             <RatingStars rating={rating} />
             <span className="w-fit text-sky-600 transition-colors hover:text-toshi-red">
               {_count}
             </span>
-          </div>
-          <div className="inline-flex items-center font-medium">
-            <span>$</span>
-            <span className="text-xl">{price}</span>
-          </div>
+          </Link>
+          <Link href={link} className="text-lg font-medium">
+            ${price}
+          </Link>
         </div>
-      </Link>
+      </div>
     );
   }
 
   return (
-    <Link href={link} className="max-w-full rounded-md">
-      <Image
-        src={image?.url}
-        alt={name}
-        loading="eager"
-        className="w-full"
-        height={150}
-        width={200}
-      />
+    <div className="max-w-full rounded-md">
+      <Link href={link} aria-label={`Visit product page for ${name}`}>
+        <Image
+          src={image?.url}
+          alt={name}
+          loading="eager"
+          className="w-full"
+          height={150}
+          width={200}
+        />
+      </Link>
       <div className="flex flex-col">
-        <span className="line-clamp-1 w-fit text-sky-600 transition-colors hover:text-toshi-red">
+        <Link
+          href={link}
+          className="line-clamp-1 w-fit text-sky-600 transition-colors hover:text-toshi-red"
+        >
           {name}
-        </span>
-        <div className="flex w-fit items-center gap-1" title={reviewTitle}>
+        </Link>
+        <Link
+          href={`${link}#reviews`}
+          className="flex w-fit items-center gap-1"
+          title={reviewTitle}
+        >
           <RatingStars rating={rating} />
           <span className="w-fit text-sky-600 transition-colors hover:text-toshi-red">
             {_count}
           </span>
-        </div>
-        <span className="text-lg font-medium">${price}</span>
+        </Link>
+        <Link href={link} className="text-lg font-medium">
+          ${price}
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 }
 

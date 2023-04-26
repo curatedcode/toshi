@@ -119,7 +119,7 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
       </div>
-      <div>
+      <div id="reviews">
         <h1 className="mb-2 mt-8 text-xl font-semibold">Reviews</h1>
         <div className="flex flex-col gap-4">
           {reviews.data.map((review) => {
