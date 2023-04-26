@@ -102,7 +102,7 @@ const productRouter = createTRPCRouter({
         ORDER BY p.id DESC`;
 
         productSearchResult = await prisma.$queryRaw`
-        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', CAST(COUNT(r.id) AS DECIMAL) AS 'reviewCount'
         FROM Product p
         JOIN _CategoryToProduct ctp ON p.id = ctp.B
         JOIN Review r ON p.id = r.productId
@@ -132,7 +132,7 @@ const productRouter = createTRPCRouter({
         ORDER BY p.id DESC`;
 
         productSearchResult = await prisma.$queryRaw`
-        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', CAST(COUNT(r.id) AS DECIMAL) AS 'reviewCount'
         FROM Product p
         JOIN _CategoryToProduct ctp ON p.id = ctp.B
         JOIN Review r ON p.id = r.productId
@@ -192,7 +192,7 @@ const productRouter = createTRPCRouter({
           price,
           image: firstImage ?? undefined,
           reviews: {
-            rating,
+            rating: Math.round(rating * 1e1) / 1e1,
             _count: reviewCount,
           },
         });
