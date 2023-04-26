@@ -126,7 +126,7 @@ export declare type ProductSearchResult = {
   category?: string;
 }[];
 
-export declare type ProductSearchWithReviews = {
+export declare type ProductWithReviews = {
   id: string;
   name: string;
   image: ProductImage | undefined;

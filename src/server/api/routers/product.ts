@@ -1,10 +1,7 @@
 import { type ProductImage } from "@prisma/client";
 import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
-import type {
-  ProductSearchResult,
-  ProductSearchWithReviews,
-} from "~/customTypes";
+import type { ProductSearchResult, ProductWithReviews } from "~/customTypes";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 const productRouter = createTRPCRouter({
@@ -149,7 +146,7 @@ const productRouter = createTRPCRouter({
 
       const productResultPageCount = Math.ceil(allProducts.length / limit);
 
-      const productsWithRatings: ProductSearchWithReviews = [];
+      const productsWithRatings: ProductWithReviews = [];
 
       const categories: string[] = [];
 
@@ -204,6 +201,45 @@ const productRouter = createTRPCRouter({
         totalPages: productResultPageCount,
       };
     }),
+
+  newReleases: publicProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+
+    const products = await prisma.product.findMany({
+      take: 36,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        images: {
+          take: 1,
+        },
+        reviews: {
+          select: { rating: true },
+        },
+      },
+    });
+
+    const productsWithRatings: ProductWithReviews = [];
+
+    for (const product of products) {
+      const { reviews } = product;
+
+      productsWithRatings.push({
+        ...product,
+        image: product.images[0],
+        reviews: {
+          rating: getProductRating(reviews),
+          _count: reviews.length,
+        },
+      });
+    }
+
+    return productsWithRatings;
+  }),
 });
 
 export default productRouter;
