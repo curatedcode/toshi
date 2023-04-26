@@ -81,7 +81,7 @@ model Category {
 
 model Review {
     id          String    @id @default(cuid())
-    rating      Int
+    rating      Float
     title       String    
     body        String?   @db.Text
     userId      String
