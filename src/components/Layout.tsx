@@ -5,7 +5,7 @@ import {
   ShoppingCartIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import SkipToContentButton from "./Button/SkipToContentButton";
+import SkipToContentButton from "./SkipToContentButton";
 import { api } from "~/utils/api";
 import type { LayoutProps } from "~/customTypes";
 import Dropdown from "./Dropdown";
