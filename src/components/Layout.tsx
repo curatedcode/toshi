@@ -14,11 +14,15 @@ import { type KeyboardEvent, useRef, useState } from "react";
 import LogoWithText from "./LogoWithText";
 import useDimensions from "./Fn/useDimensions";
 import { Source_Sans_3 } from "next/font/google";
+import { signIn, useSession } from "next-auth/react";
+import InternalLink from "./InternalLink";
 const font = Source_Sans_3({ subsets: ["latin"] });
 
 function Layout({ title, description, children, className = "" }: LayoutProps) {
   const [searchText, setSearchText] = useState("");
   const linkRef = useRef<HTMLAnchorElement>(null);
+
+  const { status, data: session } = useSession();
 
   function search(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && linkRef.current) {
@@ -73,13 +77,51 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
           <LogoWithText />
         </Link>
         <div className="inline-flex items-center gap-6 justify-self-end font-medium md:order-last">
-          <Link
-            href={"/account"}
-            className="inline-flex w-fit items-center gap-1"
+          <Dropdown
+            trigger={
+              <Link
+                href={status === "authenticated" ? "/account" : ""}
+                onClick={
+                  status === "authenticated" ? undefined : () => signIn()
+                }
+                className="flex items-center gap-1"
+              >
+                <UserIcon className="w-7" />
+                <span className="hidden whitespace-nowrap md:block">
+                  {status === "authenticated" ? session.user.name : "Sign In"}
+                </span>
+              </Link>
+            }
+            placement={"bottom"}
+            offset={navWidth >= 768 ? 20 : 6}
+            className={{
+              children: "grid grid-cols-2 gap-y-4 bg-white",
+            }}
           >
-            <UserIcon className="w-7" />
-            <span className="hidden md:block">Account</span>
-          </Link>
+            {status !== "authenticated" && (
+              <button
+                type="button"
+                onClick={() => void signIn()}
+                className="col-span-full w-48 justify-self-center whitespace-nowrap rounded-md bg-toshi-red px-2 py-1 hover:bg-opacity-90"
+              >
+                Sign In
+              </button>
+            )}
+            <div className="flex flex-col gap-2">
+              <InternalLink href={"/wishlist"}>Wish List</InternalLink>
+              <InternalLink href={"/wishlist/create"}>
+                New Wish List
+              </InternalLink>
+            </div>
+            <div className="flex flex-col gap-2">
+              <InternalLink href={"/account"}>Account</InternalLink>
+              <InternalLink href={"/account/orders"}>Orders</InternalLink>
+              <InternalLink href={"/cart"}>Cart</InternalLink>
+              <InternalLink href={"/new-releases"}>
+                Recommendations
+              </InternalLink>
+            </div>
+          </Dropdown>
           <Link href={"/cart"} className="inline-flex w-fit items-center gap-1">
             <ShoppingCartIcon className="w-7" />
             <span className="hidden md:block">Cart</span>

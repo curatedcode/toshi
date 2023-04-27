@@ -147,3 +147,11 @@ export declare type getLinkWithAllParamsProps = {
   };
   includeOutOfStock?: boolean;
 };
+
+export declare type InternalLinkProps = {
+  href: string;
+  className?: string;
+  ariaLabel?: string;
+  title?: string;
+  children?: React.ReactNode;
+};
