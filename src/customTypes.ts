@@ -3,39 +3,6 @@ import type { Category, Prisma, ProductImage, Review } from "@prisma/client";
 import type { EmblaCarouselType } from "embla-carousel-react";
 import type { CSSProperties, ChangeEventHandler } from "react";
 
-export declare type Variants = "filled" | "outline" | "default";
-export declare type BorderRadii =
-  | "none"
-  | "sm"
-  | "reg"
-  | "md"
-  | "lg"
-  | "xl"
-  | "full";
-
-export declare type InteractiveElement = {
-  variant?: Variants;
-  icon?: React.ReactNode;
-  radius?: BorderRadii;
-  alignIcon?: "start" | "end";
-};
-
-export declare interface TextInputProps
-  extends React.DetailedHTMLProps<
-      React.InputHTMLAttributes<HTMLInputElement>,
-      HTMLInputElement
-    >,
-    InteractiveElement {}
-
-export declare type Sizes = "sm" | "md" | "lg" | "xl";
-
-export declare interface ButtonProps
-  extends React.DetailedHTMLProps<
-      React.ButtonHTMLAttributes<HTMLButtonElement>,
-      HTMLButtonElement
-    >,
-    InteractiveElement {}
-
 export declare type LogoProps = {
   width?: number;
   height?: number;
