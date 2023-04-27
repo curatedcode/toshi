@@ -22,6 +22,7 @@ export default function Dropdown({
   className,
 }: PopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
 
   const { x, y, strategy, refs, context } = useFloating({
     open: isOpen,
@@ -57,7 +58,8 @@ export default function Dropdown({
         ref={refs.setReference}
         {...getReferenceProps()}
         className={className?.trigger}
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => setIsOpen(true)}
+        onMouseOver={() => setIsOpen(true)}
         aria-label="Toggle Menu"
       >
         {trigger}
@@ -76,6 +78,11 @@ export default function Dropdown({
             className={`absolute z-50 w-max select-none rounded-md px-3 py-2 text-lg text-black dark:text-white ${
               className?.children ?? ""
             }`}
+            onMouseOver={() => setIsMenuHovered(true)}
+            onMouseLeave={() => {
+              setIsMenuHovered(false);
+              setIsOpen(false);
+            }}
           >
             {children}
           </div>
