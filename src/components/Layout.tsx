@@ -37,11 +37,14 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
 
   const { ref, width: navWidth } = useDimensions();
 
-  const { data } = api.category.getAll.useQuery();
+  const { data } = api.category.getAll.useQuery(undefined, {
+    keepPreviousData: true,
+    staleTime: Infinity,
+  });
 
   const categories = data?.map((category) => (
     <Link
-      href={`/categories/${category.name}`}
+      href={`/search?dept=${category.name}`}
       key={category.name}
       className="container px-3 py-1 text-black transition-colors duration-75 hover:bg-web-white"
     >

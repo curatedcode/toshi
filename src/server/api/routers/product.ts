@@ -48,7 +48,7 @@ const productRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(1).max(16).default(16),
-        text: z.string().min(1).nullish(),
+        text: z.string(),
         filters: z.object({
           price: z.object({
             min: z.number().nullish(),

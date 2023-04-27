@@ -15,8 +15,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 const SearchPage: NextPage = () => {
   const { query } = useRouter();
 
-  const queryParamText =
-    typeof query.slug === "string" ? query.slug : undefined;
+  const queryParamText = typeof query.text === "string" ? query.text : "";
   const queryParamPage =
     typeof query.page === "string" ? Number(query.page) : 1;
   const queryParamCategory =
@@ -51,7 +50,7 @@ const SearchPage: NextPage = () => {
     price,
     includeOutOfStock,
   }: getLinkWithAllParamsProps) {
-    const searchText = text ? text : queryParamText ?? "";
+    const searchText = text ? text : queryParamText;
     const searchPage = page ? page : queryParamPage;
     const searchCategory = category ? category : queryParamCategory ?? "";
     const searchRating = rating ? rating : Number(queryParamRating);
@@ -60,7 +59,7 @@ const SearchPage: NextPage = () => {
       ? includeOutOfStock
       : queryParamIncludeOutOfStock;
 
-    const link = `/search/${searchText}?page=${searchPage}&dept=${searchCategory}&rating=${searchRating}&pmin=${
+    const link = `/search?text=${searchText}&page=${searchPage}&dept=${searchCategory}&rating=${searchRating}&pmin=${
       searchPrice.min ?? ""
     }&pmax=${searchPrice.max ?? ""}&includeOutOfStock=${String(
       searchIncludeOutOfStock
