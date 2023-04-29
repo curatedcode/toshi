@@ -13,10 +13,13 @@ import Link from "next/link";
 import { type KeyboardEvent, useRef, useState } from "react";
 import LogoWithText from "./LogoWithText";
 import useDimensions from "./Fn/useDimensions";
-import { Source_Sans_3 } from "next/font/google";
+import { Source_Sans_Pro } from "next/font/google";
 import { signIn, useSession } from "next-auth/react";
 import InternalLink from "./InternalLink";
-const font = Source_Sans_3({ subsets: ["latin"] });
+const font = Source_Sans_Pro({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "600", "700", "900"],
+});
 
 function Layout({ title, description, children, className = "" }: LayoutProps) {
   const [searchText, setSearchText] = useState("");
