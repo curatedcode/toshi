@@ -49,7 +49,7 @@ export declare type ImageProps = {
 };
 
 export declare interface SliderProps extends Partial<SliderOptions> {
-  slides: JSX.Element[];
+  slides: React.ReactNode[];
 }
 
 export declare type SliderOptions = {
@@ -67,7 +67,7 @@ export declare type SliderControlProps = {
   type?: "filled" | "shallow";
 };
 
-export declare type ProductProps = {
+export declare type ProductType = {
   id: string;
   image: ProductImage | undefined;
   name: string;
@@ -76,6 +76,13 @@ export declare type ProductProps = {
     rating: number | null;
     _count: number;
   };
+};
+
+export declare type ProductProps = {
+  product: ProductType;
+  type?: "default" | "alternate";
+  imageHeight?: number;
+  imageWidth?: number;
 };
 
 export declare type AvatarProps = {

@@ -6,10 +6,9 @@ import RatingStars from "./RatingStars";
 function Product({
   product,
   type = "default",
-}: {
-  product: ProductProps;
-  type?: "default" | "alternate";
-}) {
+  imageHeight = 150,
+  imageWidth = 200,
+}: ProductProps) {
   const { id, name, price, image, reviews } = product;
   const { rating, _count } = reviews;
 
@@ -26,8 +25,8 @@ function Product({
             alt={name}
             loading="eager"
             className="bg-white"
-            height={150}
-            width={200}
+            height={imageHeight}
+            width={imageWidth}
           />
         </Link>
         <div className="flex w-full flex-col">
@@ -56,15 +55,19 @@ function Product({
   }
 
   return (
-    <div className="max-w-full rounded-md">
-      <Link href={link} aria-label={`Visit product page for ${name}`}>
+    <div className="w-fit max-w-full rounded-md">
+      <Link
+        href={link}
+        aria-label={`Visit product page for ${name}`}
+        className="w-fit"
+      >
         <Image
           src={image?.url}
           alt={name}
           loading="eager"
-          className="w-full"
-          height={150}
-          width={200}
+          className="w-full bg-white"
+          height={imageHeight}
+          width={imageWidth}
         />
       </Link>
       <div className="flex flex-col">
@@ -76,7 +79,7 @@ function Product({
         </Link>
         <Link
           href={`${link}#reviews`}
-          className="flex w-fit items-center gap-1"
+          className="flex items-center gap-1"
           title={reviewTitle}
         >
           <RatingStars rating={rating} />
@@ -84,7 +87,7 @@ function Product({
             {_count}
           </span>
         </Link>
-        <Link href={link} className="text-lg font-medium">
+        <Link href={link} className="w-fit text-lg font-medium">
           ${price}
         </Link>
       </div>
