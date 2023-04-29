@@ -10,6 +10,7 @@ import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import RatingStars from "~/components/RatingStars";
 import Avatar from "~/components/Avatar";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
+import Image from "~/components/Image";
 
 const ProductPage: NextPage = () => {
   const { query } = useRouter();
@@ -45,7 +46,18 @@ const ProductPage: NextPage = () => {
     >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:border-b sm:pb-4">
         <div className="flex flex-col items-center gap-3 divide-y sm:flex-row sm:items-start sm:divide-y-0">
-          <Carousel slides={images} productName={name} />
+          <Carousel
+            slides={images.map((image) => (
+              <Image
+                key={image.url}
+                alt={name ?? ""}
+                src={image.url}
+                className="h-full rounded-md"
+              />
+            ))}
+            thumbnails={images.length > 1}
+            controls
+          />
           <div className="pt-1">
             <h1 className="line-clamp-2 text-xl font-semibold sm:text-2xl">
               {name}
