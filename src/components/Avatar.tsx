@@ -1,13 +1,13 @@
 import type { AvatarProps } from "~/customTypes";
 import Image from "./Image";
 
-function Avatar({ size = "md", alt, src }: AvatarProps) {
+function Avatar({ size = "md", alt, src, className = "" }: AvatarProps) {
   if (size === "sm") {
     return (
       <Image
-        className="rounded-full"
+        className={`rounded-full ${className}`}
         alt={alt}
-        src={src}
+        src={src ?? "/profile-placeholder.jpg"}
         width={32}
         height={32}
       />
@@ -17,9 +17,9 @@ function Avatar({ size = "md", alt, src }: AvatarProps) {
   if (size === "md") {
     return (
       <Image
-        className="rounded-full"
+        className={`rounded-full ${className}`}
         alt={alt}
-        src={src}
+        src={src ?? "/profile-placeholder.jpg"}
         width={48}
         height={48}
       />
@@ -28,9 +28,9 @@ function Avatar({ size = "md", alt, src }: AvatarProps) {
 
   return (
     <Image
-      className="rounded-full"
+      className={`rounded-full ${className}`}
       alt={alt}
-      src={src}
+      src={src ?? "/profile-placeholder.jpg"}
       width={64}
       height={64}
     />
