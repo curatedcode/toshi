@@ -3,11 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { CarouselProps, CarouselThumbProps } from "~/customTypes";
 import Controls from "./Controls";
 
-function Carousel({
-  slides,
-  controls = true,
-  thumbnails = false,
-}: CarouselProps) {
+function Carousel({ slides, controls, thumbnails }: CarouselProps) {
   const [emblaMainRef, emblaMainApi] = useEmblaCarousel({
     align: "start",
     slidesToScroll: 1,
