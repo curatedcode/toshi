@@ -50,7 +50,7 @@ const Home: NextPage = () => {
           alt=""
         />
       </div>
-      <div className="flex flex-col gap-8 self-center px-2 md:gap-10 md:px-4">
+      <div className="flex flex-col gap-8 px-2 md:gap-10 md:px-4">
         <section className="flex flex-col items-center bg-white ">
           <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
             Recommended
