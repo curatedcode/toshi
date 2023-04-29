@@ -2,9 +2,12 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import type { CarouselProps, CarouselThumbProps } from "~/customTypes";
 import Controls from "./Controls";
-import Image from "../Image";
 
-function Carousel({ slides, controls = true, productName }: CarouselProps) {
+function Carousel({
+  slides,
+  controls = true,
+  thumbnails = false,
+}: CarouselProps) {
   const [emblaMainRef, emblaMainApi] = useEmblaCarousel({
     align: "start",
     slidesToScroll: 1,
@@ -57,7 +60,7 @@ function Carousel({ slides, controls = true, productName }: CarouselProps) {
         <div className="flex">
           {slides.map((slide, index) => (
             <div key={index} className="relative shrink-0 grow-0 basis-full">
-              <Image alt={productName} src={slide.url} />
+              {slide}
             </div>
           ))}
           {controls && slides.length > 1 && (
@@ -69,21 +72,22 @@ function Carousel({ slides, controls = true, productName }: CarouselProps) {
           )}
         </div>
       </div>
-      <div className="overflow-hidden rounded-md" ref={emblaThumbsRef}>
-        <div className="flex w-fit max-w-full gap-2 rounded-md">
-          {slides.map((slide, index) => (
-            <Thumbnail
-              key={index}
-              onClick={() => onThumbClick(index)}
-              productName={productName}
-              selected={index === selectedIndex}
-              src={slide.url}
-              slideCount={slides.length}
-              index={index + 1}
-            />
-          ))}
+      {thumbnails && (
+        <div className="overflow-hidden rounded-md" ref={emblaThumbsRef}>
+          <div className="flex w-fit max-w-full gap-2 rounded-md">
+            {slides.map((slide, index) => (
+              <Thumbnail
+                key={index}
+                slide={slide}
+                onClick={() => onThumbClick(index)}
+                selected={index === selectedIndex}
+                slideCount={slides.length}
+                index={index + 1}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -91,8 +95,7 @@ function Carousel({ slides, controls = true, productName }: CarouselProps) {
 function Thumbnail({
   onClick,
   selected,
-  src,
-  productName,
+  slide,
   slideCount,
   index,
 }: CarouselThumbProps) {
@@ -101,17 +104,13 @@ function Thumbnail({
       type="button"
       aria-label={`View image ${index}`}
       onClick={onClick}
-      className="w-fit"
+      className={`relative max-h-14 shrink-0 grow-0 rounded-md ${
+        selected ? "" : "opacity-50"
+      }`}
+      style={{ flexBasis: `${100 / slideCount}%` }}
       title={`View image ${index}`}
     >
-      <Image
-        alt={productName}
-        src={src}
-        className={`relative h-full max-h-14 shrink-0 grow-0 rounded-md ${
-          selected ? "" : "opacity-50"
-        }`}
-        style={{ flexBasis: `${100 / slideCount}%` }}
-      />
+      {slide}
     </button>
   );
 }

@@ -57,8 +57,8 @@ export declare type SliderOptions = {
 };
 
 export declare interface CarouselProps extends Partial<SliderOptions> {
-  slides: { url: string }[];
-  productName: string;
+  slides: React.ReactNode[];
+  thumbnails?: boolean;
 }
 
 export declare type SliderControlProps = {
@@ -80,8 +80,9 @@ export declare type ProductProps = {
 
 export declare type AvatarProps = {
   alt: string;
-  src: string;
+  src: string | null | undefined;
   size?: "sm" | "md" | "lg";
+  className?: string;
 };
 
 export declare type ProductSearchResult = {
@@ -130,9 +131,8 @@ export declare type PriceInput = {
 export declare type CarouselThumbProps = {
   onClick: () => void;
   selected: boolean;
-  src: string;
-  productName: string;
   slideCount: number;
+  slide: React.ReactNode;
   index: number;
 };
 
@@ -154,4 +154,5 @@ export declare type InternalLinkProps = {
   ariaLabel?: string;
   title?: string;
   children?: React.ReactNode;
+  onClick?: () => void;
 };
