@@ -25,11 +25,7 @@ dayjs.updateLocale("en", {
   },
 });
 
-/**
- *
- * @param date needs to be an ISO string
- */
-function getRelativeTime(date: string) {
+function getRelativeTime(date: Date) {
   const currentDate = dayjs(new Date());
 
   const isSameYear = currentDate.isSame(date, "year");

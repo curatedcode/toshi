@@ -147,7 +147,7 @@ const ProductPage: NextPage = () => {
                   <div className="flex flex-col">
                     <span>{user.name}</span>
                     <span className="text-sm">
-                      • {getRelativeTime(createdAt.toISOString())}
+                      • {getRelativeTime(createdAt)}
                     </span>
                   </div>
                 </div>

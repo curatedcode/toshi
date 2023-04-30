@@ -18,7 +18,7 @@ describe("seconds", () => {
     vi.setSystemTime(fakeDate);
 
     // March 30, 2023 @ 5:00:01
-    const reviewDate = new Date(2023, 2, 30, 6, 0, 1).toUTCString();
+    const reviewDate = new Date(2023, 2, 30, 6, 0, 1);
 
     expect(getRelativeDate(reviewDate)).toBe("1s");
   });
@@ -29,7 +29,7 @@ describe("seconds", () => {
     vi.setSystemTime(fakeDate);
 
     // March 30, 2023 @ 6:00:05
-    const reviewDate = new Date(2023, 2, 30, 6, 0, 5).toUTCString();
+    const reviewDate = new Date(2023, 2, 30, 6, 0, 5);
 
     expect(getRelativeDate(reviewDate)).toBe("5s");
   });
@@ -52,7 +52,7 @@ describe("minutes", () => {
     vi.setSystemTime(fakeDate);
 
     // March 30, 2023 @ 6:01
-    const reviewDate = new Date(2023, 2, 30, 6, 1).toUTCString();
+    const reviewDate = new Date(2023, 2, 30, 6, 1);
 
     expect(getRelativeDate(reviewDate)).toBe("1m");
   });
@@ -63,7 +63,7 @@ describe("minutes", () => {
     vi.setSystemTime(fakeDate);
 
     // March 30, 2023 @ 6:05
-    const reviewDate = new Date(2023, 2, 30, 6, 5).toUTCString();
+    const reviewDate = new Date(2023, 2, 30, 6, 5);
 
     expect(getRelativeDate(reviewDate)).toBe("5m");
   });
@@ -86,7 +86,7 @@ describe("hours", () => {
     vi.setSystemTime(fakeDate);
 
     // March 30, 2023 @ 7:00
-    const reviewDate = new Date(2023, 2, 30, 7, 0).toUTCString();
+    const reviewDate = new Date(2023, 2, 30, 7, 0);
 
     expect(getRelativeDate(reviewDate)).toBe("1h");
   });
@@ -97,7 +97,7 @@ describe("hours", () => {
     vi.setSystemTime(fakeDate);
 
     // March 30, 2023 @ 11:00
-    const reviewDate = new Date(2023, 2, 30, 11, 0).toUTCString();
+    const reviewDate = new Date(2023, 2, 30, 11, 0);
 
     expect(getRelativeDate(reviewDate)).toBe("5h");
   });
@@ -120,7 +120,7 @@ describe("dates outside of current day", () => {
     vi.setSystemTime(fakeDate);
 
     // March 29, 2023
-    const reviewDate = new Date(2023, 2, 29).toUTCString();
+    const reviewDate = new Date(2023, 2, 29);
 
     expect(getRelativeDate(reviewDate)).toBe("Mar 29");
   });
@@ -131,7 +131,7 @@ describe("dates outside of current day", () => {
     vi.setSystemTime(fakeDate);
 
     // March 29, 2022
-    const reviewDate = new Date(2022, 2, 29).toUTCString();
+    const reviewDate = new Date(2022, 2, 29);
 
     expect(getRelativeDate(reviewDate)).toBe("Mar 29 2022");
   });
