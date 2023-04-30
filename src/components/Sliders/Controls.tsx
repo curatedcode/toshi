@@ -32,7 +32,7 @@ function Controls({ api, visible, type = "filled" }: SliderControlProps) {
         >
           <button
             type="button"
-            className={`absolute left-0 top-1/2 flex h-20 -translate-y-1/2 items-center justify-center rounded-md border-2 border-transparent focus-within:border-sky-400 disabled:cursor-not-allowed ${
+            className={`absolute left-0 top-1/2 flex h-20 -translate-y-1/2 items-center justify-center rounded-md border-2 border-transparent focus-within:border-sky-400 ${
               type === "filled"
                 ? "bg-white disabled:bg-opacity-30"
                 : "bg-white bg-opacity-30 disabled:bg-opacity-20"
