@@ -25,6 +25,10 @@ dayjs.updateLocale("en", {
   },
 });
 
+/**
+ *
+ * @param date needs to be an ISO string
+ */
 function getRelativeTime(date: string) {
   const currentDate = dayjs(new Date());
 
