@@ -51,9 +51,12 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    address       String?
     accounts      Account[]
     sessions      Session[]
     reviews       Review[]
+    lists         List[]
+    orders        Order[]
 }
 
 model VerificationToken {
@@ -62,6 +65,31 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model List {
+    id          String    @id @default(cuid())
+    name        String
+    description String?   @db.Text
+    userId      String
+    user        User      @relation(fields: [userId], references: [id])
+    products    Product[]
+    isPrivate   Boolean
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([userId])
+}
+
+model Order {
+    id          String    @id @default(cuid())
+    userId      String
+    user        User      @relation(fields: [userId], references: [id])
+    products    Product[]
+    createdAt   DateTime  @default(now())
+    deliveredAt DateTime  
+
+    @@index([userId])
 }
 
 model Company {
@@ -117,6 +145,8 @@ model Product {
     categories  Category[]
     reviews     Review[]
     images      ProductImage[]
+    lists       List[]
+    orders      Order[]
     createdAt   DateTime            @default(now())
 
     @@index([companyId])

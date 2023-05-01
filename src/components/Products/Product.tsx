@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ProductProps } from "~/customTypes";
-import Image from "./Image";
-import RatingStars from "./RatingStars";
+import Image from "../Image";
+import RatingStars from "../RatingStars";
 
 function Product({
   product,
@@ -9,7 +9,7 @@ function Product({
   imageHeight = 150,
   imageWidth = 200,
 }: ProductProps) {
-  const { id, name, price, image, reviews } = product;
+  const { id, name, price, images, reviews } = product;
   const { rating, _count } = reviews;
 
   const link = `/product/${id}`;
@@ -21,10 +21,9 @@ function Product({
       <div className="inline-flex max-w-full bg-white">
         <Link href={link} aria-label={`Visit product page for ${name}`}>
           <Image
-            src={image?.url}
+            src={images && images[0] && images[0].url}
             alt={name}
             loading="eager"
-            className="bg-white"
             height={imageHeight}
             width={imageWidth}
           />
@@ -62,10 +61,10 @@ function Product({
         className="w-fit"
       >
         <Image
-          src={image?.url}
+          src={images && images[0] && images[0].url}
           alt={name}
           loading="eager"
-          className="w-full bg-white"
+          className="w-full"
           height={imageHeight}
           width={imageWidth}
         />
@@ -90,6 +89,15 @@ function Product({
         <Link href={link} className="w-fit text-lg font-medium">
           ${price}
         </Link>
+      </div>
+      <div>
+        <button type="button" onClick={() => "add to cart"}>
+          Add to cart
+        </button>
+        {/**
+         * @TODO After adding to cart "view cart" link needs to be visible
+         * @TODO if in cart be able to adjust quantity
+         */}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
-import Product from "~/components/Product";
+import Product from "~/components/Products/Product";
 import { useEffect, useState, type ChangeEvent, useRef } from "react";
 import RatingStars from "~/components/RatingStars";
 import PriceInput from "~/components/Search/PriceInput";

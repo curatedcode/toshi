@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Layout from "~/components/Layout";
-import Product from "~/components/Product";
+import Product from "~/components/Products/Product";
 import { api } from "~/utils/api";
 
 const NewReleasePage: NextPage = () => {

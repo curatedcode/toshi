@@ -13,7 +13,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ReactQueryDevtools initialIsOpen={false} position="top-right" />
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       <Component {...pageProps} />
     </SessionProvider>
   );

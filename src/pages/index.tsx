@@ -4,7 +4,7 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import Slider from "~/components/Sliders/Slider";
 import Image from "~/components/Image";
-import Product from "~/components/Product";
+import Product from "~/components/Products/Product";
 
 const Home: NextPage = () => {
   const { data: recommendedData } = api.category.recommended.useQuery();

@@ -23,8 +23,8 @@ const categoryRouter = createTRPCRouter({
     const { prisma } = ctx;
 
     const recommended = await prisma.product.findMany({
-      take: 10,
-      skip: 10,
+      take: 15,
+      skip: 15,
       select: {
         id: true,
         name: true,
@@ -34,21 +34,13 @@ const categoryRouter = createTRPCRouter({
       },
     });
 
-    const productsWithRatings = recommended.map((data) => {
-      const { id, images, name, price, reviews } = data;
-      const firstImage = images[0];
-
-      return {
-        id,
-        image: firstImage,
-        name,
-        price,
-        reviews: {
-          rating: getProductRating(reviews),
-          _count: reviews.length,
-        },
-      };
-    });
+    const productsWithRatings = recommended.map((data) => ({
+      ...data,
+      reviews: {
+        rating: getProductRating(data.reviews),
+        _count: data.reviews.length,
+      },
+    }));
 
     return productsWithRatings;
   }),
@@ -57,7 +49,7 @@ const categoryRouter = createTRPCRouter({
     const { prisma } = ctx;
 
     const bestDeals = await prisma.product.findMany({
-      take: 10,
+      take: 15,
       select: {
         id: true,
         name: true,
@@ -67,21 +59,13 @@ const categoryRouter = createTRPCRouter({
       },
     });
 
-    const productsWithRatings = bestDeals.map((data) => {
-      const { id, images, name, price, reviews } = data;
-      const firstImage = images[0];
-
-      return {
-        id,
-        image: firstImage,
-        name,
-        price,
-        reviews: {
-          rating: getProductRating(reviews),
-          _count: reviews.length,
-        },
-      };
-    });
+    const productsWithRatings = bestDeals.map((data) => ({
+      ...data,
+      reviews: {
+        rating: getProductRating(data.reviews),
+        _count: data.reviews.length,
+      },
+    }));
 
     return productsWithRatings;
   }),
@@ -115,21 +99,13 @@ const categoryRouter = createTRPCRouter({
       },
     });
 
-    const productsWithRatings = sellingOutFast.map((data) => {
-      const { id, images, name, price, reviews } = data;
-      const firstImage = images[0];
-
-      return {
-        id,
-        image: firstImage,
-        name,
-        price,
-        reviews: {
-          rating: getProductRating(reviews),
-          _count: reviews.length,
-        },
-      };
-    });
+    const productsWithRatings = sellingOutFast.map((data) => ({
+      ...data,
+      reviews: {
+        rating: getProductRating(data.reviews),
+        _count: data.reviews.length,
+      },
+    }));
 
     return productsWithRatings;
   }),

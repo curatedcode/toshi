@@ -154,17 +154,17 @@ const productRouter = createTRPCRouter({
         const { id, name, price, rating, reviewCount, category } = product;
 
         let data:
-          | [ProductImage | null]
-          | [ProductImage | null, [{ id: string }]];
+          | [ProductImage[] | null]
+          | [ProductImage[] | null, [{ id: string }]];
         let categoryName = category;
 
         if (category) {
           data = await prisma.$transaction([
-            prisma.productImage.findFirst({ where: { productId: id } }),
+            prisma.productImage.findMany({ where: { productId: id } }),
           ]);
         } else {
           data = await prisma.$transaction([
-            prisma.productImage.findFirst({ where: { productId: id } }),
+            prisma.productImage.findMany({ where: { productId: id } }),
             prisma.$queryRaw`
               SELECT A AS 'id'
               FROM _CategoryToProduct
@@ -187,7 +187,7 @@ const productRouter = createTRPCRouter({
           id,
           name,
           price,
-          image: firstImage ?? undefined,
+          images: firstImage ?? undefined,
           reviews: {
             rating: Math.round(rating * 1e1) / 1e1,
             _count: reviewCount,
@@ -230,7 +230,6 @@ const productRouter = createTRPCRouter({
 
       productsWithRatings.push({
         ...product,
-        image: product.images[0],
         reviews: {
           rating: getProductRating(reviews),
           _count: reviews.length,

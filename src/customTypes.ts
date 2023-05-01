@@ -69,7 +69,7 @@ export declare type SliderControlProps = {
 
 export declare type ProductType = {
   id: string;
-  image: ProductImage | undefined;
+  images: ProductImage[] | undefined;
   name: string;
   price: number;
   reviews: {
@@ -81,6 +81,26 @@ export declare type ProductType = {
 export declare type ProductProps = {
   product: ProductType;
   type?: "default" | "alternate";
+  imageHeight?: number;
+  imageWidth?: number;
+};
+
+export declare type OrderedProductType = {
+  id: string;
+  images: ProductImage[] | undefined;
+  name: string;
+  price: number;
+  company: { id: string; name: string };
+};
+
+export declare type OrderedProductProps = {
+  product: OrderedProductType;
+  imageHeight?: number;
+  imageWidth?: number;
+};
+
+export declare type ListProductProps = {
+  product: ProductType;
   imageHeight?: number;
   imageWidth?: number;
 };
@@ -104,7 +124,7 @@ export declare type ProductSearchResult = {
 export declare type ProductWithReviews = {
   id: string;
   name: string;
-  image: ProductImage | undefined;
+  images: ProductImage[] | undefined;
   price: number;
   reviews: {
     rating: number | null;
