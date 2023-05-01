@@ -150,7 +150,7 @@ async function run() {
 
       for (let i = 0; i < imageAmount; i++) {
         images.push({
-          url: faker.image.imageUrl(undefined, undefined, category),
+          url: faker.image.imageUrl(undefined, undefined, category, true),
         });
       }
 
