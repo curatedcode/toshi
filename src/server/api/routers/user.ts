@@ -12,7 +12,9 @@ const userRouter = createTRPCRouter({
         email: true,
         image: true,
         name: true,
-        address: true,
+        addresses: {
+          take: 1,
+        },
         lists: {
           select: {
             id: true,
@@ -35,11 +37,15 @@ const userRouter = createTRPCRouter({
             createdAt: true,
             products: {
               select: {
-                id: true,
-                name: true,
-                price: true,
-                images: { take: 1 },
-                reviews: { select: { rating: true } },
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                    price: true,
+                    images: { take: 1 },
+                    reviews: { select: { rating: true } },
+                  },
+                },
               },
             },
           },
@@ -68,13 +74,17 @@ const userRouter = createTRPCRouter({
     const ordersWithRatings = userData?.orders.map((order) => {
       const { products } = order;
 
-      const productsWithRatings = products.map((product) => ({
-        ...product,
-        reviews: {
-          rating: getProductRating(product.reviews),
-          _count: product.reviews.length,
-        },
-      }));
+      const productsWithRatings = products.map((product) => {
+        const { product: realProduct } = product;
+
+        return {
+          ...realProduct,
+          reviews: {
+            rating: getProductRating(realProduct.reviews),
+            _count: realProduct.reviews.length,
+          },
+        };
+      });
 
       return {
         ...order,

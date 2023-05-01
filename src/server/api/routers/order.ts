@@ -18,11 +18,15 @@ const orderRouter = createTRPCRouter({
           deliveredAt: true,
           products: {
             select: {
-              id: true,
-              name: true,
-              price: true,
-              images: { take: 1 },
-              company: { select: { id: true, name: true } },
+              priceAtPurchase: true,
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  images: { take: 1 },
+                  company: { select: { id: true, name: true } },
+                },
+              },
             },
           },
         },
@@ -44,13 +48,18 @@ const orderRouter = createTRPCRouter({
         select: {
           id: true,
           createdAt: true,
+          deliveredAt: true,
           products: {
             select: {
-              id: true,
-              name: true,
-              price: true,
-              images: { take: 1 },
-              company: { select: { id: true, name: true } },
+              priceAtPurchase: true,
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  images: { take: 1 },
+                  company: { select: { id: true, name: true } },
+                },
+              },
             },
           },
         },
