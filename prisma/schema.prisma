@@ -96,11 +96,11 @@ model List {
 }
 
 model Order {
-    id          String    @id @default(cuid())
+    id          String              @id @default(cuid())
     userId      String
-    user        User      @relation(fields: [userId], references: [id])
-    products    Product[]
-    createdAt   DateTime  @default(now())
+    user        User                @relation(fields: [userId], references: [id])
+    products    OrderedProduct[]
+    createdAt   DateTime            @default(now())
     deliveredAt DateTime  
 
     @@index([userId])
@@ -149,19 +149,33 @@ model ProductImage {
 }
 
 model Product {
-    id          String              @id @default(cuid())
-    name        String
-    price       Float
-    quantity    Int
-    description String              @db.Text
-    companyId   String
-    company     Company             @relation(fields: [companyId], references: [id])
-    categories  Category[]
-    reviews     Review[]
-    images      ProductImage[]
-    lists       List[]
-    orders      Order[]
-    createdAt   DateTime            @default(now())
+    id              String              @id @default(cuid())
+    name            String
+    price           Float
+    quantity        Int
+    description     String              @db.Text
+    companyId       String
+    company         Company             @relation(fields: [companyId], references: [id])
+    categories      Category[]
+    reviews         Review[]
+    images          ProductImage[]
+    lists           List[]
+    orderedProduct  OrderedProduct[]
+    createdAt       DateTime            @default(now())
 
     @@index([companyId])
+}
+
+model OrderedProduct {
+    id                  String        @id @default(cuid())
+    productId           String        
+    product             Product       @relation(fields: [productId], references: [id])
+    orderId             String        
+    order               Order         @relation(fields: [orderId], references: [id])
+    quantity            Int
+    priceAtPurchase     Float
+
+    @@index([productId])
+    @@index([orderId])
+    @@unique([productId, orderId])
 }
