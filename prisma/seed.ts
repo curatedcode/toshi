@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { type Category, PrismaClient, type Product } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
@@ -12,12 +12,30 @@ const CATEGORIES_TO_CREATE = 22;
 // products per company to create
 const PRODUCTS_TO_CREATE = 20;
 
+// images min/max per product
+const PRODUCT_IMAGE_MIN = 1;
+const PRODUCT_IMAGE_MAX = 5;
+
 // quantity min/max per product
 const PRODUCT_QUANTITY_MIN = 0;
 const PRODUCT_QUANTITY_MAX = 420;
 
 // total users to create
 const USERS_TO_CREATE = 100;
+
+// lists per user to create
+const LISTS_TO_CREATE = 5;
+
+// products min/max per list
+const PRODUCT_LIST_MIN = 0;
+const PRODUCT_LIST_MAX = 10;
+
+// orders per user to create
+const ORDERS_TO_CREATE = 5;
+
+// products min/max per order
+const PRODUCT_ORDER_MIN = 0;
+const PRODUCT_ORDER_MAX = 10;
 
 /**
  * reviews per product to create
@@ -30,9 +48,9 @@ const USERS_TO_CREATE = 100;
 const REVIEWS_TO_CREATE_MIN = 0;
 const REVIEWS_TO_CREATE_MAX = 10;
 
-function getRandomDate() {
+function getRandomDate(min?: Date, max?: Date) {
   const today = new Date().toISOString();
-  return faker.date.between("2022-01-01T00:00:00.000Z", today);
+  return faker.date.between(min ?? "2022-01-01T00:00:00.000Z", max ?? today);
 }
 
 function getRandomRating() {
@@ -51,8 +69,23 @@ function getRandomBody() {
   return faker.lorem.paragraphs();
 }
 
-function getCategoryImage(category: string) {
-  return faker.image.imageUrl(undefined, undefined, category, true);
+function getRandomCategory(
+  index: number,
+  categories: Category[]
+): { name: string; id: string } {
+  const category = categories[index];
+
+  if (!category) return getRandomCategory(index - 1, categories);
+
+  return { name: category.name, id: category.id };
+}
+
+function getRandomProduct(index: number, products: Product[]): Product {
+  const product = products[index];
+
+  if (!product) return getRandomProduct(index - 1, products);
+
+  return product;
 }
 
 async function createCategories() {
@@ -96,55 +129,153 @@ async function run() {
   console.log("creating products...");
 
   const categories = await prisma.category.findMany();
-
-  function getRandomCategory(index: number): { name: string; id: string } {
-    const category = categories[index];
-
-    if (!category) return getRandomCategory(index - 1);
-
-    return { name: category.name, id: category.id };
-  }
-
   const companies = await prisma.company.findMany();
 
   for (const company of companies) {
     const index = companies.indexOf(company);
+    const productsToCreate = [];
 
-    const products = Array.from({ length: PRODUCTS_TO_CREATE }).map(() => {
-      const { name: category, id: categoryId } = getRandomCategory(index);
-      const imageURL = getCategoryImage(category);
+    for (let i = 0; i < PRODUCTS_TO_CREATE; i++) {
+      const { name: category, id: categoryId } = getRandomCategory(
+        index,
+        categories
+      );
 
-      return prisma.product.create({
-        data: {
-          name: faker.commerce.product(),
-          price: parseFloat(faker.commerce.price()),
-          quantity: faker.datatype.number({
-            min: PRODUCT_QUANTITY_MIN,
-            max: PRODUCT_QUANTITY_MAX,
-          }),
-          description: faker.commerce.productDescription(),
-          companyId: company.id,
-          categories: { connect: { id: categoryId } },
-          images: { create: { url: imageURL } },
-          createdAt: getRandomDate(),
-        },
+      // generate random amount of images for product
+      const imageAmount = faker.datatype.number({
+        min: PRODUCT_IMAGE_MIN,
+        max: PRODUCT_IMAGE_MAX,
       });
-    });
-    await prisma.$transaction(products);
+      const images: { url: string }[] = [];
+
+      for (let i = 0; i < imageAmount; i++) {
+        images.push({
+          url: faker.image.imageUrl(undefined, undefined, category),
+        });
+      }
+
+      productsToCreate.push(
+        prisma.product.create({
+          data: {
+            name: faker.commerce.productName(),
+            price: parseFloat(faker.commerce.price()),
+            quantity: faker.datatype.number({
+              min: PRODUCT_QUANTITY_MIN,
+              max: PRODUCT_QUANTITY_MAX,
+            }),
+            description: faker.commerce.productDescription(),
+            companyId: company.id,
+            categories: { connect: { id: categoryId } },
+            createdAt: getRandomDate(),
+            images: { create: images },
+          },
+        })
+      );
+    }
+
+    await prisma.$transaction(productsToCreate);
   }
 
   // create users
   console.log("creating users...");
 
-  const userData = Array.from({ length: USERS_TO_CREATE }).map(() => ({
-    email: faker.internet.email(),
-    name: faker.name.fullName(),
-    image: faker.internet.avatar(),
-  }));
+  for (let i = 0; i < USERS_TO_CREATE; i++) {
+    const name = faker.name.fullName();
+    const state = faker.address.state();
 
-  await prisma.user.createMany({ data: userData });
+    await prisma.user.create({
+      data: {
+        email: faker.internet.email(),
+        name,
+        image: faker.internet.avatar(),
+        addresses: {
+          create: {
+            addressee: name,
+            streetAddress: faker.address.streetAddress(),
+            city: faker.address.city(),
+            state,
+            zipCode: faker.address.zipCodeByState(state),
+            country: faker.address.country(),
+          },
+        },
+      },
+    });
+  }
 
   const users = await prisma.user.findMany({ select: { id: true } });
+  const products = await prisma.product.findMany();
+
+  // create lists & orders for users
+  console.log("creating lists & orders for users");
+
+  const lists = [];
+  const orders = [];
+
+  for (const user of users) {
+    const userIndex = users.indexOf(user);
+
+    // generate lists
+    for (let i = 0; i < LISTS_TO_CREATE; i++) {
+      const totalProductsPerList = faker.datatype.number({
+        min: PRODUCT_LIST_MIN,
+        max: PRODUCT_LIST_MAX,
+      });
+
+      const listProducts: { id: string }[] = [];
+
+      for (let i = 0; i < totalProductsPerList; i++) {
+        listProducts.push({ id: getRandomProduct(i, products).id });
+      }
+
+      lists.push(
+        prisma.list.create({
+          data: {
+            name: `${faker.commerce.department()} list`,
+            isPrivate: userIndex % 2 === 0,
+            description:
+              userIndex % 2 === 0
+                ? faker.commerce.productDescription()
+                : undefined,
+            products: { connect: listProducts },
+            userId: user.id,
+          },
+        })
+      );
+    }
+
+    // generate orders
+    for (let i = 0; i < ORDERS_TO_CREATE; i++) {
+      const totalProductsPerOrder = faker.datatype.number({
+        min: PRODUCT_ORDER_MIN,
+        max: PRODUCT_ORDER_MAX,
+      });
+
+      const orderProducts: { id: string }[] = [];
+      for (let i = 0; i < totalProductsPerOrder; i++) {
+        orderProducts.push({ id: getRandomProduct(i, products).id });
+      }
+
+      const date = getRandomDate();
+      const randomProduct = getRandomProduct(userIndex, products);
+
+      orders.push(
+        prisma.order.create({
+          data: {
+            deliveredAt: getRandomDate(date),
+            createdAt: date,
+            products: {
+              create: {
+                priceAtPurchase: randomProduct.price,
+                quantity: faker.datatype.number({ min: 1, max: 10 }),
+                productId: randomProduct.id,
+              },
+            },
+            userId: user.id,
+          },
+        })
+      );
+    }
+  }
 
   // create product reviews
   console.log("creating product reviews...");
@@ -157,13 +288,11 @@ async function run() {
     return user.id;
   }
 
-  const products = await prisma.product.findMany({ select: { id: true } });
-
   for (const product of products) {
-    const randomAmountOfReviews = Math.floor(
-      Math.random() * (REVIEWS_TO_CREATE_MAX - REVIEWS_TO_CREATE_MIN) +
-        REVIEWS_TO_CREATE_MIN
-    );
+    const randomAmountOfReviews = faker.datatype.number({
+      min: REVIEWS_TO_CREATE_MIN,
+      max: REVIEWS_TO_CREATE_MAX,
+    });
 
     for (let i = 0; i < randomAmountOfReviews; i++) {
       const userId = await getRandomUser(i);
