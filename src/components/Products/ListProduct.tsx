@@ -45,6 +45,15 @@ function ListProduct({
           ${price}
         </Link>
       </div>
+      <div>
+        <button type="button" onClick={() => "add to cart"}>
+          Add to cart
+        </button>
+        {/**
+         * @TODO After adding to cart "view cart" link needs to be visible
+         * @TODO if in cart be able to adjust quantity
+         */}
+      </div>
     </div>
   );
 }
