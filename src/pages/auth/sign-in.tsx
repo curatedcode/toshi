@@ -6,8 +6,9 @@ import { getProviders, signIn } from "next-auth/react";
 import Link from "next/link";
 import { type FormEvent, useState, type ChangeEvent } from "react";
 import { z } from "zod";
-import SimpleLayout from "~/components/SimpleSimple";
+import SimpleLayout from "~/components/SimpleLayout";
 import { getServerAuthSession } from "~/server/auth";
+import { api } from "~/utils/api";
 
 function SignInPage({
   providers,
@@ -18,6 +19,10 @@ function SignInPage({
 
   const [password, setPassword] = useState("");
   const [showPasswordError, setShowPasswordError] = useState(false);
+
+  const [showIncorrectInfoError, setShowIncorrectInfoError] = useState(false);
+
+  const { mutateAsync: apiSignIn } = api.user.signIn.useMutation();
 
   async function handleSignIn(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -49,6 +54,13 @@ function SignInPage({
 
     if (!emailSuccess || !emailNotBlank || !passwordSuccess) return;
 
+    const user = await apiSignIn({ email, password });
+
+    if (!user) {
+      setShowIncorrectInfoError(true);
+      return;
+    }
+
     await signIn("credentials", {
       email,
       password,
@@ -66,10 +78,12 @@ function SignInPage({
     switch (type) {
       case "email":
         setShowEmailError(false);
+        setShowIncorrectInfoError(false);
         setEmail((prev) => (text.length <= 64 ? text : prev));
         break;
       case "pass":
         setShowPasswordError(false);
+        setShowIncorrectInfoError(false);
         setPassword((prev) => (text.length <= 1024 ? text : prev));
         break;
     }
@@ -92,6 +106,18 @@ function SignInPage({
               onSubmit={(e) => void handleSignIn(e)}
               className="flex flex-col gap-2"
             >
+              <div
+                role="alert"
+                className={`ml-1 flex gap-1 text-sm text-red-500 ${
+                  showIncorrectInfoError ? "" : "hidden"
+                }`}
+              >
+                <span className="-mt-1 text-lg font-semibold">!</span>
+                <span>
+                  The email and password you entered did not our records. Please
+                  try again.
+                </span>
+              </div>
               <div className="flex flex-col">
                 <label htmlFor="email" className="ml-1 font-semibold">
                   Email
