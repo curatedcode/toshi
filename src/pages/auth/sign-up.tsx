@@ -3,7 +3,7 @@ import { signIn } from "next-auth/react";
 import { type FormEvent, useState, type ChangeEvent } from "react";
 import { z } from "zod";
 import InternalLink from "~/components/InternalLink";
-import SimpleLayout from "~/components/SimpleSimple";
+import SimpleLayout from "~/components/SimpleLayout";
 import { api } from "~/utils/api";
 
 const SignUpPage: NextPage = () => {
