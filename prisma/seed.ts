@@ -4,20 +4,8 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-/**
- * This will generate a blank test user for you to sign in with
- * If you don't want this set createATestUser to false
- */
+// If you don't want a test user, set this to false
 const doCreateTestUser = true;
-
-async function createTestUser() {
-  const hash = await bcrypt.hash("superSecretPassword123", 10);
-  const name = "John Doe";
-  const email = "johnnyBoy@gmail.com";
-  const image = faker.internet.avatar();
-
-  await prisma.user.create({ data: { name, email, image, hash } });
-}
 
 // total companies to create
 const COMPANIES_TO_CREATE = 50;
@@ -325,9 +313,93 @@ async function run() {
     }
   }
 
+  // create test user
   if (doCreateTestUser) {
     console.log("creating test user...");
-    await createTestUser();
+
+    await (async function () {
+      const user = await prisma.user.create({
+        data: {
+          name: "John Doe",
+          email: "johnnyBoy@gmail.com",
+          image: faker.internet.avatar(),
+          hash: await bcrypt.hash("superSecretPassword123", 10),
+          addresses: {
+            create: {
+              streetAddress: faker.address.streetAddress(),
+              city: faker.address.city(),
+              state: faker.address.state(),
+              zipCode: faker.address.zipCode(),
+              country: faker.address.country(),
+              addressee: "John Doe",
+            },
+          },
+        },
+      });
+
+      const listsToCreate = [];
+      for (let i = 0; i < LISTS_TO_CREATE; i++) {
+        const totalProductsPerList = faker.datatype.number({
+          min: PRODUCT_LIST_MIN,
+          max: PRODUCT_LIST_MAX,
+        });
+
+        const listProducts: { id: string }[] = [];
+
+        for (let i = 0; i < totalProductsPerList; i++) {
+          listProducts.push({ id: getRandomProduct(i, products).id });
+        }
+
+        listsToCreate.push(
+          prisma.list.create({
+            data: {
+              name: `${faker.commerce.department()} list`,
+              isPrivate: i % 2 === 0,
+              description:
+                i % 2 === 0 ? faker.commerce.productDescription() : undefined,
+              products: { connect: listProducts },
+              userId: user.id,
+            },
+          })
+        );
+      }
+
+      const ordersToCreate = [];
+      for (let i = 0; i < ORDERS_TO_CREATE; i++) {
+        const totalProductsPerOrder = faker.datatype.number({
+          min: PRODUCT_ORDER_MIN,
+          max: PRODUCT_ORDER_MAX,
+        });
+
+        const orderProducts: { id: string }[] = [];
+        for (let i = 0; i < totalProductsPerOrder; i++) {
+          orderProducts.push({ id: getRandomProduct(i, products).id });
+        }
+
+        const date = getRandomDate();
+        const randomProduct = getRandomProduct(i, products);
+
+        ordersToCreate.push(
+          prisma.order.create({
+            data: {
+              deliveredAt: getRandomDate(date),
+              createdAt: date,
+              products: {
+                create: {
+                  priceAtPurchase: randomProduct.price,
+                  quantity: faker.datatype.number({ min: 1, max: 10 }),
+                  productId: randomProduct.id,
+                },
+              },
+              userId: user.id,
+            },
+          })
+        );
+      }
+
+      await prisma.$transaction(listsToCreate);
+      await prisma.$transaction(ordersToCreate);
+    })();
   }
 }
 
