@@ -281,6 +281,9 @@ async function run() {
     }
   }
 
+  await prisma.$transaction(lists);
+  await prisma.$transaction(orders);
+
   // create product reviews
   console.log("creating product reviews...");
 
