@@ -38,7 +38,7 @@ const PRODUCT_LIST_MAX = 10;
 const ORDERS_TO_CREATE = 5;
 
 // products min/max per order
-const PRODUCT_ORDER_MIN = 0;
+const PRODUCT_ORDER_MIN = 1;
 const PRODUCT_ORDER_MAX = 10;
 
 /**
@@ -213,7 +213,6 @@ async function run() {
   console.log("creating lists & orders for users");
 
   const lists = [];
-  const orders = [];
 
   for (const user of users) {
     const userIndex = users.indexOf(user);
@@ -254,35 +253,46 @@ async function run() {
         max: PRODUCT_ORDER_MAX,
       });
 
-      const orderProducts: { id: string }[] = [];
+      const randomProducts: Product[] = [];
       for (let i = 0; i < totalProductsPerOrder; i++) {
-        orderProducts.push({ id: getRandomProduct(i, products).id });
+        randomProducts.push(getRandomProduct(i, products));
       }
 
       const date = getRandomDate();
-      const randomProduct = getRandomProduct(userIndex, products);
 
-      orders.push(
-        prisma.order.create({
-          data: {
-            deliveredAt: getRandomDate(date),
-            createdAt: date,
-            products: {
-              create: {
-                priceAtPurchase: randomProduct.price,
-                quantity: faker.datatype.number({ min: 1, max: 10 }),
-                productId: randomProduct.id,
-              },
-            },
-            userId: user.id,
-          },
-        })
+      const allProductPrices = randomProducts.map((product) => product.price);
+      const orderTotal = allProductPrices.reduce(
+        (total, price) => (total += price)
       );
+
+      const order = await prisma.order.create({
+        data: {
+          deliveredAt: getRandomDate(date),
+          createdAt: date,
+          userId: user.id,
+          total: orderTotal,
+        },
+      });
+
+      const allOrderedProducts = [];
+      for (const product of randomProducts) {
+        allOrderedProducts.push(
+          prisma.orderedProduct.create({
+            data: {
+              priceAtPurchase: product.price,
+              quantity: faker.datatype.number({ min: 1, max: 10 }),
+              productId: product.id,
+              orderId: order.id,
+            },
+          })
+        );
+      }
+
+      await prisma.$transaction(allOrderedProducts);
     }
   }
 
   await prisma.$transaction(lists);
-  await prisma.$transaction(orders);
 
   // create product reviews
   console.log("creating product reviews...");
@@ -367,41 +377,51 @@ async function run() {
         );
       }
 
-      const ordersToCreate = [];
       for (let i = 0; i < ORDERS_TO_CREATE; i++) {
         const totalProductsPerOrder = faker.datatype.number({
           min: PRODUCT_ORDER_MIN,
           max: PRODUCT_ORDER_MAX,
         });
 
-        const orderProducts: { id: string }[] = [];
+        const randomProducts: Product[] = [];
         for (let i = 0; i < totalProductsPerOrder; i++) {
-          orderProducts.push({ id: getRandomProduct(i, products).id });
+          randomProducts.push(getRandomProduct(i, products));
         }
 
         const date = getRandomDate();
-        const randomProduct = getRandomProduct(i, products);
 
-        ordersToCreate.push(
-          prisma.order.create({
-            data: {
-              deliveredAt: getRandomDate(date),
-              createdAt: date,
-              products: {
-                create: {
-                  priceAtPurchase: randomProduct.price,
-                  quantity: faker.datatype.number({ min: 1, max: 10 }),
-                  productId: randomProduct.id,
-                },
-              },
-              userId: user.id,
-            },
-          })
+        const allProductPrices = randomProducts.map((product) => product.price);
+        const orderTotal = allProductPrices.reduce(
+          (total, price) => (total += price)
         );
+
+        const order = await prisma.order.create({
+          data: {
+            deliveredAt: getRandomDate(date),
+            createdAt: date,
+            userId: user.id,
+            total: orderTotal,
+          },
+        });
+
+        const allOrderedProducts = [];
+        for (const product of randomProducts) {
+          allOrderedProducts.push(
+            prisma.orderedProduct.create({
+              data: {
+                priceAtPurchase: product.price,
+                quantity: faker.datatype.number({ min: 1, max: 10 }),
+                productId: product.id,
+                orderId: order.id,
+              },
+            })
+          );
+        }
+
+        await prisma.$transaction(allOrderedProducts);
       }
 
       await prisma.$transaction(listsToCreate);
-      await prisma.$transaction(ordersToCreate);
     })();
   }
 }

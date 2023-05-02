@@ -102,6 +102,7 @@ model Order {
     userId      String
     user        User                @relation(fields: [userId], references: [id])
     products    OrderedProduct[]
+    total       Float
     createdAt   DateTime            @default(now())
     deliveredAt DateTime  
 
