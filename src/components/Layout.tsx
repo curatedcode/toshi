@@ -75,7 +75,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
         <Link
           href={"/"}
           aria-label="Home"
-          className="md: -mt-0.5 flex w-fit items-center md:order-1"
+          className="flex w-fit items-center md:order-1"
         >
           <LogoWithText />
         </Link>

@@ -1,7 +1,20 @@
 import { type Category, PrismaClient, type Product } from "@prisma/client";
 import { faker } from "@faker-js/faker";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
+
+/**
+ * This will generate a blank test user for you to sign in with
+ */
+async function createTestUser() {
+  const hash = await bcrypt.hash("superSecretPassword123", 10);
+  const name = "John Doe";
+  const email = "johnnyBoy@gmail.com";
+  const image = faker.internet.avatar();
+
+  await prisma.user.create({ data: { name, email, image, hash } });
+}
 
 // total companies to create
 const COMPANIES_TO_CREATE = 50;
@@ -308,6 +321,9 @@ async function run() {
       });
     }
   }
+
+  console.log("creating test user...");
+  await createTestUser();
 }
 
 run().catch((err) => {

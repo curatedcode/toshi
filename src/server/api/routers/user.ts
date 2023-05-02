@@ -1,5 +1,11 @@
+import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
+import bcrypt from "bcryptjs";
 
 const userRouter = createTRPCRouter({
   getCurrentProfile: protectedProcedure.query(async ({ ctx }) => {
@@ -94,6 +100,31 @@ const userRouter = createTRPCRouter({
 
     return { ...userData, lists: listsWithRatings, orders: ordersWithRatings };
   }),
+
+  create: publicProcedure
+    .input(z.object({ email: z.string().email(), password: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { email, password } = input;
+
+      const isEmailAlreadyUsed = await prisma.user.findUnique({
+        where: { email },
+        select: { id: true },
+      });
+
+      if (isEmailAlreadyUsed) return null;
+
+      const hash = await bcrypt.hash(password, 10);
+
+      const newUser = await prisma.user.create({ data: { email, hash } });
+
+      return {
+        id: newUser.id,
+        name: newUser.name,
+        image: newUser.image,
+        email: newUser.email,
+      };
+    }),
 });
 
 export default userRouter;

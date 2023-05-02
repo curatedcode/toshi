@@ -50,6 +50,8 @@ model User {
     name          String?
     email         String?   @unique
     emailVerified DateTime?
+    phoneNumber   String?
+    hash          String?
     image         String?
     addresses     Address[]
     accounts      Account[]
