@@ -6,7 +6,10 @@ const prisma = new PrismaClient();
 
 /**
  * This will generate a blank test user for you to sign in with
+ * If you don't want this set createATestUser to false
  */
+const doCreateTestUser = true;
+
 async function createTestUser() {
   const hash = await bcrypt.hash("superSecretPassword123", 10);
   const name = "John Doe";
@@ -322,8 +325,10 @@ async function run() {
     }
   }
 
-  console.log("creating test user...");
-  await createTestUser();
+  if (doCreateTestUser) {
+    console.log("creating test user...");
+    await createTestUser();
+  }
 }
 
 run().catch((err) => {
