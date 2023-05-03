@@ -47,8 +47,9 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    firstName     String
+    lastName      String
+    email         String    @unique
     emailVerified DateTime?
     phoneNumber   String?
     hash          String?
@@ -77,6 +78,7 @@ model Address {
     state           String
     zipCode         String
     country         String
+    isPrimary       Boolean?
     userId          String
     user            User      @relation(fields: [userId], references: [id])
 

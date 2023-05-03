@@ -190,7 +190,8 @@ async function run() {
     await prisma.user.create({
       data: {
         email: faker.internet.email(),
-        name,
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
         image: faker.internet.avatar(),
         addresses: {
           create: {
@@ -333,7 +334,8 @@ async function run() {
     await (async function () {
       const user = await prisma.user.create({
         data: {
-          name: "John Doe",
+          firstName: "John",
+          lastName: "Doe",
           email: "johnnyBoy@gmail.com",
           image: faker.internet.avatar(),
           hash: await bcrypt.hash("superSecretPassword123", 10),
@@ -345,6 +347,7 @@ async function run() {
               zipCode: faker.address.zipCode(),
               country: faker.address.country(),
               addressee: "John Doe",
+              isPrimary: true,
             },
           },
         },
