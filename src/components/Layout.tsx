@@ -90,8 +90,10 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
                 className="flex items-center gap-1"
               >
                 <UserIcon className="w-7" />
-                <span className="hidden whitespace-nowrap md:block">
-                  {status === "authenticated" ? session.user.name : "Sign In"}
+                <span className="hidden max-w-[96px] overflow-hidden text-ellipsis whitespace-nowrap md:block">
+                  {status === "authenticated"
+                    ? session.user.name?.split(" ")[0]
+                    : "Sign In"}
                 </span>
               </Link>
             }
