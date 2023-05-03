@@ -8,8 +8,6 @@ import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
 import OrderedProduct from "~/components/Products/OrderedProduct";
 import Product from "~/components/Products/Product";
-import Carousel from "~/components/Sliders/Carousel";
-import Slider from "~/components/Sliders/Slider";
 import { api } from "~/utils/api";
 
 const AccountPage: NextPage = () => {
