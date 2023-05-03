@@ -25,6 +25,9 @@ const userRouter = createTRPCRouter({
           select: {
             id: true,
             name: true,
+            createdAt: true,
+            updatedAt: true,
+            isPrivate: true,
             products: {
               select: {
                 id: true,
@@ -33,14 +36,18 @@ const userRouter = createTRPCRouter({
                 images: { take: 1 },
                 reviews: { select: { rating: true } },
               },
+              take: 5,
             },
           },
           take: 5,
+          orderBy: { updatedAt: "desc" },
         },
         orders: {
           select: {
             id: true,
             createdAt: true,
+            deliveredAt: true,
+            total: true,
             products: {
               select: {
                 product: {
@@ -49,13 +56,14 @@ const userRouter = createTRPCRouter({
                     name: true,
                     price: true,
                     images: { take: 1 },
-                    reviews: { select: { rating: true } },
+                    company: { select: { id: true, name: true } },
                   },
                 },
               },
             },
           },
           take: 5,
+          orderBy: { createdAt: "desc" },
         },
       },
     });
@@ -77,28 +85,17 @@ const userRouter = createTRPCRouter({
       };
     });
 
-    const ordersWithRatings = userData?.orders.map((order) => {
-      const { products } = order;
+    const orders = userData?.orders.map((order) => {
+      const products = order.products.map((product) => product.product);
 
-      const productsWithRatings = products.map((product) => {
-        const { product: realProduct } = product;
-
-        return {
-          ...realProduct,
-          reviews: {
-            rating: getProductRating(realProduct.reviews),
-            _count: realProduct.reviews.length,
-          },
-        };
-      });
-
-      return {
-        ...order,
-        products: productsWithRatings,
-      };
+      return { ...order, products };
     });
 
-    return { ...userData, lists: listsWithRatings, orders: ordersWithRatings };
+    return {
+      ...userData,
+      lists: listsWithRatings,
+      orders,
+    };
   }),
 
   create: publicProcedure

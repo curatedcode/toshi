@@ -1,7 +1,6 @@
 import type { OrderedProductProps } from "~/customTypes";
 import Image from "../Image";
 import InternalLink from "../InternalLink";
-import Link from "next/link";
 
 function OrderedProduct({
   product,
@@ -11,28 +10,45 @@ function OrderedProduct({
   const { id, name, price, images, company } = product;
 
   return (
-    <div className="flex justify-between">
-      <div className="grid auto-cols-min grid-cols-2">
-        <Image
-          src={images && images[0] && images[0].url}
-          alt={name}
-          height={imageHeight}
-          width={imageWidth}
-          className="row-span-full"
-        />
-        <p>{name}</p>
-        <div className="flex">
-          <span>Sold by:</span>
-          <InternalLink href={company.id}>{company.name}</InternalLink>
+    <div className="flex flex-col gap-2 md:flex-row">
+      <Image
+        src={images && images[0] && images[0].url}
+        alt={name}
+        height={imageHeight}
+        width={imageWidth}
+        className="w-full md:max-w-xs"
+      />
+      <div className="flex flex-col justify-between">
+        <div className="grid gap-1">
+          <InternalLink
+            href={`/products/${id}`}
+            className="line-clamp-2 text-xl"
+          >
+            {name}
+          </InternalLink>
+          <div className="flex gap-1">
+            <span className="whitespace-nowrap">Sold by:</span>
+            <InternalLink
+              href={`/companies/${company.id}`}
+              className="line-clamp-1"
+            >
+              {company.name}
+            </InternalLink>
+          </div>
+          <span className="text-toshi-red">${price}</span>
         </div>
-        <span className="text-toshi-red">${price}</span>
+        <div className="md:w-48">
+          <button
+            type="button"
+            onClick={() => {
+              null;
+            }}
+            className="mt-2 min-w-full rounded-md bg-neutral-200 px-4 py-1 transition-colors hover:bg-neutral-300 md:mt-0 md:w-fit"
+          >
+            Buy again
+          </button>
+        </div>
       </div>
-      <Link
-        href={`/product/${id}#reviews`}
-        className="rounded-md bg-web-white px-2 py-1"
-      >
-        Leave a review
-      </Link>
     </div>
   );
 }

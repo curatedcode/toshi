@@ -1,27 +1,42 @@
 import { type NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
 import Avatar from "~/components/Avatar";
+import getFormattedDate from "~/components/Fn/getFormattedDate";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
 import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
+import OrderedProduct from "~/components/Products/OrderedProduct";
 import Product from "~/components/Products/Product";
 import Carousel from "~/components/Sliders/Carousel";
 import Slider from "~/components/Sliders/Slider";
 import { api } from "~/utils/api";
 
 const AccountPage: NextPage = () => {
-  const { status, data: session } = useSession();
+  const { status } = useSession();
 
   const { data: user } = api.user.getCurrentProfile.useQuery();
 
-  const { data: recommended } = api.category.recommended.useQuery();
+  const AddressLine = () => {
+    if (!user) return null;
+    if (!user.addresses) return null;
+    if (!user.addresses[0]) return null;
+    const { streetAddress, city, state, zipCode, country } = user.addresses[0];
+
+    const address = `${streetAddress}, ${city} ${state}, ${zipCode}, ${country}`;
+    return (
+      <p className="max-w-[300px] overflow-hidden text-ellipsis md:whitespace-nowrap">
+        {address}
+      </p>
+    );
+  };
 
   if (status !== "authenticated")
     return (
       <Layout
         title="Your Account"
         description="Your account on Toshi | Make Shopping Yours"
-        className="flex flex-col items-center pt-12 text-lg"
+        className="flex flex-col items-center pt-16 text-lg"
       >
         <p>
           Please{" "}
@@ -47,30 +62,96 @@ const AccountPage: NextPage = () => {
     <Layout
       title="Your Account"
       description="Your account on Toshi | Make Shopping Yours"
+      className="flex flex-col gap-6 md:gap-16"
     >
-      <section className="grid grid-rows-2">
-        <Avatar
-          alt="Your profile picture"
-          src={user?.image}
-          className="row-span-full"
-        />
-        <span>{user?.name ?? session.user.name}</span>
-        <p>{user?.address}</p>
+      <section className="mt-4 flex w-fit flex-col place-items-center gap-2 self-center text-center md:flex-row md:place-items-start md:text-start">
+        <Avatar alt="Your profile picture" src={user?.image} size="lg" />
+        <div>
+          <span className="text-2xl font-semibold">{user?.name}</span>
+          {user?.addresses ? (
+            <AddressLine />
+          ) : (
+            <InternalLink href="/account/settings#addresses">
+              Add an address
+            </InternalLink>
+          )}
+          <InternalLink href={"/account/settings"} className="w-fit">
+            Edit account settings
+          </InternalLink>
+        </div>
       </section>
       <section id="orders">
-        <h1>Order Again</h1>
+        <h1 className="mb-3 text-3xl md:text-4xl">Your Orders</h1>
         {user?.orders ? (
-          <div className="line-clamp-2">
+          <div className="grid gap-8 md:gap-16">
             {user.orders.map((order) => {
-              const { id, products, createdAt } = order;
+              const { id, products, createdAt, total, deliveredAt } = order;
+              const orderLink = `/account/orders/${id}`;
 
-              const orderProducts = products.map((product) => (
-                <Product key={product.id} product={product} />
-              ));
               return (
-                <div key={id} className="grid auto-rows-min">
-                  <h2>{getRelativeTime(createdAt)}</h2>
-                  <Slider slides={orderProducts} />
+                <div
+                  key={id}
+                  className="flex flex-col gap-4 rounded-md border border-neutral-300 pb-4"
+                >
+                  <div className="flex flex-col gap-2 rounded-t-md border-b border-b-neutral-300 bg-neutral-100 px-4 py-3 text-neutral-600 md:flex-row md:gap-16">
+                    <div className="flex items-start md:flex-col">
+                      <h2 className="md:text-sm">ORDER PLACED</h2>
+                      <span className="mr-2 md:hidden">:</span>
+                      <span>{getFormattedDate(createdAt)}</span>
+                    </div>
+                    <div className="flex items-start md:flex-col">
+                      <h2 className="md:text-sm">DELIVERED ON</h2>
+                      <span className="mr-2 md:hidden">:</span>
+                      <span>{getFormattedDate(deliveredAt)}</span>
+                    </div>
+                    <div className="flex items-start md:flex-col">
+                      <h2 className="md:text-sm">TOTAL</h2>
+                      <span className="mr-2 md:hidden">:</span>
+                      <span>${total}</span>
+                    </div>
+                    <div className="flex flex-col items-start md:ml-auto">
+                      <div className="flex">
+                        <h2 className="md:text-sm">ORDER #</h2>
+                        <span className="md:hidden">:</span>
+                      </div>
+                      <span>{id.toUpperCase()}</span>
+                    </div>
+                    <div className="flex w-full gap-2 md:hidden">
+                      <Link
+                        href={orderLink}
+                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                      >
+                        Order details
+                      </Link>
+                      <Link
+                        href={`${orderLink}#invoice`}
+                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                      >
+                        View invoice
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-between px-4 md:flex-row">
+                    <div className="order-last hidden w-48 flex-col gap-2 md:flex">
+                      <Link
+                        href={orderLink}
+                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                      >
+                        Order details
+                      </Link>
+                      <Link
+                        href={`${orderLink}#invoice`}
+                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                      >
+                        View invoice
+                      </Link>
+                    </div>
+                    <div className="flex flex-col gap-8 md:gap-4">
+                      {products.map((product) => (
+                        <OrderedProduct key={product.id} product={product} />
+                      ))}
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -78,31 +159,92 @@ const AccountPage: NextPage = () => {
         ) : (
           <p>
             You have no orders.{" "}
-            <InternalLink href="/">continue shopping</InternalLink>
+            <InternalLink href="/">Continue shopping</InternalLink>
           </p>
         )}
       </section>
-      <section id="recommended">
-        <h1>Our recommendations</h1>
-        {recommended && (
-          <div className="line-clamp-2">
-            {recommended.map((product) => (
-              <Product key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-      </section>
       <section id="lists">
-        <div className="flex">
-          <h1>Your Lists</h1>
-          <InternalLink href="create-list">Create a list</InternalLink>
-        </div>
-        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <h1 className="mb-3 text-3xl md:text-4xl">Your Lists</h1>
+        <div className="grid gap-8 md:gap-16">
           {user?.lists?.map((list) => {
-            const products = list.products.map((product) => (
-              <Product key={product.id} product={product} />
-            ));
-            return <Carousel key={list.id} slides={products} />;
+            const { id, name, products, isPrivate, createdAt, updatedAt } =
+              list;
+            const listLink = `/account/lists/${id}`;
+
+            return (
+              <div
+                key={id}
+                className={`flex flex-col gap-4 rounded-md border border-neutral-300 ${
+                  products.length > 4 ? "" : "pb-4"
+                }`}
+              >
+                <div className="flex flex-col gap-2 rounded-t-md border-b border-b-neutral-300 bg-neutral-100 px-4 py-3 text-neutral-600 md:flex-row md:gap-16">
+                  <div className="flex items-start md:flex-col">
+                    <h2 className="md:text-sm">NAME</h2>
+                    <span className="mr-2 md:hidden">:</span>
+                    <span>{`${name} ${isPrivate ? "" : "(Public)"}`}</span>
+                  </div>
+                  <div className="flex items-start md:flex-col">
+                    <h2 className="md:text-sm">CREATED ON</h2>
+                    <span className="mr-2 md:hidden">:</span>
+                    <span>{getFormattedDate(createdAt)}</span>
+                  </div>
+                  <div className="flex items-start md:flex-col">
+                    <h2 className="md:text-sm">LAST UPDATED</h2>
+                    <span className="mr-2 md:hidden">:</span>
+                    <span>{getRelativeTime(updatedAt)}</span>
+                  </div>
+                  <div className="flex items-start md:ml-auto md:flex-col">
+                    <h2 className="md:text-sm">PRODUCTS</h2>
+                    <span className="mr-2 md:hidden">:</span>
+                    <span>{products.length}</span>
+                  </div>
+                  <div className="flex w-full gap-2 md:hidden">
+                    <Link
+                      href={listLink}
+                      className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                    >
+                      View list
+                    </Link>
+                    <Link
+                      href={`${listLink}?edit=true`}
+                      className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                    >
+                      Edit list
+                    </Link>
+                  </div>
+                </div>
+                <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
+                  <div className="order-last hidden w-48 flex-col gap-2 md:flex">
+                    <Link
+                      href={listLink}
+                      className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                    >
+                      View list
+                    </Link>
+                    <Link
+                      href={`${listLink}?edit=true`}
+                      className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                    >
+                      Edit list
+                    </Link>
+                  </div>
+                  <div className="flex flex-col gap-4 md:flex-row">
+                    {products.map((product, index) => {
+                      if (index >= 4) return null;
+                      return <Product key={product.id} product={product} />;
+                    })}
+                  </div>
+                </div>
+                {products.length > 4 && (
+                  <div className="flex justify-center rounded-b-md border-b border-b-neutral-300 bg-neutral-100 px-4 py-3 text-neutral-600">
+                    <InternalLink href={listLink}>
+                      View all items...
+                    </InternalLink>
+                  </div>
+                )}
+              </div>
+            );
           })}
         </div>
       </section>
