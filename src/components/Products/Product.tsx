@@ -12,7 +12,7 @@ function Product({
   const { id, name, price, images, reviews } = product;
   const { rating, _count } = reviews;
 
-  const link = `/product/${id}`;
+  const link = `/products/${id}`;
 
   const reviewTitle = rating ? `${rating} out of 5 stars` : "No reviews";
 
