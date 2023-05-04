@@ -276,8 +276,8 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
         </div>
       </div>
       <button
-        type={isLoading ? "button" : "submit"}
-        aria-disabled={isLoading}
+        type="submit"
+        disabled={isLoading}
         className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
       >
         {isLoading ? "Saving" : "Save"}
@@ -344,8 +344,8 @@ function EmailForm({
         </div>
       </div>
       <button
-        type={isLoading ? "button" : "submit"}
-        aria-disabled={isLoading}
+        type="submit"
+        disabled={isLoading}
         className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
       >
         {isLoading ? "Saving" : "Save"}
@@ -373,6 +373,7 @@ function PhoneNumberForm({
     handleSubmit,
     formState: { errors },
     getValues,
+    reset,
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
   const { mutate, isLoading } = api.user.updatePhoneNumber.useMutation({
@@ -412,8 +413,8 @@ function PhoneNumberForm({
         </div>
       </div>
       <button
-        type={isLoading ? "button" : "submit"}
-        aria-disabled={isLoading}
+        type="submit"
+        disabled={isLoading}
         className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
       >
         {isLoading ? "Saving" : "Save"}
@@ -545,8 +546,8 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
         </div>
       </div>
       <button
-        type={isLoading ? "button" : "submit"}
-        aria-disabled={isLoading}
+        type="submit"
+        disabled={isLoading}
         className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
       >
         {isLoading ? "Saving" : "Save"}
@@ -723,8 +724,8 @@ function AddressForm({
         </div>
       </div>
       <button
-        type={isLoading ? "button" : "submit"}
-        aria-disabled={isLoading}
+        type="submit"
+        disabled={isLoading}
         className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
       >
         {isLoading ? "Saving" : "Save"}
