@@ -1,9 +1,5 @@
 import { type GetServerSidePropsContext } from "next";
-import {
-  getServerSession,
-  type NextAuthOptions,
-  type DefaultSession,
-} from "next-auth";
+import { getServerSession, type NextAuthOptions } from "next-auth";
 import { prisma } from "~/server/db";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -15,21 +11,24 @@ import bcrypt from "bcryptjs";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 declare module "next-auth" {
-  interface Session extends DefaultSession {
+  interface Session {
     user: {
       id: string;
       firstName: string;
       lastName: string;
       name: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"];
+      email: string;
+      image: string | null | undefined;
+    };
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    id: string;
+    firstName: string;
+    lastName: string;
+    name: string;
+    email: string;
+    image: string | null | undefined;
+  }
 }
 
 /**
@@ -45,16 +44,22 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.email = user.email;
         token.image = user.image;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
       }
       return token;
     },
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: token.id,
-      },
-    }),
+    session: ({ session, token }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+          firstName: token.firstName,
+          lastName: token.lastName,
+        },
+      };
+    },
   },
   providers: [
     Credentials({
