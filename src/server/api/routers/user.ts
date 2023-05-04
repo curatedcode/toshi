@@ -6,6 +6,22 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import bcrypt from "bcryptjs";
+import {
+  max_city_char,
+  max_country_char,
+  max_email_char,
+  max_firstName_char,
+  max_lastName_char,
+  max_password_char,
+  max_phoneNumber_char,
+  max_state_char,
+  max_streetAddress_char,
+  max_zipCode_char,
+  min_password_char,
+  min_zipCode_char,
+  phone_regex,
+  zipCode_regex,
+} from "~/customVariables";
 
 const userRouter = createTRPCRouter({
   fullName: protectedProcedure.query(async ({ ctx }) => {
@@ -119,10 +135,10 @@ const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        email: z.string().min(1).max(64).email(),
-        password: z.string().min(8).max(1024),
-        firstName: z.string().min(1).max(25),
-        lastName: z.string().min(1).max(25),
+        email: z.string().min(1).max(max_email_char).email(),
+        password: z.string().min(min_password_char).max(max_password_char),
+        firstName: z.string().min(1).max(max_firstName_char),
+        lastName: z.string().min(1).max(max_lastName_char),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -180,8 +196,8 @@ const userRouter = createTRPCRouter({
   updateName: protectedProcedure
     .input(
       z.object({
-        firstName: z.string().min(1).max(25),
-        lastName: z.string().min(1).max(25),
+        firstName: z.string().min(1).max(max_firstName_char),
+        lastName: z.string().min(1).max(max_lastName_char),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -197,7 +213,7 @@ const userRouter = createTRPCRouter({
     }),
 
   updateEmail: protectedProcedure
-    .input(z.object({ email: z.string().min(1).max(64).email() }))
+    .input(z.object({ email: z.string().min(1).max(max_email_char).email() }))
     .mutation(async ({ ctx, input }) => {
       const { prisma, session } = ctx;
       const { email } = input;
@@ -213,9 +229,7 @@ const userRouter = createTRPCRouter({
   updatePhoneNumber: protectedProcedure
     .input(
       z.object({
-        phoneNumber: z
-          .string()
-          .regex(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im),
+        phoneNumber: z.string().max(max_phoneNumber_char).regex(phone_regex),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -233,8 +247,11 @@ const userRouter = createTRPCRouter({
   updatePassword: protectedProcedure
     .input(
       z.object({
-        password: z.string().min(8).max(1024),
-        currentPassword: z.string().min(8).max(1024),
+        password: z.string().min(min_password_char).max(max_password_char),
+        currentPassword: z
+          .string()
+          .min(min_password_char)
+          .max(max_password_char),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -266,14 +283,15 @@ const userRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().nullish(),
-        streetAddress: z.string().min(1).max(100),
-        city: z.string().min(1).max(100),
-        state: z.string().min(1).max(100),
+        streetAddress: z.string().min(1).max(max_streetAddress_char),
+        city: z.string().min(1).max(max_city_char),
+        state: z.string().min(1).max(max_state_char),
         zipCode: z
           .string()
-          .min(5)
-          .regex(/(^\d{5}(?:[\s]?[-\s][\s]?\d{4})?$)/),
-        country: z.string().min(1).max(100),
+          .min(min_zipCode_char)
+          .max(max_zipCode_char)
+          .regex(zipCode_regex),
+        country: z.string().min(1).max(max_country_char),
       })
     )
     .mutation(async ({ ctx, input }) => {

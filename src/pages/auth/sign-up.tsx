@@ -8,6 +8,12 @@ import { z } from "zod";
 import InternalLink from "~/components/InternalLink";
 import SimpleLayout from "~/components/SimpleLayout";
 import TextInputField from "~/components/TextInputField";
+import {
+  max_email_char,
+  max_firstName_char,
+  max_lastName_char,
+  max_password_char,
+} from "~/customVariables";
 import { api } from "~/utils/api";
 
 const SignUpPage: NextPage = () => {
@@ -21,15 +27,17 @@ const SignUpPage: NextPage = () => {
     firstName: z
       .string()
       .min(1, { message: "Please enter your first name" })
-      .max(25),
+      .max(max_firstName_char),
     lastName: z
       .string()
       .min(1, { message: "Please enter your last name" })
-      .max(25),
+      .max(max_lastName_char),
     email: z
       .string()
       .min(1, { message: "Please enter your email" })
-      .max(64, { message: "Email must not be longer than 64 characters" })
+      .max(max_email_char, {
+        message: "Email must not be longer than 64 characters",
+      })
       .email({ message: "Email is incorrect or invalid" })
       .refine((val) => confirmEmail.current === val, {
         message: "Emails do not match",
@@ -37,7 +45,9 @@ const SignUpPage: NextPage = () => {
     confirmEmail: z
       .string()
       .min(1, { message: "Please enter your email" })
-      .max(64, { message: "Email must not be longer than 64 characters" })
+      .max(max_email_char, {
+        message: "Email must not be longer than 64 characters",
+      })
       .email({ message: "Email is incorrect or invalid" })
       .refine((val) => email.current === val, {
         message: "Emails do not match",
@@ -45,7 +55,7 @@ const SignUpPage: NextPage = () => {
     password: z
       .string()
       .min(8, { message: "Password must be longer than 8 characters" })
-      .max(1024, {
+      .max(max_password_char, {
         message: "Password must not be longer than 1024 characters",
       })
       .refine((val) => val === confirmPassword.current, {
@@ -54,7 +64,7 @@ const SignUpPage: NextPage = () => {
     confirmPassword: z
       .string()
       .min(8, { message: "Password must be longer than 8 characters" })
-      .max(1024, {
+      .max(max_password_char, {
         message: "Password must not be longer than 1024 characters",
       })
       .refine((val) => val === password.current, {
@@ -119,28 +129,28 @@ const SignUpPage: NextPage = () => {
           <TextInputField
             internalLabel="firstName"
             visibleLabel="First Name"
-            maxLength={25}
+            maxLength={max_firstName_char}
             error={firstNameError}
             {...register("firstName")}
           />
           <TextInputField
             internalLabel="lastName"
             visibleLabel="Last Name"
-            maxLength={25}
+            maxLength={max_lastName_char}
             error={lastNameError}
             {...register("lastName")}
           />
           <TextInputField
             internalLabel="email"
             visibleLabel="Email"
-            maxLength={64}
+            maxLength={max_email_char}
             error={emailError}
             {...register("email")}
           />
           <TextInputField
             internalLabel="confirmEmail"
             visibleLabel="Re-enter Email"
-            maxLength={64}
+            maxLength={max_email_char}
             error={confirmEmailError}
             {...register("confirmEmail")}
           />
@@ -148,7 +158,7 @@ const SignUpPage: NextPage = () => {
             internalLabel="password"
             visibleLabel="Password"
             type="password"
-            maxLength={1024}
+            maxLength={max_password_char}
             error={passwordError}
             {...register("password")}
           />
@@ -156,7 +166,7 @@ const SignUpPage: NextPage = () => {
             internalLabel="confirmPassword"
             visibleLabel="Re-enter password"
             type="password"
-            maxLength={1024}
+            maxLength={max_password_char}
             error={confirmPasswordError}
             {...register("confirmPassword")}
           />

@@ -7,17 +7,20 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SimpleLayout from "~/components/SimpleLayout";
 import TextInputField from "~/components/TextInputField";
+import { max_email_char, max_password_char } from "~/customVariables";
 
 const schema = z.object({
   email: z
     .string()
     .min(1, { message: "Please enter your email" })
-    .max(64, { message: "Email must not be longer than 64 characters" })
+    .max(max_email_char, {
+      message: "Email must not be longer than 64 characters",
+    })
     .email({ message: "Email is incorrect or invalid" }),
   password: z
     .string()
     .min(8, { message: "Password must be longer than 8 characters" })
-    .max(1024, {
+    .max(max_password_char, {
       message: "Password must not be longer than 1024 characters",
     }),
 });
@@ -64,7 +67,7 @@ function SignInPage() {
           <TextInputField
             internalLabel="email"
             visibleLabel="Email"
-            maxLength={64}
+            maxLength={max_email_char}
             error={emailError}
             {...register("email")}
           />
@@ -72,7 +75,7 @@ function SignInPage() {
             internalLabel="password"
             visibleLabel="Password"
             type="password"
-            maxLength={1024}
+            maxLength={max_password_char}
             error={passwordError}
             {...register("password")}
           />

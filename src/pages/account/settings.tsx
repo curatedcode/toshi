@@ -15,6 +15,22 @@ import type {
 } from "~/customTypes";
 import { useQueryClient } from "@tanstack/react-query";
 import TextInputField from "~/components/TextInputField";
+import {
+  max_city_char,
+  max_country_char,
+  max_email_char,
+  max_firstName_char,
+  max_lastName_char,
+  max_password_char,
+  max_phoneNumber_char,
+  max_state_char,
+  max_streetAddress_char,
+  max_zipCode_char,
+  min_password_char,
+  min_zipCode_char,
+  phone_regex,
+  zipCode_regex,
+} from "~/customVariables";
 
 const SettingsPage: NextPage = () => {
   const { data: settings, refetch, isLoading } = api.user.settings.useQuery();
@@ -226,11 +242,15 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
     firstName: z
       .string()
       .min(1, { message: "Please enter your first name" })
-      .max(25, { message: "First name must not be longer than 25 characters" }),
+      .max(max_firstName_char, {
+        message: "First name must not be longer than 25 characters",
+      }),
     lastName: z
       .string()
       .min(1, { message: "Please enter your last name" })
-      .max(25, { message: "Last name must not be longer than 25 characters" }),
+      .max(max_lastName_char, {
+        message: "Last name must not be longer than 25 characters",
+      }),
   });
 
   const {
@@ -274,7 +294,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
         <TextInputField
           internalLabel="firstName"
           visibleLabel="First Name"
-          maxLength={25}
+          maxLength={max_firstName_char}
           error={firstNameError}
           defaultValue={initialName?.firstName}
           {...register("firstName")}
@@ -282,7 +302,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
         <TextInputField
           internalLabel="lastName"
           visibleLabel="Last Name"
-          maxLength={25}
+          maxLength={max_lastName_char}
           error={lastNameError}
           defaultValue={initialName?.lastName}
           {...register("lastName")}
@@ -303,7 +323,9 @@ function EmailForm({
     email: z
       .string()
       .min(1, { message: "Please enter your email" })
-      .max(64, { message: "Email must not be longer than 64 characters" })
+      .max(max_email_char, {
+        message: "Email must not be longer than 64 characters",
+      })
       .email({ message: "Email is incorrect or invalid" }),
   });
 
@@ -340,7 +362,7 @@ function EmailForm({
         <TextInputField
           internalLabel="email"
           visibleLabel="Email"
-          maxLength={64}
+          maxLength={max_email_char}
           error={error}
           defaultValue={initialEmail}
           {...register("email")}
@@ -360,10 +382,10 @@ function PhoneNumberForm({
   const schema = z.object({
     phoneNumber: z
       .string()
-      .max(100, {
+      .max(max_phoneNumber_char, {
         message: "Phone number must not be longer than 100 characters",
       })
-      .regex(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im, {
+      .regex(phone_regex, {
         message: "Phone number is incorrect or invalid",
       }),
   });
@@ -401,7 +423,7 @@ function PhoneNumberForm({
         <TextInputField
           internalLabel="phoneNUmber"
           visibleLabel="Phone Number"
-          maxLength={100}
+          maxLength={max_phoneNumber_char}
           error={error}
           defaultValue={initialPhoneNumber}
           {...register("phoneNumber")}
@@ -419,14 +441,18 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
   const schema = z.object({
     currentPassword: z
       .string()
-      .min(8, { message: "Password must be longer than 8 characters" })
-      .max(1024, {
+      .min(min_password_char, {
+        message: "Password must be longer than 8 characters",
+      })
+      .max(max_password_char, {
         message: "Password must not be longer than 1024 characters",
       }),
     password: z
       .string()
-      .min(8, { message: "Password must be longer than 8 characters" })
-      .max(1024, {
+      .min(min_password_char, {
+        message: "Password must be longer than 8 characters",
+      })
+      .max(max_password_char, {
         message: "Password must not be longer than 1024 characters",
       })
       .refine((val) => val === confirmPassword.current, {
@@ -434,8 +460,10 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
       }),
     confirmPassword: z
       .string()
-      .min(8, { message: "Password must be longer than 8 characters" })
-      .max(1024, {
+      .min(min_password_char, {
+        message: "Password must be longer than 8 characters",
+      })
+      .max(max_password_char, {
         message: "Password must not be longer than 1024 characters",
       })
       .refine((val) => val === password.current, {
@@ -487,7 +515,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
         internalLabel="currentPassword"
         visibleLabel="Current password"
         type="password"
-        maxLength={1024}
+        maxLength={max_password_char}
         error={currentPasswordError}
         {...register("currentPassword")}
       />
@@ -495,7 +523,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
         internalLabel="password"
         visibleLabel="New password"
         type="password"
-        maxLength={1024}
+        maxLength={max_password_char}
         error={passwordError}
         {...register("password")}
       />
@@ -503,7 +531,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
         internalLabel="confirmPassword"
         visibleLabel="Re-enter password"
         type="password"
-        maxLength={25}
+        maxLength={max_password_char}
         error={confirmPasswordError}
         {...register("confirmPassword")}
       />
@@ -523,25 +551,36 @@ function AddressForm({
     streetAddress: z
       .string()
       .min(1, { message: "Please enter your street address" })
-      .max(100, {
+      .max(max_streetAddress_char, {
         message: "Street address must not be longer than 100 characters",
       }),
     city: z
       .string()
       .min(1, { message: "Please enter your city" })
-      .max(100, { message: "City must not be longer than 100 characters" }),
+      .max(max_city_char, {
+        message: "City must not be longer than 100 characters",
+      }),
     state: z
       .string()
       .min(1, { message: "Please enter your state" })
-      .max(100, { message: "State must not be longer than 100 characters" }),
+      .max(max_state_char, {
+        message: "State must not be longer than 100 characters",
+      }),
     country: z
       .string()
       .min(1, { message: "Please enter your country" })
-      .max(100, { message: "Country must not be longer than 100 characters" }),
+      .max(max_country_char, {
+        message: "Country must not be longer than 100 characters",
+      }),
     zipCode: z
       .string()
-      .min(5, { message: "ZIP Code must be at least 5 characters" })
-      .regex(/(^\d{5}(?:[\s]?[-\s][\s]?\d{4})?$)/, {
+      .min(min_zipCode_char, {
+        message: "ZIP Code must be at least 5 characters",
+      })
+      .max(max_zipCode_char, {
+        message: "ZIP Code must not be longer than 100 characters",
+      })
+      .regex(zipCode_regex, {
         message: "Zip Code is incorrect or invalid",
       }),
   });
@@ -591,7 +630,7 @@ function AddressForm({
         <TextInputField
           internalLabel="streetAddress"
           visibleLabel="Street Address"
-          maxLength={100}
+          maxLength={max_streetAddress_char}
           error={streetAddressError}
           defaultValue={initialAddress?.streetAddress}
           {...register("streetAddress")}
@@ -599,7 +638,7 @@ function AddressForm({
         <TextInputField
           internalLabel="city"
           visibleLabel="City"
-          maxLength={100}
+          maxLength={max_city_char}
           error={cityError}
           defaultValue={initialAddress?.city}
           {...register("city")}
@@ -607,7 +646,7 @@ function AddressForm({
         <TextInputField
           internalLabel="state"
           visibleLabel="State"
-          maxLength={100}
+          maxLength={max_state_char}
           error={stateError}
           defaultValue={initialAddress?.state}
           {...register("state")}
@@ -615,7 +654,7 @@ function AddressForm({
         <TextInputField
           internalLabel="zipCode"
           visibleLabel="ZIP code"
-          maxLength={100}
+          maxLength={max_zipCode_char}
           error={zipCodeError}
           defaultValue={initialAddress?.zipCode}
           {...register("zipCode")}
@@ -623,7 +662,7 @@ function AddressForm({
         <TextInputField
           internalLabel="country"
           visibleLabel="Country"
-          maxLength={100}
+          maxLength={max_country_char}
           error={countryError}
           defaultValue={initialAddress?.country}
           {...register("country")}
