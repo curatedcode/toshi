@@ -1,86 +1,86 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import { zodResolver } from "@hookform/resolvers/zod";
 import { type NextPage } from "next";
 import { signIn } from "next-auth/react";
-import { type FormEvent, useState, type ChangeEvent } from "react";
+import { useRef, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InternalLink from "~/components/InternalLink";
 import SimpleLayout from "~/components/SimpleLayout";
+import TextInputField from "~/components/TextInputField";
 import { api } from "~/utils/api";
 
 const SignUpPage: NextPage = () => {
-  const [name, setName] = useState("");
-  const [showNameError, setShowNameError] = useState(false);
+  const email = useRef("");
+  const confirmEmail = useRef("");
 
-  const [email, setEmail] = useState("");
-  const [showEmailError, setShowEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const password = useRef("");
+  const confirmPassword = useRef("");
 
-  const [password, setPassword] = useState("");
-  const [showPasswordError, setShowPasswordError] = useState(false);
-
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showConfirmPasswordError, setShowConfirmPasswordError] =
-    useState(false);
-
-  const [showMatchingPasswordError, setShowMatchingPasswordError] =
-    useState(false);
-
-  const { mutateAsync: createUser } = api.user.create.useMutation();
-
-  async function handleSignUp(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const { success: nameSuccess } = z.string().min(1).safeParse(name);
-    const { success: emailSuccess } = z
+  const schema = z.object({
+    firstName: z
       .string()
-      .email()
-      .max(64)
-      .safeParse(email);
-    const { success: emailNotBlank } = z
+      .min(1, { message: "Please enter your first name" })
+      .max(25),
+    lastName: z
       .string()
-      .min(1)
-      .max(64)
-      .safeParse(email);
-    const { success: passwordSuccess } = z
+      .min(1, { message: "Please enter your last name" })
+      .max(25),
+    email: z
       .string()
-      .min(1)
-      .max(1024)
-      .safeParse(password);
-    const { success: confirmPasswordSuccess } = z
+      .min(1, { message: "Please enter your email" })
+      .max(64, { message: "Email must not be longer than 64 characters" })
+      .email({ message: "Email is incorrect or invalid" })
+      .refine((val) => confirmEmail.current === val, {
+        message: "Emails do not match",
+      }),
+    confirmEmail: z
       .string()
-      .min(1)
-      .max(1024)
-      .safeParse(confirmPassword);
+      .min(1, { message: "Please enter your email" })
+      .max(64, { message: "Email must not be longer than 64 characters" })
+      .email({ message: "Email is incorrect or invalid" })
+      .refine((val) => email.current === val, {
+        message: "Emails do not match",
+      }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be longer than 8 characters" })
+      .max(1024, {
+        message: "Password must not be longer than 1024 characters",
+      })
+      .refine((val) => val === confirmPassword.current, {
+        message: "Passwords do not match",
+      }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Password must be longer than 8 characters" })
+      .max(1024, {
+        message: "Password must not be longer than 1024 characters",
+      })
+      .refine((val) => val === password.current, {
+        message: "Passwords do not match",
+      }),
+  });
 
-    const doPasswordsMatch = password === confirmPassword;
+  const { mutateAsync, isLoading } = api.user.create.useMutation();
 
-    if (!nameSuccess) setShowNameError(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
-    if (!emailSuccess || !emailNotBlank) {
-      setEmailErrorMessage(
-        !emailSuccess ? "Wrong or invalid email address." : "Enter your email."
-      );
-      setShowEmailError(true);
-    }
+  async function onSubmit() {
+    const email = getValues("email");
+    const password = getValues("password");
 
-    if (!passwordSuccess) setShowPasswordError(true);
-
-    if (!confirmPasswordSuccess) setShowConfirmPasswordError(true);
-
-    if (passwordSuccess && confirmPasswordSuccess && !doPasswordsMatch) {
-      setShowMatchingPasswordError(true);
-    }
-
-    if (
-      !nameSuccess ||
-      !emailSuccess ||
-      !emailNotBlank ||
-      !passwordSuccess ||
-      !confirmPasswordSuccess ||
-      !doPasswordsMatch
-    )
-      return;
-
-    await createUser({ email, password });
+    await mutateAsync({
+      firstName: getValues("firstName"),
+      lastName: getValues("lastName"),
+      email,
+      password,
+    });
 
     await signIn("credentials", {
       email,
@@ -90,182 +90,92 @@ const SignUpPage: NextPage = () => {
     });
   }
 
-  function handleInputChange(
-    e: ChangeEvent<HTMLInputElement>,
-    type: "name" | "email" | "pass" | "confirmPass"
-  ) {
-    const text = e.currentTarget.value;
+  useEffect(() => {
+    email.current = getValues("email");
+    confirmEmail.current = getValues("confirmEmail");
+    password.current = getValues("password");
+    confirmPassword.current = getValues("confirmPassword");
+  });
 
-    switch (type) {
-      case "name":
-        setShowNameError(false);
-        setName((prev) => (text.length <= 50 ? text : prev));
-        break;
-      case "email":
-        setShowEmailError(false);
-        setEmail((prev) => (text.length <= 64 ? text : prev));
-        break;
-      case "pass":
-        setShowPasswordError(false);
-        setShowMatchingPasswordError(false);
-        setPassword((prev) => (text.length <= 1024 ? text : prev));
-        break;
-      case "confirmPass":
-        setShowConfirmPasswordError(false);
-        setShowMatchingPasswordError(false);
-        setConfirmPassword((prev) => (text.length <= 1024 ? text : prev));
-        break;
-    }
-  }
+  const firstNameError = errors.firstName?.message;
+  const lastNameError = errors.lastName?.message;
+  const emailError = errors.email?.message;
+  const confirmEmailError = errors.confirmEmail?.message;
+  const passwordError = errors.password?.message;
+  const confirmPasswordError = errors.confirmPassword?.message;
 
   return (
     <SimpleLayout
       title="Create account | Toshi"
       description="Create an account to shop on Toshi.com"
-      className="mt-16 flex w-full max-w-xs flex-col place-self-center rounded-sm border border-neutral-300 px-6 pb-6 pt-4 md:mt-32"
+      className="flex justify-center px-2"
     >
-      <h1 className="mb-2 ml-1 text-2xl font-semibold">Create an account</h1>
-      <form
-        onSubmit={(e) => void handleSignUp(e)}
-        className="mb-4 flex flex-col gap-4"
-      >
-        <div className="flex flex-col">
-          <label htmlFor="name" className="ml-1 font-semibold">
-            Your name
-          </label>
-          <input
-            id="name"
-            type="text"
-            autoComplete="name"
-            maxLength={50}
-            value={name}
-            onChange={(e) => handleInputChange(e, "name")}
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              showNameError ? "border-red-500" : ""
-            }`}
-          />
-          <div
-            role="alert"
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              showNameError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <span>Enter you name.</span>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="email" className="ml-1 font-semibold">
-            Email
-          </label>
-          <input
-            id="email"
-            type="text"
-            autoComplete="email"
-            maxLength={64}
-            value={email}
-            onChange={(e) => handleInputChange(e, "email")}
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              showEmailError ? "border-red-500" : ""
-            }`}
-          />
-          <div
-            role="alert"
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              showEmailError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <span>{emailErrorMessage}</span>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="password" className="ml-1 font-semibold">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            autoComplete="off"
-            maxLength={1024}
-            value={password}
-            onChange={(e) => handleInputChange(e, "pass")}
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              showPasswordError || showMatchingPasswordError
-                ? "border-red-500"
-                : ""
-            }`}
-          />
-          <div
-            role="alert"
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              showPasswordError || showMatchingPasswordError ? "" : "hidden"
-            }`}
-          >
-            {showPasswordError && (
-              <>
-                <span className="text-lg font-semibold">!</span>
-                <span>Enter your password.</span>
-              </>
-            )}
-            {showMatchingPasswordError && (
-              <>
-                <span className="text-lg font-semibold">!</span>
-                <span>Passwords must match.</span>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="confirmPassword" className="ml-1 font-semibold">
-            Re-enter password
-          </label>
-          <input
-            id="confirmPassword"
-            type="password"
-            autoComplete="off"
-            maxLength={1024}
-            value={confirmPassword}
-            onChange={(e) => handleInputChange(e, "confirmPass")}
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              showConfirmPasswordError || showMatchingPasswordError
-                ? "border-red-500"
-                : ""
-            }`}
-          />
-          <div
-            role="alert"
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              showConfirmPasswordError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <span>Enter your password again.</span>
-          </div>
-          <div
-            role="alert"
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              showMatchingPasswordError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <span>Passwords must match.</span>
-          </div>
-        </div>
-        <button
-          type="submit"
-          className="mt-3 w-full rounded-md bg-toshi-red px-2 py-1 text-lg font-semibold text-white"
+      <div className="mt-16 flex w-full max-w-xs flex-col rounded-sm border border-neutral-300 px-6 pb-6 pt-4">
+        <h1 className="mb-2 ml-1 text-2xl font-semibold">Create an account</h1>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mb-4 flex flex-col gap-4"
         >
-          Create your account
-        </button>
-      </form>
-      <p className="border-t border-neutral-300 pt-2 text-sm">
-        By signing up you agree to our{" "}
-        <InternalLink href={"/policies/privacy-notice"} className="text-sm">
-          Privacy Notice
-        </InternalLink>
-        .
-      </p>
+          <TextInputField
+            internalLabel="firstName"
+            visibleLabel="First Name"
+            maxLength={25}
+            error={firstNameError}
+            {...register("firstName")}
+          />
+          <TextInputField
+            internalLabel="lastName"
+            visibleLabel="Last Name"
+            maxLength={25}
+            error={lastNameError}
+            {...register("lastName")}
+          />
+          <TextInputField
+            internalLabel="email"
+            visibleLabel="Email"
+            maxLength={64}
+            error={emailError}
+            {...register("email")}
+          />
+          <TextInputField
+            internalLabel="confirmEmail"
+            visibleLabel="Re-enter Email"
+            maxLength={64}
+            error={confirmEmailError}
+            {...register("confirmEmail")}
+          />
+          <TextInputField
+            internalLabel="password"
+            visibleLabel="Password"
+            type="password"
+            maxLength={1024}
+            error={passwordError}
+            {...register("password")}
+          />
+          <TextInputField
+            internalLabel="confirmPassword"
+            visibleLabel="Re-enter password"
+            type="password"
+            maxLength={1024}
+            error={confirmPasswordError}
+            {...register("confirmPassword")}
+          />
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="mt-3 w-full rounded-md bg-toshi-red px-2 py-1 text-lg font-semibold text-white"
+          >
+            Create your account
+          </button>
+        </form>
+        <p className="border-t border-neutral-300 pt-2 text-sm">
+          By signing up you agree to our{" "}
+          <InternalLink href={"/policies/privacy-notice"} className="text-sm">
+            Privacy Notice
+          </InternalLink>
+          .
+        </p>
+      </div>
     </SimpleLayout>
   );
 };
