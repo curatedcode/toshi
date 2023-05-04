@@ -197,11 +197,11 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
     firstName: z
       .string()
       .min(1, { message: "Please enter your first name" })
-      .max(25),
+      .max(25, { message: "First name must not be longer than 25 characters" }),
     lastName: z
       .string()
       .min(1, { message: "Please enter your last name" })
-      .max(25),
+      .max(25, { message: "Last name must not be longer than 25 characters" }),
   });
 
   const {
@@ -251,6 +251,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
               firstNameError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialName?.firstName}
+            max={25}
             {...register("firstName")}
           />
           <div
@@ -271,6 +272,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
               lastNameError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialName?.lastName}
+            max={25}
             {...register("lastName")}
           />
           <div
@@ -314,7 +316,7 @@ function EmailForm({
     email: z
       .string()
       .min(1, { message: "Please enter your email" })
-      .max(64)
+      .max(64, { message: "Email must not be longer than 64 characters" })
       .email({ message: "Email is incorrect or invalid" }),
   });
 
@@ -356,6 +358,7 @@ function EmailForm({
             error ? "border-red-500 focus-within:border-red-500" : ""
           }`}
           defaultValue={initialEmail}
+          max={64}
           {...register("email")}
         />
         <div
@@ -480,18 +483,24 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
     currentPassword: z
       .string()
       .min(8, { message: "Password must be longer than 8 characters" })
-      .max(1024),
+      .max(1024, {
+        message: "Password must not be longer than 1024 characters",
+      }),
     password: z
       .string()
       .min(8, { message: "Password must be longer than 8 characters" })
-      .max(1024)
+      .max(1024, {
+        message: "Password must not be longer than 1024 characters",
+      })
       .refine((val) => val === confirmPassword.current, {
         message: "Passwords do not match",
       }),
     confirmPassword: z
       .string()
       .min(8, { message: "Password must be longer than 8 characters" })
-      .max(1024)
+      .max(1024, {
+        message: "Password must not be longer than 1024 characters",
+      })
       .refine((val) => val === password.current, {
         message: "Passwords do not match",
       }),
@@ -548,6 +557,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
                 ? "border-red-500 focus-within:border-red-500"
                 : ""
             }`}
+            max={1024}
             {...register("currentPassword")}
           />
           <div
@@ -568,6 +578,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
           className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
             passwordError ? "border-red-500 focus-within:border-red-500" : ""
           }`}
+          max={1024}
           {...register("password")}
         />
         <div
@@ -589,6 +600,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
               ? "border-red-500 focus-within:border-red-500"
               : ""
           }`}
+          max={1024}
           {...register("confirmPassword")}
         />
         <div
@@ -632,13 +644,21 @@ function AddressForm({
     streetAddress: z
       .string()
       .min(1, { message: "Please enter your street address" })
-      .max(100),
-    city: z.string().min(1, { message: "Please enter your city" }).max(100),
-    state: z.string().min(1, { message: "Please enter your state" }).max(100),
+      .max(100, {
+        message: "Street address must not be longer than 100 characters",
+      }),
+    city: z
+      .string()
+      .min(1, { message: "Please enter your city" })
+      .max(100, { message: "City must not be longer than 100 characters" }),
+    state: z
+      .string()
+      .min(1, { message: "Please enter your state" })
+      .max(100, { message: "State must not be longer than 100 characters" }),
     country: z
       .string()
       .min(1, { message: "Please enter your country" })
-      .max(100),
+      .max(100, { message: "Country must not be longer than 100 characters" }),
     zipCode: z
       .string()
       .min(5, { message: "ZIP Code must be at least 5 characters" })
@@ -701,6 +721,7 @@ function AddressForm({
                   : ""
               }`}
               defaultValue={initialAddress?.streetAddress}
+              max={100}
               {...register("streetAddress")}
             />
             <div
@@ -722,6 +743,7 @@ function AddressForm({
               cityError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialAddress?.city}
+            max={100}
             {...register("city")}
           />
           <div
@@ -742,6 +764,7 @@ function AddressForm({
               stateError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialAddress?.state}
+            max={100}
             {...register("state")}
           />
           <div
@@ -762,6 +785,7 @@ function AddressForm({
               zipCodeError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialAddress?.zipCode}
+            max={100}
             {...register("zipCode")}
           />
           <div
@@ -782,6 +806,7 @@ function AddressForm({
               countryError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialAddress?.country}
+            max={100}
             {...register("country")}
           />
           <div
