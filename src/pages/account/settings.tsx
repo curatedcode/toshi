@@ -251,7 +251,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
               firstNameError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialName?.firstName}
-            max={25}
+            maxLength={25}
             {...register("firstName")}
           />
           <div
@@ -274,7 +274,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
               lastNameError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialName?.lastName}
-            max={25}
+            maxLength={25}
             {...register("lastName")}
           />
           <div
@@ -366,7 +366,7 @@ function EmailForm({
             error ? "border-red-500 focus-within:border-red-500" : ""
           }`}
           defaultValue={initialEmail}
-          max={64}
+          maxLength={64}
           {...register("email")}
         />
         <div
@@ -577,7 +577,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
                 ? "border-red-500 focus-within:border-red-500"
                 : ""
             }`}
-            max={1024}
+            maxLength={1024}
             {...register("currentPassword")}
           />
           <div
@@ -604,7 +604,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
           className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
             passwordError ? "border-red-500 focus-within:border-red-500" : ""
           }`}
-          max={1024}
+          maxLength={1024}
           {...register("password")}
         />
         <div
@@ -632,7 +632,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
               ? "border-red-500 focus-within:border-red-500"
               : ""
           }`}
-          max={1024}
+          maxLength={1024}
           {...register("confirmPassword")}
         />
         <div
@@ -759,7 +759,7 @@ function AddressForm({
                   : ""
               }`}
               defaultValue={initialAddress?.streetAddress}
-              max={100}
+              maxLength={100}
               {...register("streetAddress")}
             />
             <div
@@ -787,7 +787,7 @@ function AddressForm({
               cityError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialAddress?.city}
-            max={100}
+            maxLength={100}
             {...register("city")}
           />
           <div
@@ -814,7 +814,7 @@ function AddressForm({
               stateError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialAddress?.state}
-            max={100}
+            maxLength={100}
             {...register("state")}
           />
           <div
@@ -841,7 +841,7 @@ function AddressForm({
               zipCodeError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialAddress?.zipCode}
-            max={100}
+            maxLength={100}
             {...register("zipCode")}
           />
           <div
@@ -868,7 +868,7 @@ function AddressForm({
               countryError ? "border-red-500 focus-within:border-red-500" : ""
             }`}
             defaultValue={initialAddress?.country}
-            max={100}
+            maxLength={100}
             {...register("country")}
           />
           <div
