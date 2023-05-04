@@ -25,8 +25,7 @@ const ProductPage: NextPage = () => {
 
   const quantity = 0;
 
-  const { name, price, images, description, company, companyId, reviews } =
-    data;
+  const { name, price, images, description, company, reviews } = data;
 
   function handleOrderQuantity(value: number, type: "btn" | "input" = "btn") {
     if (type === "btn") {
@@ -123,7 +122,7 @@ const ProductPage: NextPage = () => {
           <div className="col-span-full inline-flex w-full justify-center gap-2 border-b pb-1.5 text-sm sm:border-b-0">
             <span className="whitespace-nowrap">Sold By:</span>
             <Link
-              href={`/companies/${companyId}`}
+              href={`/companies/${company.id}`}
               className="text-sky-600 underline underline-offset-1"
             >
               {company.name}
@@ -136,16 +135,22 @@ const ProductPage: NextPage = () => {
         <div className="flex flex-col gap-4">
           {reviews.data.map((review) => {
             const { id, user, body, rating, createdAt } = review;
+
+            const shortenedLastName = user.lastName[0]
+              ? `${user.lastName[0]}.`
+              : "";
+            const name = `${user.firstName} ${shortenedLastName}`;
+
             return (
               <div key={id}>
                 <RatingStars rating={rating} />
                 <div className="flex gap-2">
                   <Avatar
-                    alt={user.name ?? ""}
+                    alt=""
                     src={user.image ?? "/profile-placeholder.jpg"}
                   />
                   <div className="flex flex-col">
-                    <span>{user.name}</span>
+                    <span>{name}</span>
                     <span className="text-sm">
                       • {getRelativeTime(createdAt)}
                     </span>
