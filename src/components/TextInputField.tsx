@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import type { TextInputFieldProps } from "~/customTypes";
 
 /**
@@ -5,14 +6,17 @@ import type { TextInputFieldProps } from "~/customTypes";
  * @param maxLength - number
  * @param error - string
  */
-function TextInputField({
-  internalLabel,
-  visibleLabel,
-  className,
-  maxLength,
-  error,
-  ...props
-}: TextInputFieldProps) {
+const TextInputField = forwardRef(function TextInputField(
+  {
+    internalLabel,
+    visibleLabel,
+    className,
+    maxLength,
+    error,
+    ...props
+  }: TextInputFieldProps,
+  ref
+) {
   return (
     <div className="flex flex-col">
       <label htmlFor={internalLabel} className="ml-1 font-semibold">
@@ -23,6 +27,9 @@ function TextInputField({
           error ? "border-red-500 focus-within:border-red-500" : ""
         } ${className ?? ""}`}
         maxLength={maxLength}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        ref={ref}
         {...props}
       />
       <div
@@ -41,6 +48,6 @@ function TextInputField({
       </div>
     </div>
   );
-}
+});
 
 export default TextInputField;
