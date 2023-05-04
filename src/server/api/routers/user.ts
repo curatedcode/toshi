@@ -151,32 +151,6 @@ const userRouter = createTRPCRouter({
       };
     }),
 
-  signIn: publicProcedure
-    .input(
-      z.object({
-        email: z.string().min(1).max(64).email(),
-        password: z.string().min(1).max(1024),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { prisma } = ctx;
-      const { email, password } = input;
-
-      const user = await prisma.user.findUnique({
-        where: { email },
-        select: { id: true, hash: true },
-      });
-
-      if (!user) return null;
-      if (!user.hash) return null;
-
-      const isCorrectPassword = await bcrypt.compare(password, user.hash);
-
-      if (!isCorrectPassword) return null;
-
-      return true;
-    }),
-
   settings: protectedProcedure.query(async ({ ctx }) => {
     const { prisma, session } = ctx;
     const id = session.user.id;
