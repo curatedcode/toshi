@@ -486,6 +486,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
       <TextInputField
         internalLabel="currentPassword"
         visibleLabel="Current password"
+        type="password"
         maxLength={1024}
         error={currentPasswordError}
         {...register("currentPassword")}
@@ -493,6 +494,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
       <TextInputField
         internalLabel="password"
         visibleLabel="New password"
+        type="password"
         maxLength={1024}
         error={passwordError}
         {...register("password")}
@@ -500,6 +502,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
       <TextInputField
         internalLabel="confirmPassword"
         visibleLabel="Re-enter password"
+        type="password"
         maxLength={25}
         error={confirmPasswordError}
         {...register("confirmPassword")}
