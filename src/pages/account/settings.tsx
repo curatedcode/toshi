@@ -207,6 +207,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
     handleSubmit,
     getValues,
     formState: { errors },
+    reset,
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
   const queryClient = useQueryClient();
@@ -227,6 +228,11 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
 
   const firstNameError = errors.firstName?.message;
   const lastNameError = errors.lastName?.message;
+
+  function resetForm() {
+    setHidden(false);
+    reset();
+  }
 
   return (
     <form
@@ -275,13 +281,23 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
           </div>
         </div>
       </div>
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-      >
-        {isLoading ? "Saving" : "Save"}
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+        >
+          {isLoading ? "Saving" : "Save"}
+        </button>
+        <button
+          type="button"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+          onClick={resetForm}
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
@@ -305,6 +321,7 @@ function EmailForm({
     handleSubmit,
     formState: { errors },
     getValues,
+    reset,
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
   const { mutate, isLoading } = api.user.updateEmail.useMutation({
@@ -317,6 +334,11 @@ function EmailForm({
   const onSubmit = () => mutate({ email: getValues("email") });
 
   const error = errors.email?.message;
+
+  function resetForm() {
+    setHidden(false);
+    reset();
+  }
 
   return (
     <form
@@ -343,13 +365,23 @@ function EmailForm({
           <p className="text-red-500">{error}</p>
         </div>
       </div>
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-      >
-        {isLoading ? "Saving" : "Save"}
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+        >
+          {isLoading ? "Saving" : "Save"}
+        </button>
+        <button
+          type="button"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+          onClick={resetForm}
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
@@ -387,6 +419,11 @@ function PhoneNumberForm({
 
   const error = errors.phoneNumber?.message;
 
+  function resetForm() {
+    setHidden(false);
+    reset();
+  }
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -412,13 +449,23 @@ function PhoneNumberForm({
           <p className="text-red-500">{error}</p>
         </div>
       </div>
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-      >
-        {isLoading ? "Saving" : "Save"}
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+        >
+          {isLoading ? "Saving" : "Save"}
+        </button>
+        <button
+          type="button"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+          onClick={resetForm}
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
@@ -453,6 +500,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
     handleSubmit,
     formState: { errors },
     getValues,
+    reset,
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
   const { mutate, isLoading } = api.user.updatePassword.useMutation({
@@ -476,6 +524,11 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
   const currentPasswordError = errors.currentPassword?.message;
   const passwordError = errors.password?.message;
   const confirmPasswordError = errors.confirmPassword?.message;
+
+  function resetForm() {
+    setHidden(false);
+    reset();
+  }
 
   return (
     <form
@@ -545,13 +598,23 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
           <p className="text-red-500">{confirmPasswordError}</p>
         </div>
       </div>
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-      >
-        {isLoading ? "Saving" : "Save"}
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+        >
+          {isLoading ? "Saving" : "Save"}
+        </button>
+        <button
+          type="button"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+          onClick={resetForm}
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
@@ -587,6 +650,7 @@ function AddressForm({
     handleSubmit,
     formState: { errors },
     getValues,
+    reset,
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
   const { mutate, isLoading } = api.user.updateAddress.useMutation({
@@ -611,6 +675,11 @@ function AddressForm({
   const stateError = errors.state?.message;
   const zipCodeError = errors.state?.message;
   const countryError = errors.country?.message;
+
+  function resetForm() {
+    setHidden(false);
+    reset();
+  }
 
   return (
     <form
@@ -723,13 +792,23 @@ function AddressForm({
           </div>
         </div>
       </div>
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-      >
-        {isLoading ? "Saving" : "Save"}
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+        >
+          {isLoading ? "Saving" : "Save"}
+        </button>
+        <button
+          type="button"
+          disabled={isLoading}
+          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+          onClick={resetForm}
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
