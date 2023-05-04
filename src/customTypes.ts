@@ -1,7 +1,13 @@
 import type { Placement } from "@floating-ui/react";
 import type { Category, Prisma, ProductImage, Review } from "@prisma/client";
 import type { EmblaCarouselType } from "embla-carousel-react";
-import type { CSSProperties, ChangeEventHandler, SetStateAction } from "react";
+import type {
+  CSSProperties,
+  ChangeEventHandler,
+  DetailedHTMLProps,
+  InputHTMLAttributes,
+  SetStateAction,
+} from "react";
 
 export declare type LogoProps = {
   width?: number;
@@ -212,3 +218,12 @@ export declare interface AddressFormProps extends FormProps {
     zipCode: string;
   }>;
 }
+
+export declare type TextInputFieldProps = {
+  internalLabel: string;
+  visibleLabel: string;
+  name: string;
+  className?: string;
+  maxLength: number;
+  error: string | undefined;
+} & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;

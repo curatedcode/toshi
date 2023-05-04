@@ -14,6 +14,7 @@ import type {
   PhoneNumberFormProps,
 } from "~/customTypes";
 import { useQueryClient } from "@tanstack/react-query";
+import TextInputField from "~/components/TextInputField";
 
 const SettingsPage: NextPage = () => {
   const { data: settings, refetch, isLoading } = api.user.settings.useQuery();
@@ -192,6 +193,34 @@ const SettingsPage: NextPage = () => {
   );
 };
 
+function FormButtons({
+  isLoading,
+  resetForm,
+}: {
+  isLoading: boolean;
+  resetForm: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+      >
+        {isLoading ? "Saving" : "Save"}
+      </button>
+      <button
+        type="button"
+        disabled={isLoading}
+        className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+        onClick={resetForm}
+      >
+        Cancel
+      </button>
+    </div>
+  );
+}
+
 function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
   const schema = z.object({
     firstName: z
@@ -242,74 +271,24 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
       className={`flex justify-between px-3 py-2 ${hidden ? "hidden" : ""}`}
     >
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col">
-          <label htmlFor="firstName" className="ml-1 font-semibold">
-            First name
-          </label>
-          <input
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              firstNameError ? "border-red-500 focus-within:border-red-500" : ""
-            }`}
-            defaultValue={initialName?.firstName}
-            maxLength={25}
-            {...register("firstName")}
-          />
-          <div
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              firstNameError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <p role="alert" className="text-red-500">
-              {firstNameError}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="lastName" className="ml-1 font-semibold">
-            Last name
-          </label>
-          <input
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              lastNameError ? "border-red-500 focus-within:border-red-500" : ""
-            }`}
-            defaultValue={initialName?.lastName}
-            maxLength={25}
-            {...register("lastName")}
-          />
-          <div
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              lastNameError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <p
-              role="alert"
-              aria-hidden={lastNameError ? "false" : "true"}
-              className="text-red-500"
-            >
-              {lastNameError}
-            </p>
-          </div>
-        </div>
+        <TextInputField
+          internalLabel="firstName"
+          visibleLabel="First Name"
+          maxLength={25}
+          error={firstNameError}
+          defaultValue={initialName?.firstName}
+          {...register("firstName")}
+        />
+        <TextInputField
+          internalLabel="lastName"
+          visibleLabel="Last Name"
+          maxLength={25}
+          error={lastNameError}
+          defaultValue={initialName?.lastName}
+          {...register("lastName")}
+        />
       </div>
-      <div className="flex flex-col gap-2">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-        >
-          {isLoading ? "Saving" : "Save"}
-        </button>
-        <button
-          type="button"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-          onClick={resetForm}
-        >
-          Cancel
-        </button>
-      </div>
+      <FormButtons isLoading={isLoading} resetForm={resetForm} />
     </form>
   );
 }
@@ -358,49 +337,16 @@ function EmailForm({
       className={`flex justify-between px-3 py-2 ${hidden ? "hidden" : ""}`}
     >
       <div className="flex flex-col">
-        <label htmlFor="email" className="ml-1 font-semibold">
-          Email
-        </label>
-        <input
-          className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-            error ? "border-red-500 focus-within:border-red-500" : ""
-          }`}
-          defaultValue={initialEmail}
+        <TextInputField
+          internalLabel="email"
+          visibleLabel="Email"
           maxLength={64}
+          error={error}
+          defaultValue={initialEmail}
           {...register("email")}
         />
-        <div
-          className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-            error ? "" : "hidden"
-          }`}
-        >
-          <span className="text-lg font-semibold">!</span>
-          <p
-            role="alert"
-            aria-hidden={error ? "false" : "true"}
-            className="text-red-500"
-          >
-            {error}
-          </p>
-        </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-        >
-          {isLoading ? "Saving" : "Save"}
-        </button>
-        <button
-          type="button"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-          onClick={resetForm}
-        >
-          Cancel
-        </button>
-      </div>
+      <FormButtons isLoading={isLoading} resetForm={resetForm} />
     </form>
   );
 }
@@ -414,6 +360,9 @@ function PhoneNumberForm({
   const schema = z.object({
     phoneNumber: z
       .string()
+      .max(100, {
+        message: "Phone number must not be longer than 100 characters",
+      })
       .regex(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im, {
         message: "Phone number is incorrect or invalid",
       }),
@@ -449,48 +398,16 @@ function PhoneNumberForm({
       className={`flex justify-between px-3 py-2 ${hidden ? "hidden" : ""}`}
     >
       <div className="flex flex-col">
-        <label htmlFor="phoneNumber" className="ml-1 font-semibold">
-          Phone Number
-        </label>
-        <input
-          className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-            error ? "border-red-500 focus-within:border-red-500" : ""
-          }`}
+        <TextInputField
+          internalLabel="phoneNUmber"
+          visibleLabel="Phone Number"
+          maxLength={100}
+          error={error}
           defaultValue={initialPhoneNumber}
           {...register("phoneNumber")}
         />
-        <div
-          className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-            error ? "" : "hidden"
-          }`}
-        >
-          <span className="text-lg font-semibold">!</span>
-          <p
-            role="alert"
-            aria-hidden={error ? "false" : "true"}
-            className="text-red-500"
-          >
-            {error}
-          </p>
-        </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-        >
-          {isLoading ? "Saving" : "Save"}
-        </button>
-        <button
-          type="button"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-          onClick={resetForm}
-        >
-          Cancel
-        </button>
-      </div>
+      <FormButtons isLoading={isLoading} resetForm={resetForm} />
     </form>
   );
 }
@@ -566,107 +483,28 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
       onSubmit={handleSubmit(onSubmit)}
       className={`flex justify-between px-3 py-2 ${hidden ? "hidden" : ""}`}
     >
-      <div>
-        <div className="flex flex-col">
-          <label htmlFor="currentPassword" className="ml-1 font-semibold">
-            Current password
-          </label>
-          <input
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              currentPasswordError
-                ? "border-red-500 focus-within:border-red-500"
-                : ""
-            }`}
-            maxLength={1024}
-            {...register("currentPassword")}
-          />
-          <div
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              currentPasswordError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <p
-              role="alert"
-              aria-hidden={currentPasswordError ? "false" : "true"}
-              className="text-red-500"
-            >
-              {currentPasswordError}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <label htmlFor="password" className="ml-1 font-semibold">
-          New password
-        </label>
-        <input
-          className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-            passwordError ? "border-red-500 focus-within:border-red-500" : ""
-          }`}
-          maxLength={1024}
-          {...register("password")}
-        />
-        <div
-          className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-            passwordError ? "" : "hidden"
-          }`}
-        >
-          <span className="text-lg font-semibold">!</span>
-          <p
-            role="alert"
-            aria-hidden={passwordError ? "false" : "true"}
-            className="text-red-500"
-          >
-            {passwordError}
-          </p>
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <label htmlFor="confirmPassword" className="ml-1 font-semibold">
-          Confirm password
-        </label>
-        <input
-          className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-            confirmPasswordError
-              ? "border-red-500 focus-within:border-red-500"
-              : ""
-          }`}
-          maxLength={1024}
-          {...register("confirmPassword")}
-        />
-        <div
-          className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-            confirmPasswordError ? "" : "hidden"
-          }`}
-        >
-          <span className="text-lg font-semibold">!</span>
-          <p
-            role="alert"
-            aria-hidden={confirmPasswordError ? "false" : "true"}
-            className="text-red-500"
-          >
-            {confirmPasswordError}
-          </p>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-        >
-          {isLoading ? "Saving" : "Save"}
-        </button>
-        <button
-          type="button"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-          onClick={resetForm}
-        >
-          Cancel
-        </button>
-      </div>
+      <TextInputField
+        internalLabel="currentPassword"
+        visibleLabel="Current password"
+        maxLength={1024}
+        error={currentPasswordError}
+        {...register("currentPassword")}
+      />
+      <TextInputField
+        internalLabel="password"
+        visibleLabel="New password"
+        maxLength={1024}
+        error={passwordError}
+        {...register("password")}
+      />
+      <TextInputField
+        internalLabel="confirmPassword"
+        visibleLabel="Re-enter password"
+        maxLength={25}
+        error={confirmPasswordError}
+        {...register("confirmPassword")}
+      />
+      <FormButtons isLoading={isLoading} resetForm={resetForm} />
     </form>
   );
 }
@@ -747,163 +585,48 @@ function AddressForm({
       className={`flex justify-between px-3 py-2 ${hidden ? "hidden" : ""}`}
     >
       <div className="flex w-max flex-col">
-        <div>
-          <div className="flex flex-col">
-            <label htmlFor="streetAddress" className="ml-1 font-semibold">
-              Street Address
-            </label>
-            <input
-              className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-                streetAddressError
-                  ? "border-red-500 focus-within:border-red-500"
-                  : ""
-              }`}
-              defaultValue={initialAddress?.streetAddress}
-              maxLength={100}
-              {...register("streetAddress")}
-            />
-            <div
-              className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-                streetAddressError ? "" : "hidden"
-              }`}
-            >
-              <span className="text-lg font-semibold">!</span>
-              <p
-                role="alert"
-                aria-hidden={streetAddressError ? "false" : "true"}
-                className="text-red-500"
-              >
-                {streetAddressError}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="city" className="ml-1 font-semibold">
-            City
-          </label>
-          <input
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              cityError ? "border-red-500 focus-within:border-red-500" : ""
-            }`}
-            defaultValue={initialAddress?.city}
-            maxLength={100}
-            {...register("city")}
-          />
-          <div
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              cityError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <p
-              role="alert"
-              aria-hidden={cityError ? "false" : "true"}
-              className="text-red-500"
-            >
-              {cityError}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="state" className="ml-1 font-semibold">
-            State
-          </label>
-          <input
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              stateError ? "border-red-500 focus-within:border-red-500" : ""
-            }`}
-            defaultValue={initialAddress?.state}
-            maxLength={100}
-            {...register("state")}
-          />
-          <div
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              stateError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <p
-              role="alert"
-              aria-hidden={stateError ? "false" : "true"}
-              className="text-red-500"
-            >
-              {stateError}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="zipCode" className="ml-1 font-semibold">
-            ZIP Code
-          </label>
-          <input
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              zipCodeError ? "border-red-500 focus-within:border-red-500" : ""
-            }`}
-            defaultValue={initialAddress?.zipCode}
-            maxLength={100}
-            {...register("zipCode")}
-          />
-          <div
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              zipCodeError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <p
-              role="alert"
-              aria-hidden={zipCodeError ? "false" : "true"}
-              className="text-red-500"
-            >
-              {zipCodeError}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="country" className="ml-1 font-semibold">
-            Country
-          </label>
-          <input
-            className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              countryError ? "border-red-500 focus-within:border-red-500" : ""
-            }`}
-            defaultValue={initialAddress?.country}
-            maxLength={100}
-            {...register("country")}
-          />
-          <div
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              countryError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <p
-              role="alert"
-              aria-hidden={countryError ? "false" : "true"}
-              className="text-red-500"
-            >
-              {countryError}
-            </p>
-          </div>
-        </div>
+        <TextInputField
+          internalLabel="streetAddress"
+          visibleLabel="Street Address"
+          maxLength={100}
+          error={streetAddressError}
+          defaultValue={initialAddress?.streetAddress}
+          {...register("streetAddress")}
+        />
+        <TextInputField
+          internalLabel="city"
+          visibleLabel="City"
+          maxLength={100}
+          error={cityError}
+          defaultValue={initialAddress?.city}
+          {...register("city")}
+        />
+        <TextInputField
+          internalLabel="state"
+          visibleLabel="State"
+          maxLength={100}
+          error={stateError}
+          defaultValue={initialAddress?.state}
+          {...register("state")}
+        />
+        <TextInputField
+          internalLabel="zipCode"
+          visibleLabel="ZIP code"
+          maxLength={100}
+          error={zipCodeError}
+          defaultValue={initialAddress?.zipCode}
+          {...register("zipCode")}
+        />
+        <TextInputField
+          internalLabel="country"
+          visibleLabel="Country"
+          maxLength={100}
+          error={countryError}
+          defaultValue={initialAddress?.country}
+          {...register("country")}
+        />
       </div>
-      <div className="flex flex-col gap-2">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-        >
-          {isLoading ? "Saving" : "Save"}
-        </button>
-        <button
-          type="button"
-          disabled={isLoading}
-          className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-          onClick={resetForm}
-        >
-          Cancel
-        </button>
-      </div>
+      <FormButtons isLoading={isLoading} resetForm={resetForm} />
     </form>
   );
 }
