@@ -4,7 +4,7 @@ import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import Product from "~/components/Products/Product";
 import { useEffect, useState, type ChangeEvent, useRef } from "react";
-import RatingStars from "~/components/RatingStars";
+import RatingStars from "~/components/Reviews/RatingStars";
 import PriceInput from "~/components/Search/PriceInput";
 import PaginationButtons from "~/components/Search/PaginationButtons";
 import Link from "next/link";
