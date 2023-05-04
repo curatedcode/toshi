@@ -119,10 +119,10 @@ const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        email: z.string().min(1).max(50).email(),
+        email: z.string().min(1).max(64).email(),
         password: z.string().min(8).max(1024),
-        firstName: z.string().min(1).max(64),
-        lastName: z.string().min(1).max(64),
+        firstName: z.string().min(1).max(25),
+        lastName: z.string().min(1).max(25),
       })
     )
     .mutation(async ({ ctx, input }) => {
