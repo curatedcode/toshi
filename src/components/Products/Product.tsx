@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ProductProps } from "~/customTypes";
 import Image from "../Image";
-import RatingStars from "../RatingStars";
+import Rating from "../Reviews/Rating";
 
 function Product({
   product,
@@ -13,8 +13,6 @@ function Product({
   const { rating, _count } = reviews;
 
   const link = `/products/${id}`;
-
-  const reviewTitle = rating ? `${rating} out of 5 stars` : "No reviews";
 
   if (type === "alternate") {
     return (
@@ -35,16 +33,7 @@ function Product({
           >
             {name}
           </Link>
-          <Link
-            href={`${link}#reviews`}
-            className="flex w-fit items-center gap-1"
-            title={reviewTitle}
-          >
-            <RatingStars rating={rating} />
-            <span className="w-fit text-sky-600 transition-colors hover:text-toshi-red">
-              {_count}
-            </span>
-          </Link>
+          <Rating rating={rating} _count={_count} link={`${link}#reviews`} />
           <Link href={link} className="text-lg font-medium">
             ${price}
           </Link>
@@ -76,16 +65,7 @@ function Product({
         >
           {name}
         </Link>
-        <Link
-          href={`${link}#reviews`}
-          className="flex items-center gap-1"
-          title={reviewTitle}
-        >
-          <RatingStars rating={rating} />
-          <span className="w-fit text-sky-600 transition-colors hover:text-toshi-red">
-            {_count}
-          </span>
-        </Link>
+        <Rating rating={rating} _count={_count} link={`${link}#reviews`} />
         <Link href={link} className="w-fit text-lg font-medium">
           ${price}
         </Link>

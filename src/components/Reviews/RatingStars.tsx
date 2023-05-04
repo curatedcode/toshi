@@ -1,4 +1,4 @@
-import { HalfStar, Star, StarFill } from "./Star";
+import { HalfStar, Star, StarFill } from "../Star";
 
 function RatingStars({ rating }: { rating: number | null }) {
   if (!rating || rating < 0.5) {

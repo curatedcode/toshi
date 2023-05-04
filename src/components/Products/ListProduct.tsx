@@ -1,7 +1,7 @@
 import type { ListProductProps } from "~/customTypes";
 import Image from "../Image";
 import Link from "next/link";
-import RatingStars from "../RatingStars";
+import Rating from "../Reviews/Rating";
 
 function ListProduct({
   product,
@@ -31,16 +31,7 @@ function ListProduct({
         >
           {name}
         </Link>
-        <Link
-          href={`${link}#reviews`}
-          className="flex w-fit items-center gap-1"
-          title={rating ? `${rating} out of 5 stars` : "No reviews"}
-        >
-          <RatingStars rating={rating} />
-          <span className="w-fit text-sky-600 transition-colors hover:text-toshi-red">
-            {_count}
-          </span>
-        </Link>
+        <Rating rating={rating} _count={_count} link={`${link}#reviews`} />
         <Link href={link} className="text-lg font-medium">
           ${price}
         </Link>

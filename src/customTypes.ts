@@ -1,6 +1,7 @@
 import type { Placement } from "@floating-ui/react";
 import type { Category, Prisma, ProductImage, Review } from "@prisma/client";
 import type { EmblaCarouselType } from "embla-carousel-react";
+import type { Url } from "next/dist/shared/lib/router/router";
 import type {
   CSSProperties,
   ChangeEventHandler,
@@ -227,3 +228,10 @@ export declare type TextInputFieldProps = {
   maxLength: number;
   error: string | undefined;
 } & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+
+export declare type RatingProps = {
+  rating: number | null;
+  link: Url;
+  _count: number | null;
+  className?: string;
+};
