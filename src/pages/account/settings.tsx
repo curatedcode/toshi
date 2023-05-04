@@ -16,17 +16,12 @@ import type {
 import { useQueryClient } from "@tanstack/react-query";
 
 const SettingsPage: NextPage = () => {
-  const { data: settings, refetch } = api.user.settings.useQuery();
+  const { data: settings, refetch, isLoading } = api.user.settings.useQuery();
   const [editName, setEditName] = useState(false);
   const [editEmail, setEditEmail] = useState(false);
   const [editPhoneNumber, setEditPhoneNumber] = useState(false);
   const [editPassword, setEditPassword] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
-
-  const name =
-    settings?.firstName && settings.lastName
-      ? `${settings?.firstName} ${settings?.lastName}`
-      : "Not set";
 
   // warn before exit if any field is active
   useEffect(() => {
@@ -46,6 +41,13 @@ const SettingsPage: NextPage = () => {
     }
   }, [editName, editEmail, editPhoneNumber, editPassword, editAddress]);
 
+  const placeholder = isLoading ? "" : "Not set";
+
+  const name =
+    settings?.firstName && settings.lastName
+      ? `${settings?.firstName ?? ""} ${settings?.lastName ?? ""}`
+      : placeholder;
+
   return (
     <Layout
       title="Settings | Toshi"
@@ -62,7 +64,7 @@ const SettingsPage: NextPage = () => {
           >
             <div>
               <h2 className="text-lg font-semibold">Full Name</h2>
-              <span className="">{name}</span>
+              <span>{name}</span>
             </div>
             <button
               type="button"
@@ -89,7 +91,7 @@ const SettingsPage: NextPage = () => {
           >
             <div>
               <h2 className="text-lg font-semibold">Email</h2>
-              <span className="">{settings?.email ?? "Not set"}</span>
+              <span>{settings?.email ?? placeholder}</span>
             </div>
             <button
               type="button"
@@ -113,7 +115,7 @@ const SettingsPage: NextPage = () => {
           >
             <div>
               <h2 className="text-lg font-semibold">Phone Number</h2>
-              <span className="">{settings?.phoneNumber ?? "Not set"}</span>
+              <span>{settings?.phoneNumber ?? placeholder}</span>
             </div>
             <button
               type="button"
@@ -161,11 +163,11 @@ const SettingsPage: NextPage = () => {
             <div>
               <h2 className="text-lg font-semibold">Address</h2>
               <div className="flex flex-col">
-                <span>{settings?.address?.streetAddress ?? "Not set"}</span>
-                <span>{settings?.address?.city ?? "Not set"}</span>
-                <span>{settings?.address?.state ?? "Not set"}</span>
-                <span>{settings?.address?.zipCode ?? "Not set"}</span>
-                <span>{settings?.address?.country ?? "Not set"}</span>
+                <span>{settings?.address?.streetAddress ?? placeholder}</span>
+                <span>{settings?.address?.city ?? placeholder}</span>
+                <span>{settings?.address?.state ?? placeholder}</span>
+                <span>{settings?.address?.zipCode ?? placeholder}</span>
+                <span>{settings?.address?.country ?? placeholder}</span>
               </div>
             </div>
             <button
