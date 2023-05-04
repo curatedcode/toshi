@@ -17,7 +17,8 @@ const userRouter = createTRPCRouter({
       select: {
         email: true,
         image: true,
-        name: true,
+        firstName: true,
+        lastName: true,
         addresses: {
           take: 1,
         },
@@ -99,10 +100,17 @@ const userRouter = createTRPCRouter({
   }),
 
   create: publicProcedure
-    .input(z.object({ email: z.string().email(), password: z.string() }))
+    .input(
+      z.object({
+        email: z.string().min(1).max(50).email(),
+        password: z.string().min(8).max(1024),
+        firstName: z.string().min(1).max(64),
+        lastName: z.string().min(1).max(64),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const { prisma } = ctx;
-      const { email, password } = input;
+      const { email, password, firstName, lastName } = input;
 
       const isEmailAlreadyUsed = await prisma.user.findUnique({
         where: { email },
@@ -113,11 +121,14 @@ const userRouter = createTRPCRouter({
 
       const hash = await bcrypt.hash(password, 10);
 
-      const newUser = await prisma.user.create({ data: { email, hash } });
+      const newUser = await prisma.user.create({
+        data: { email, hash, firstName, lastName },
+      });
 
       return {
         id: newUser.id,
-        name: newUser.name,
+        firstName: newUser.firstName,
+        lastName: newUser.firstName,
         image: newUser.image,
         email: newUser.email,
       };
@@ -136,7 +147,7 @@ const userRouter = createTRPCRouter({
 
       const user = await prisma.user.findUnique({
         where: { email },
-        select: { id: true, name: true, hash: true, image: true },
+        select: { id: true, hash: true },
       });
 
       if (!user) return null;
@@ -145,6 +156,165 @@ const userRouter = createTRPCRouter({
       const isCorrectPassword = await bcrypt.compare(password, user.hash);
 
       if (!isCorrectPassword) return null;
+
+      return true;
+    }),
+
+  settings: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma, session } = ctx;
+    const id = session.user.id;
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        addresses: { where: { isPrimary: { equals: true } } },
+        image: true,
+        phoneNumber: true,
+      },
+    });
+
+    return {
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      email: user?.email,
+      address: user?.addresses[0],
+      image: user?.image,
+      phoneNumber: user?.phoneNumber ?? undefined,
+    };
+  }),
+
+  updateName: protectedProcedure
+    .input(
+      z.object({
+        firstName: z.string().min(1).max(25),
+        lastName: z.string().min(1).max(25),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { firstName, lastName } = input;
+
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { firstName, lastName },
+      });
+
+      return true;
+    }),
+
+  updateEmail: protectedProcedure
+    .input(z.object({ email: z.string().min(1).max(64).email() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { email } = input;
+
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { email },
+      });
+
+      return true;
+    }),
+
+  updatePhoneNumber: protectedProcedure
+    .input(
+      z.object({
+        phoneNumber: z
+          .string()
+          .regex(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { phoneNumber } = input;
+
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { phoneNumber },
+      });
+
+      return true;
+    }),
+
+  updatePassword: protectedProcedure
+    .input(
+      z.object({
+        password: z.string().min(8).max(1024),
+        currentPassword: z.string().min(8).max(1024),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { password } = input;
+
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+      });
+
+      if (!user) return false;
+      if (!user.hash) return false;
+
+      const passwordsMatch = await bcrypt.compare(password, user.hash);
+
+      if (!passwordsMatch) return false;
+
+      const hash = await bcrypt.hash(password, 10);
+
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { hash },
+      });
+
+      return true;
+    }),
+
+  updateAddress: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().nullish(),
+        streetAddress: z.string().min(1).max(100),
+        city: z.string().min(1).max(100),
+        state: z.string().min(1).max(100),
+        zipCode: z
+          .string()
+          .min(5)
+          .regex(/(^\d{5}(?:[\s]?[-\s][\s]?\d{4})?$)/),
+        country: z.string().min(1).max(100),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { id, streetAddress, city, state, zipCode, country } = input;
+
+      if (!id) {
+        await prisma.address.create({
+          data: {
+            streetAddress,
+            city,
+            state,
+            zipCode,
+            country,
+            userId: session.user.id,
+            addressee: session.user.name,
+          },
+        });
+        return;
+      }
+
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: {
+          addresses: {
+            update: {
+              where: { id },
+              data: { streetAddress, city, state, zipCode, country },
+            },
+          },
+        },
+      });
 
       return true;
     }),

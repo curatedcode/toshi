@@ -1,7 +1,7 @@
 import type { Placement } from "@floating-ui/react";
 import type { Category, Prisma, ProductImage, Review } from "@prisma/client";
 import type { EmblaCarouselType } from "embla-carousel-react";
-import type { CSSProperties, ChangeEventHandler } from "react";
+import type { CSSProperties, ChangeEventHandler, SetStateAction } from "react";
 
 export declare type LogoProps = {
   width?: number;
@@ -183,3 +183,32 @@ export declare type InternalLinkProps = {
   children?: React.ReactNode;
   onClick?: () => void;
 };
+
+export declare type FormProps = {
+  hidden: boolean;
+  setHidden: (value: SetStateAction<boolean>) => void;
+  refetch: () => void;
+};
+
+export declare interface NameFormProps extends FormProps {
+  initialName?: Partial<{ firstName: string; lastName: string }>;
+}
+
+export declare interface EmailFormProps extends FormProps {
+  initialEmail?: string;
+}
+
+export declare interface PhoneNumberFormProps extends FormProps {
+  initialPhoneNumber?: string;
+}
+
+export declare interface AddressFormProps extends FormProps {
+  addressId: string | undefined;
+  initialAddress?: Partial<{
+    streetAddress: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+  }>;
+}
