@@ -260,7 +260,9 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
             }`}
           >
             <span className="text-lg font-semibold">!</span>
-            <p className="text-red-500">{firstNameError}</p>
+            <p role="alert" className="text-red-500">
+              {firstNameError}
+            </p>
           </div>
         </div>
         <div className="flex flex-col">
@@ -281,7 +283,13 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
             }`}
           >
             <span className="text-lg font-semibold">!</span>
-            <p className="text-red-500">{lastNameError}</p>
+            <p
+              role="alert"
+              aria-hidden={lastNameError ? "false" : "true"}
+              className="text-red-500"
+            >
+              {lastNameError}
+            </p>
           </div>
         </div>
       </div>
@@ -367,7 +375,13 @@ function EmailForm({
           }`}
         >
           <span className="text-lg font-semibold">!</span>
-          <p className="text-red-500">{error}</p>
+          <p
+            role="alert"
+            aria-hidden={error ? "false" : "true"}
+            className="text-red-500"
+          >
+            {error}
+          </p>
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -451,7 +465,13 @@ function PhoneNumberForm({
           }`}
         >
           <span className="text-lg font-semibold">!</span>
-          <p className="text-red-500">{error}</p>
+          <p
+            role="alert"
+            aria-hidden={error ? "false" : "true"}
+            className="text-red-500"
+          >
+            {error}
+          </p>
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -566,7 +586,13 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
             }`}
           >
             <span className="text-lg font-semibold">!</span>
-            <p className="text-red-500">{currentPasswordError}</p>
+            <p
+              role="alert"
+              aria-hidden={currentPasswordError ? "false" : "true"}
+              className="text-red-500"
+            >
+              {currentPasswordError}
+            </p>
           </div>
         </div>
       </div>
@@ -587,7 +613,13 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
           }`}
         >
           <span className="text-lg font-semibold">!</span>
-          <p className="text-red-500">{passwordError}</p>
+          <p
+            role="alert"
+            aria-hidden={passwordError ? "false" : "true"}
+            className="text-red-500"
+          >
+            {passwordError}
+          </p>
         </div>
       </div>
       <div className="flex flex-col">
@@ -609,7 +641,13 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
           }`}
         >
           <span className="text-lg font-semibold">!</span>
-          <p className="text-red-500">{confirmPasswordError}</p>
+          <p
+            role="alert"
+            aria-hidden={confirmPasswordError ? "false" : "true"}
+            className="text-red-500"
+          >
+            {confirmPasswordError}
+          </p>
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -730,7 +768,13 @@ function AddressForm({
               }`}
             >
               <span className="text-lg font-semibold">!</span>
-              <p className="text-red-500">{streetAddressError}</p>
+              <p
+                role="alert"
+                aria-hidden={streetAddressError ? "false" : "true"}
+                className="text-red-500"
+              >
+                {streetAddressError}
+              </p>
             </div>
           </div>
         </div>
@@ -752,7 +796,13 @@ function AddressForm({
             }`}
           >
             <span className="text-lg font-semibold">!</span>
-            <p className="text-red-500">{cityError}</p>
+            <p
+              role="alert"
+              aria-hidden={cityError ? "false" : "true"}
+              className="text-red-500"
+            >
+              {cityError}
+            </p>
           </div>
         </div>
         <div className="flex flex-col">
@@ -773,7 +823,13 @@ function AddressForm({
             }`}
           >
             <span className="text-lg font-semibold">!</span>
-            <p className="text-red-500">{stateError}</p>
+            <p
+              role="alert"
+              aria-hidden={stateError ? "false" : "true"}
+              className="text-red-500"
+            >
+              {stateError}
+            </p>
           </div>
         </div>
         <div className="flex flex-col">
@@ -794,7 +850,13 @@ function AddressForm({
             }`}
           >
             <span className="text-lg font-semibold">!</span>
-            <p className="text-red-500">{zipCodeError}</p>
+            <p
+              role="alert"
+              aria-hidden={zipCodeError ? "false" : "true"}
+              className="text-red-500"
+            >
+              {zipCodeError}
+            </p>
           </div>
         </div>
         <div className="flex flex-col">
@@ -815,7 +877,13 @@ function AddressForm({
             }`}
           >
             <span className="text-lg font-semibold">!</span>
-            <p className="text-red-500">{countryError}</p>
+            <p
+              role="alert"
+              aria-hidden={countryError ? "false" : "true"}
+              className="text-red-500"
+            >
+              {countryError}
+            </p>
           </div>
         </div>
       </div>
