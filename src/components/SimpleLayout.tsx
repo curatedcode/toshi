@@ -25,7 +25,7 @@ function SimpleLayout({
       <SkipToContentButton />
       <div className="flex justify-center p-2">
         <Link href={"/"} aria-label="Home page" className="w-fit">
-          <LogoWithText />
+          <LogoWithText color="red" />
         </Link>
       </div>
       <main className={`min-h-full ${font.className} ${className}`}>
