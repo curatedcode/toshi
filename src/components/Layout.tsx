@@ -25,7 +25,9 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
   const [searchText, setSearchText] = useState("");
   const linkRef = useRef<HTMLAnchorElement>(null);
 
-  const { status, data: session } = useSession();
+  const { status } = useSession();
+
+  const { data: name } = api.user.fullName.useQuery();
 
   function search(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && linkRef.current) {
@@ -91,9 +93,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
               >
                 <UserIcon className="w-7" />
                 <span className="hidden max-w-[96px] overflow-hidden text-ellipsis whitespace-nowrap md:block">
-                  {status === "authenticated"
-                    ? session.user.name?.split(" ")[0]
-                    : "Sign In"}
+                  {status === "authenticated" ? name?.firstName : "Sign In"}
                 </span>
               </Link>
             }

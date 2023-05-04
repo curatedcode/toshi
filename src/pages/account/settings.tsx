@@ -13,6 +13,7 @@ import type {
   NameFormProps,
   PhoneNumberFormProps,
 } from "~/customTypes";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SettingsPage: NextPage = () => {
   const { data: settings, refetch } = api.user.settings.useQuery();
@@ -208,9 +209,12 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
     formState: { errors },
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
+  const queryClient = useQueryClient();
+
   const { mutate, isLoading } = api.user.updateName.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       setHidden(false);
+      await queryClient.invalidateQueries({ queryKey: [["user", "fullName"]] });
       refetch();
     },
   });

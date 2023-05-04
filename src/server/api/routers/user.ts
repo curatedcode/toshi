@@ -8,6 +8,23 @@ import {
 import bcrypt from "bcryptjs";
 
 const userRouter = createTRPCRouter({
+  fullName: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma, session } = ctx;
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { firstName: true, lastName: true },
+    });
+
+    if (!user) return null;
+
+    return {
+      name: `${user?.firstName} ${user?.lastName}`,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+    };
+  }),
+
   getCurrentProfile: protectedProcedure.query(async ({ ctx }) => {
     const { prisma, session } = ctx;
     const id = session.user.id;
