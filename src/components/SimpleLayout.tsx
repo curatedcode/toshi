@@ -28,7 +28,7 @@ function SimpleLayout({
           <LogoWithText color="red" />
         </Link>
       </div>
-      <main className={`min-h-full ${font.className} ${className}`}>
+      <main className={`min-h-full pb-36 ${font.className} ${className}`}>
         {children}
       </main>
       <footer className="absolute bottom-0 flex w-full items-center justify-center bg-neutral-100 py-6">
