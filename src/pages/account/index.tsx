@@ -56,6 +56,8 @@ const AccountPage: NextPage = () => {
       </Layout>
     );
 
+  const fullName = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`;
+
   return (
     <Layout
       title="Your Account"
@@ -65,7 +67,7 @@ const AccountPage: NextPage = () => {
       <section className="mt-4 flex w-fit flex-col place-items-center gap-2 self-center text-center md:flex-row md:place-items-start md:text-start">
         <Avatar alt="Your profile picture" src={user?.image} size="lg" />
         <div>
-          <span className="text-2xl font-semibold">{user?.name}</span>
+          <span className="text-2xl font-semibold">{fullName}</span>
           {user?.addresses ? (
             <AddressLine />
           ) : (
