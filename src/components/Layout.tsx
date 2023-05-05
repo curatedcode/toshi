@@ -55,7 +55,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
     <Link
       href={`/search?dept=${category.name}`}
       key={category.name}
-      className="container px-3 py-1 text-black transition-colors duration-75 hover:bg-web-white"
+      className="hover:bg-web-white container px-3 py-1 text-black transition-colors duration-75"
     >
       {category.name}
     </Link>
@@ -69,7 +69,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SkipToContentButton />
-      <Link href={`/search/${searchText}`} ref={linkRef} hidden />
+      <Link href={`/search?text=${searchText}`} ref={linkRef} hidden />
       <nav
         className="grid w-full grid-cols-2 bg-toshi-red px-2 py-1.5 text-white md:inline-flex md:gap-4 md:px-4"
         ref={ref}
