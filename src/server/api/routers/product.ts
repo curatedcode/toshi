@@ -65,8 +65,6 @@ const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (typeof input.text !== "string") return;
-
       const { prisma } = ctx;
       const { limit, text, filters, page } = input;
       const {
@@ -76,7 +74,7 @@ const productRouter = createTRPCRouter({
         includeOutOfStock,
       } = filters;
 
-      const querySearchText = `%${text}%`;
+      const querySearchText = `%${text ?? ""}%`;
 
       let allProducts: object[];
       let productSearchResult: ProductSearchResult;
@@ -102,7 +100,7 @@ const productRouter = createTRPCRouter({
         ORDER BY p.id DESC`;
 
         productSearchResult = await prisma.$queryRaw`
-        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', CAST(COUNT(r.id) AS DECIMAL) AS 'reviewCount'
+        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
         FROM Product p
         JOIN _CategoryToProduct ctp ON p.id = ctp.B
         JOIN Review r ON p.id = r.productId
@@ -132,7 +130,7 @@ const productRouter = createTRPCRouter({
         ORDER BY p.id DESC`;
 
         productSearchResult = await prisma.$queryRaw`
-        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', CAST(COUNT(r.id) AS DECIMAL) AS 'reviewCount'
+        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
         FROM Product p
         JOIN _CategoryToProduct ctp ON p.id = ctp.B
         JOIN Review r ON p.id = r.productId
