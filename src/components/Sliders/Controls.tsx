@@ -34,11 +34,12 @@ function Controls({ api, visible, type = "filled" }: SliderControlProps) {
             type="button"
             className={`absolute left-0 top-1/2 flex h-20 -translate-y-1/2 items-center justify-center rounded-md border-2 border-transparent focus-within:border-sky-400 ${
               type === "filled"
-                ? "bg-white disabled:bg-opacity-30"
-                : "bg-white bg-opacity-30 disabled:bg-opacity-20"
-            }`}
+                ? "bg-white aria-disabled:bg-opacity-30"
+                : "bg-white bg-opacity-30 aria-disabled:bg-opacity-20"
+            } ${canScrollPrev ? "" : "cursor-default"}`}
             onClick={scrollPrev}
-            disabled={!canScrollPrev}
+            aria-disabled={!canScrollPrev}
+            title={canScrollPrev ? "Go back a slide" : "No previous slides"}
             aria-label="previous"
           >
             <ChevronLeftIcon className="w-12" />
@@ -47,11 +48,12 @@ function Controls({ api, visible, type = "filled" }: SliderControlProps) {
             type="button"
             className={`absolute right-0 top-1/2 flex h-20 -translate-y-1/2 items-center justify-center rounded-md border-2 border-transparent focus-within:border-sky-400 ${
               type === "filled"
-                ? "bg-white disabled:bg-opacity-30"
-                : "bg-white bg-opacity-30 disabled:bg-opacity-20"
-            }`}
+                ? "bg-white aria-disabled:bg-opacity-30"
+                : "bg-white bg-opacity-30 aria-disabled:bg-opacity-20"
+            } ${canScrollNext ? "" : "cursor-default"}`}
             onClick={scrollNext}
-            disabled={!canScrollNext}
+            aria-disabled={!canScrollNext}
+            title={canScrollNext ? "Go forward a slide" : "No next slides"}
             aria-label="next"
           >
             <ChevronRightIcon className="w-12" />
