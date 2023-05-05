@@ -13,25 +13,31 @@ import SuperJSON from "superjson";
 const Home: NextPage = () => {
   const { data: recommendedData } = api.category.recommended.useQuery();
   const recommended = recommendedData?.map((product) => (
-    <Product key={product.id} product={product} />
+    <Product key={product.id} product={product} imageLoading="eager" />
   ));
 
   const { data: topCategoriesData } = api.category.top.useQuery();
   const topCategories = topCategoriesData?.map((category) => (
-    <TopItem key={category} link={`/category/${category}`} name={category} />
+    <TopCategory
+      key={category}
+      link={`/search?dept=${category}`}
+      name={category}
+      imageURL={`/${category.toLowerCase()}-category.jpg`}
+    />
   ));
 
   const { data: bestDealsData } = api.category.bestDeals.useQuery();
   const bestDeals = bestDealsData?.map((product) => (
-    <Product key={product.id} product={product} />
+    <Product key={product.id} product={product} imageLoading="eager" />
   ));
 
   const { data: topBrandsData } = api.category.topBrands.useQuery();
   const topBrands = topBrandsData?.map((brand) => (
-    <TopItem
+    <TopCompany
       key={brand.name}
-      link={`/company/${brand.name}`}
+      link={`/companies/${brand.id}`}
       name={brand.name}
+      imageURL={brand.logoURL}
     />
   ));
 
@@ -44,31 +50,37 @@ const Home: NextPage = () => {
     <Layout
       title="Toshi | Make Shopping Yours"
       description="Make shopping yours at Toshi."
-      className="flex flex-col gap-6 bg-web-white"
+      className="flex flex-col gap-6 bg-neutral-100"
     >
       <div className="flex h-fit w-full justify-center bg-[#ffcdff]">
-        <Image className="max-h-80 md:hidden" src="/hero-mobile.png" alt="" />
+        <Image
+          className="max-h-80 md:hidden"
+          src="/hero-mobile.png"
+          alt=""
+          loading="eager"
+        />
         <Image
           className="hidden max-h-96 md:block"
           src="/hero-desktop.png"
           alt=""
+          loading="eager"
         />
       </div>
       <div className="flex flex-col gap-8 px-2 md:gap-10 md:px-4">
-        <section className="flex flex-col items-center bg-white ">
+        <section className="flex flex-col items-center rounded-md bg-white px-4 py-2">
           <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
-            Recommended
+            Recommendations
           </h1>
           {recommended && <Slider slides={recommended} />}
         </section>
-        <section className="flex flex-col items-center bg-white">
+        <section className="flex flex-col items-center rounded-md bg-white px-4 py-2">
           <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
             Best Deals
           </h1>
           {bestDeals && <Slider slides={bestDeals} />}
         </section>
         <section className="flex flex-col items-center gap-4 md:flex-row">
-          <section className="w-full bg-white md:w-1/2">
+          <section className="w-full rounded-md bg-white px-4 pb-4 pt-2 md:w-1/2">
             <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
               Top Brands
             </h1>
@@ -76,7 +88,7 @@ const Home: NextPage = () => {
               {topBrands}
             </div>
           </section>
-          <section className="w-full bg-white md:w-1/2">
+          <section className="w-full rounded-md bg-white px-4 pb-4 pt-2 md:w-1/2">
             <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
               Top Categories
             </h1>
@@ -85,7 +97,7 @@ const Home: NextPage = () => {
             </div>
           </section>
         </section>
-        <section className="flex flex-col items-center bg-white">
+        <section className="flex flex-col items-center rounded-md bg-white px-4 py-2">
           <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
             On The Rise
           </h1>
@@ -98,14 +110,45 @@ const Home: NextPage = () => {
   );
 };
 
-function TopItem({ link, name }: { link: string; name: string }) {
+type TopItemProps = {
+  link: string;
+  name: string;
+  imageURL: string;
+};
+
+function TopCategory({ link, name, imageURL }: TopItemProps) {
   return (
     <Link
       href={link}
       key={name}
-      className="flex w-full items-center gap-2 rounded-md bg-web-white px-6 py-2 text-center font-medium"
+      className="line-clamp-2 flex w-full items-center gap-2 px-6 py-2 text-xl transition-colors hover:bg-neutral-100"
     >
-      <Image src="" alt="" height={50} width={50} />
+      <Image
+        src={imageURL}
+        alt=""
+        height={50}
+        width={50}
+        className="aspect-square w-16 rounded-md"
+      />
+      {name}
+    </Link>
+  );
+}
+
+function TopCompany({ link, name, imageURL }: TopItemProps) {
+  return (
+    <Link
+      href={link}
+      key={name}
+      className="line-clamp-1 flex w-full items-center gap-2 px-6 py-2 text-xl transition-colors hover:bg-neutral-100"
+    >
+      <Image
+        src={imageURL}
+        alt={`${name} logo`}
+        height={50}
+        width={50}
+        className="aspect-square w-16 rounded-md"
+      />
       {name}
     </Link>
   );

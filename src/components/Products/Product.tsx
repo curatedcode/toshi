@@ -8,6 +8,7 @@ function Product({
   type = "default",
   imageHeight = 150,
   imageWidth = 200,
+  imageLoading = "lazy",
 }: ProductProps) {
   const { id, name, price, images, reviews } = product;
   const { rating, _count } = reviews;
@@ -23,6 +24,7 @@ function Product({
             alt={name}
             height={imageHeight}
             width={imageWidth}
+            loading={imageLoading}
           />
         </Link>
         <div className="flex w-full flex-col">
@@ -54,6 +56,7 @@ function Product({
           className="w-full"
           height={imageHeight}
           width={imageWidth}
+          loading={imageLoading}
         />
       </Link>
       <div className="flex flex-col">

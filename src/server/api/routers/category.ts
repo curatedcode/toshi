@@ -78,7 +78,7 @@ const categoryRouter = createTRPCRouter({
       where: {
         products: { some: { reviews: { some: { rating: { gte: 4 } } } } },
       },
-      select: { name: true },
+      select: { id: true, name: true, logoURL: true },
     });
 
     return topBrands;
