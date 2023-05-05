@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 
 const ListPage: NextPage = () => {
   const { query } = useRouter();
-  const listId = typeof query.slug === "string" ? query.slug : undefined;
+  const listId = query.slug as string;
 
   const { data } = api.list.getOne.useQuery({ listId });
 

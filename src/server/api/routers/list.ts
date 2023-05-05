@@ -41,12 +41,10 @@ const listRouter = createTRPCRouter({
   }),
 
   getOne: protectedProcedure
-    .input(z.object({ listId: z.string().nullish() }))
+    .input(z.object({ listId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { prisma } = ctx;
       const { listId } = input;
-
-      if (!listId) return;
 
       const list = await prisma.list.findUnique({
         where: { id: listId },
