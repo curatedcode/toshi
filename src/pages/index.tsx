@@ -1,10 +1,14 @@
-import { type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Layout from "~/components/Layout";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import Slider from "~/components/Sliders/Slider";
 import Image from "~/components/Image";
 import Product from "~/components/Products/Product";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { createInnerTRPCContext } from "~/server/api/trpc";
+import { appRouter } from "~/server/api/root";
+import SuperJSON from "superjson";
 
 const Home: NextPage = () => {
   const { data: recommendedData } = api.category.recommended.useQuery();
@@ -106,5 +110,22 @@ function TopItem({ link, name }: { link: string; name: string }) {
     </Link>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const helpers = createProxySSGHelpers({
+    ctx: createInnerTRPCContext({ session: null }),
+    router: appRouter,
+    transformer: SuperJSON,
+  });
+
+  await helpers.category.recommended.prefetch();
+  await helpers.category.bestDeals.prefetch();
+
+  return {
+    props: {
+      trpc: helpers.dehydrate(),
+    },
+  };
+};
 
 export default Home;
