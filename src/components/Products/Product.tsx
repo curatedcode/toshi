@@ -21,7 +21,6 @@ function Product({
           <Image
             src={images && images[0] && images[0].url}
             alt={name}
-            loading="eager"
             height={imageHeight}
             width={imageWidth}
           />
@@ -52,7 +51,6 @@ function Product({
         <Image
           src={images && images[0] && images[0].url}
           alt={name}
-          loading="eager"
           className="w-full"
           height={imageHeight}
           width={imageWidth}

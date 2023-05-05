@@ -1,31 +1,50 @@
-import { type NextPage } from "next";
-import { useRouter } from "next/router";
+import type {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
-import Custom404 from "../404";
 import Carousel from "~/components/Sliders/Carousel";
 import Link from "next/link";
 import { useState } from "react";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
-import RatingStars from "~/components/RatingStars";
-import Avatar from "~/components/Avatar";
-import getRelativeTime from "~/components/Fn/getRelativeDate";
 import Image from "~/components/Image";
+import Rating from "~/components/Reviews/Rating";
+import Review from "~/components/Reviews/Review";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { appRouter } from "~/server/api/root";
+import { createInnerTRPCContext } from "~/server/api/trpc";
+import superjson from "superjson";
+import Slider from "~/components/Sliders/Slider";
+import Product from "~/components/Products/Product";
 
-const ProductPage: NextPage = () => {
-  const { query } = useRouter();
-  const slug = typeof query.slug === "string" ? query.slug : undefined;
+const ProductPage: NextPage = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) => {
+  const productId = props.productId as string;
 
-  const { data, isLoading } = api.product.getOne.useQuery({ productId: slug });
+  const { data: mainData } = api.product.getOne.useQuery({ productId });
+
+  const { data: similarData } = api.product.similar.useQuery({
+    category: mainData?.categories[0]?.name,
+  });
+  const similarProducts = similarData?.map((product) => (
+    <Product key={product.id} product={product} />
+  ));
+
+  const { name, price, images, description, company, reviews, quantity } =
+    mainData || {
+      name: "",
+      price: 0,
+      images: [],
+      description: "",
+      company: { name: "", id: "" },
+      reviews: { rating: 0, _count: 0, data: [] },
+      quantity: 0,
+    };
 
   const [orderQuantity, setOrderQuantity] = useState(1);
-
-  if (!data && !isLoading) return <Custom404 />;
-  if (!data) return <Custom404 />;
-
-  const quantity = 0;
-
-  const { name, price, images, description, company, reviews } = data;
 
   function handleOrderQuantity(value: number, type: "btn" | "input" = "btn") {
     if (type === "btn") {
@@ -34,51 +53,73 @@ const ProductPage: NextPage = () => {
       return setOrderQuantity((prev) => prev + value);
     }
     if (value > quantity) return;
-    return setOrderQuantity(value ?? undefined);
+    return setOrderQuantity(value);
   }
 
   return (
     <Layout
       title={`Toshi | ${name}`}
       description={`${name} on Toshi.com | Make Shopping Yours`}
-      className="relative left-1/2 flex max-w-7xl -translate-x-1/2 flex-col px-2 py-4"
+      className="flex flex-col gap-4 divide-y divide-neutral-300 px-3 py-4 md:divide-y-0"
     >
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:border-b sm:pb-4">
-        <div className="flex flex-col items-center gap-3 divide-y sm:flex-row sm:items-start sm:divide-y-0">
+      <div className="flex flex-col md:flex-row md:gap-4">
+        <div className="flex w-full flex-col gap-3 divide-y divide-neutral-300 md:flex-row md:items-start md:divide-y-0">
           <Carousel
             slides={images.map((image) => (
               <Image
                 key={image.url}
-                alt={name ?? ""}
+                alt={name}
                 src={image.url}
-                className="h-full rounded-md"
+                loading="eager"
+                className="w-full rounded-md"
+                height={150}
+                width={200}
               />
             ))}
             thumbnails={images.length > 1}
             controls
           />
-          <div className="pt-1">
-            <h1 className="line-clamp-2 text-xl font-semibold sm:text-2xl">
-              {name}
-            </h1>
-            <div className="inline-flex">
-              <span>$</span>
-              <span>{price}</span>
-            </div>
-            <div className="my-1 border-y py-1 sm:border-b-0">
-              <h2 className="text-lg font-semibold">Description</h2>
-              <p>{description}</p>
+          <div className="-mt-2 w-full border-none pt-2">
+            <h1 className="line-clamp-2 text-xl">{name}</h1>
+            <Rating
+              rating={reviews.rating}
+              _count={reviews._count}
+              link={"#reviews"}
+            />
+            <div className="my-3 border-y border-neutral-300 py-3 md:pb-4">
+              <h1 className="text-lg font-semibold">About</h1>
+              <div className="flex flex-col gap-2">
+                <p>{description}</p>
+                <div className="flex items-center gap-2">
+                  <span className="whitespace-nowrap">Sold By:</span>
+                  <Link
+                    href={`/companies/${company.id}`}
+                    className="text-sky-600 underline underline-offset-1"
+                  >
+                    {company.name}
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div className="mt-1.5 grid w-full grid-cols-2 place-items-center gap-y-4 sm:mt-0 sm:flex sm:w-fit sm:max-w-[210px] sm:flex-col sm:justify-center sm:bg-neutral-100 sm:px-2 sm:py-4">
+        <div className="flex flex-col gap-2 pb-3 md:mt-12 md:h-fit md:items-center md:rounded-md md:bg-neutral-100 md:px-3 md:py-3">
+          <div className="flex items-center gap-2 md:gap-1">
+            <span className="text-lg">Price:</span>
+            <span className="text-xl">${price}</span>
+          </div>
+          <p
+            className={`text-lg font-semibold text-toshi-red md:hidden ${
+              quantity <= 10 && quantity > 0 ? "" : "hidden"
+            }`}
+          >{`Only ${quantity} left in stock - order soon.`}</p>
           {quantity > 1 ? (
-            <div className="row-span-2 inline-flex w-fit rounded-md border border-black">
+            <div className="mb-3 flex w-fit rounded-md border border-black bg-neutral-100 text-lg shadow-md shadow-neutral-400/70 md:bg-white">
               <button
                 type="button"
                 aria-label="minus one"
                 onClick={() => handleOrderQuantity(-1)}
-                className="flex items-center rounded-l-md bg-white px-2"
+                className="flex items-center rounded-l-md px-4"
               >
                 <MinusIcon className="w-4" />
               </button>
@@ -88,82 +129,64 @@ const ProductPage: NextPage = () => {
                   handleOrderQuantity(Number(e.currentTarget.value), "input")
                 }
                 value={orderQuantity}
-                aria-label="set quantity"
-                className="w-10 border-x border-black px-1 text-center"
+                title="set quantity"
+                className="w-10 bg-transparent px-1 text-center"
               />
               <button
                 type="button"
                 aria-label="plus one"
                 onClick={() => handleOrderQuantity(1)}
-                className="flex items-center rounded-r-md bg-white px-2"
+                className="flex items-center rounded-r-md px-4"
               >
                 <PlusIcon className="w-4" />
               </button>
             </div>
           ) : (
-            <span className="text-xl font-medium text-toshi-red">
+            <span className="mb-2 text-xl font-medium text-toshi-red">
               Out of stock
             </span>
           )}
-          <div className="row-span-2 flex flex-col items-center sm:order-first sm:flex-row sm:gap-2 sm:text-xl">
-            <span>Subtotal</span>
-            <div>
-              <span>$</span>
-              <span className="font-semibold">{price * orderQuantity}</span>
-            </div>
-          </div>
           <button
             type="button"
-            className="col-span-full w-48 rounded-md bg-toshi-red py-1 font-semibold text-white disabled:cursor-not-allowed disabled:bg-opacity-40"
+            className="w-full rounded-md bg-toshi-red py-2 text-lg font-semibold text-white disabled:cursor-not-allowed disabled:bg-opacity-40 sm:w-48"
             disabled={quantity < 1 || orderQuantity < 1}
           >
             Add to cart
           </button>
-          <div className="col-span-full inline-flex w-full justify-center gap-2 border-b pb-1.5 text-sm sm:border-b-0">
-            <span className="whitespace-nowrap">Sold By:</span>
-            <Link
-              href={`/companies/${company.id}`}
-              className="text-sky-600 underline underline-offset-1"
-            >
-              {company.name}
-            </Link>
+        </div>
+      </div>
+      <div id="reviews" className="pt-4 md:pt-0">
+        <h1 className="mb-2 text-xl font-semibold">Reviews</h1>
+        <div className="flex flex-col gap-2 divide-y divide-neutral-300 md:divide-y-0">
+          {reviews.data.map((review) => (
+            <Review key={review.id} review={review} />
+          ))}
+        </div>
+      </div>
+      {similarProducts && (
+        <div className="pt-4">
+          <h1 className="mb-2 text-xl font-semibold">Similar products</h1>
+          <div>
+            <Slider slides={similarProducts} controls />
           </div>
         </div>
-      </div>
-      <div id="reviews">
-        <h1 className="mb-2 mt-8 text-xl font-semibold">Reviews</h1>
-        <div className="flex flex-col gap-4">
-          {reviews.data.map((review) => {
-            const { id, user, body, rating, createdAt } = review;
-
-            const shortenedLastName = user.lastName[0]
-              ? `${user.lastName[0]}.`
-              : "";
-            const name = `${user.firstName} ${shortenedLastName}`;
-
-            return (
-              <div key={id}>
-                <RatingStars rating={rating} />
-                <div className="flex gap-2">
-                  <Avatar
-                    alt=""
-                    src={user.image ?? "/profile-placeholder.jpg"}
-                  />
-                  <div className="flex flex-col">
-                    <span>{name}</span>
-                    <span className="text-sm">
-                      • {getRelativeTime(createdAt)}
-                    </span>
-                  </div>
-                </div>
-                <p>{body}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      )}
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const helper = createProxySSGHelpers({
+    router: appRouter,
+    ctx: createInnerTRPCContext({ session: null }),
+    transformer: superjson,
+  });
+  const { query } = context;
+  const productId = query.slug as string;
+
+  await helper.product.getOne.prefetch({ productId });
+
+  return { props: { trpcState: helper.dehydrate(), productId } };
 };
 
 export default ProductPage;

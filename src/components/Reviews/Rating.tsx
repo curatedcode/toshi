@@ -10,7 +10,7 @@ function Rating({ rating, link, _count }: RatingProps) {
       title={rating ? `${rating} out of 5 stars` : "No reviews"}
     >
       <RatingStars rating={rating} />
-      <span className="w-fit text-sky-600 transition-colors hover:text-toshi-red">
+      <span className="-mt-0.5 w-fit text-sky-600 transition-colors hover:text-toshi-red">
         {_count}
       </span>
     </Link>

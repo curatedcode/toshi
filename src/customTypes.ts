@@ -6,6 +6,7 @@ import type {
   CSSProperties,
   ChangeEventHandler,
   DetailedHTMLProps,
+  ImgHTMLAttributes,
   InputHTMLAttributes,
   SetStateAction,
 } from "react";
@@ -53,7 +54,7 @@ export declare type ImageProps = {
   loading?: "lazy" | "eager";
   style?: CSSProperties;
   onClick?: () => void;
-};
+} & DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
 
 export declare interface SliderProps extends Partial<SliderOptions> {
   slides: React.ReactNode[];
@@ -234,4 +235,22 @@ export declare type RatingProps = {
   link: Url;
   _count: number | null;
   className?: string;
+};
+
+export declare type ReviewProps = {
+  user: {
+    firstName: string;
+    lastName: string;
+    image: string | null;
+  };
+  id: string;
+  createdAt: Date;
+  rating: number;
+  title: string;
+  body: string | null;
+};
+
+export declare type LoadingPageProps = {
+  title: string;
+  description: string;
 };

@@ -18,12 +18,13 @@ const productRouter = createTRPCRouter({
         include: {
           company: { select: { name: true, id: true } },
           images: { select: { url: true } },
+          categories: true,
           reviews: {
             select: {
+              title: true,
               body: true,
               id: true,
               createdAt: true,
-              updatedAt: true,
               user: {
                 select: { firstName: true, lastName: true, image: true },
               },
@@ -241,6 +242,40 @@ const productRouter = createTRPCRouter({
 
     return productsWithRatings;
   }),
+
+  similar: publicProcedure
+    .input(z.object({ category: z.string().nullish() }))
+    .query(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { category } = input;
+
+      if (!category) return null;
+
+      const similar = await prisma.product.findMany({
+        where: { categories: { some: { name: category } } },
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          images: {
+            take: 1,
+          },
+          reviews: {
+            select: { rating: true },
+          },
+        },
+      });
+
+      const similarWithRatings = similar.map((product) => ({
+        ...product,
+        reviews: {
+          rating: getProductRating(product.reviews),
+          _count: product.reviews.length,
+        },
+      }));
+
+      return similarWithRatings;
+    }),
 });
 
 export default productRouter;
