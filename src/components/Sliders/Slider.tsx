@@ -28,7 +28,7 @@ function Slider({ slides, controls = true }: SliderProps) {
         onMouseEnter={handleMouse}
         onMouseLeave={handleMouse}
       >
-        <div className="flex">
+        <div className="flex gap-4">
           {slides.map((slide, index) => (
             <div
               className="shrink-0 grow-0 basis-full xs:basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
