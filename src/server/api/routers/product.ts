@@ -191,7 +191,7 @@ const productRouter = createTRPCRouter({
           images: firstImage ?? undefined,
           reviews: {
             rating: Math.round(rating * 1e1) / 1e1,
-            _count: reviewCount,
+            _count: Number(reviewCount),
           },
         });
       }
