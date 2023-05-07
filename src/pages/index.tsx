@@ -166,7 +166,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      trpc: helpers.dehydrate(),
+      trpcState: helpers.dehydrate(),
     },
   };
 };
