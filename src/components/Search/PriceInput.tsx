@@ -12,14 +12,14 @@ function PriceInput({ name, onChange }: PriceInput) {
   }
   return (
     <div
-      className="inline-flex w-16 gap-0.5 border border-black bg-white px-1 py-0.5 shadow-inner shadow-neutral-300"
+      className="flex w-16 gap-0.5 rounded-md border border-neutral-500 bg-white px-1 py-0.5"
       onClick={handleFocus}
       onBlur={handleBlur}
     >
       <label id={`${name}Label`} className="sr-only">
         {name} price
       </label>
-      <span className="-mb-0.5 text-lg" aria-hidden>
+      <span className="text-lg text-neutral-500" aria-hidden>
         $
       </span>
       <input

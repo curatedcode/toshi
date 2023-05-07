@@ -187,11 +187,17 @@ const productRouter = createTRPCRouter({
           categories.push(category.name);
         }
 
+        const company = await prisma.product.findUnique({
+          where: { id },
+          select: { company: { select: { id: true, name: true } } },
+        });
+
         productsWithRatings.push({
           id,
           name,
           price,
           createdAt,
+          company: company?.company ?? undefined,
           images: firstImage ? [firstImage] : undefined,
           reviews: {
             rating: Math.round(rating * 1e1) / 1e1,

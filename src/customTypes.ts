@@ -85,6 +85,10 @@ export declare type ProductType = {
     rating: number | null;
     _count: number;
   };
+  company?: {
+    id: string;
+    name: string;
+  };
 };
 
 export declare type ProductProps = {
@@ -135,6 +139,7 @@ export declare type ProductSearchResult = {
 export declare type ProductWithReviews = {
   id: string;
   name: string;
+  company?: { name: string; id: string };
   images: ProductImage[] | undefined;
   price: number;
   reviews: {
@@ -267,3 +272,10 @@ export const SearchResultSortBy = z.enum([
   "priceLowToHigh",
   "default",
 ]);
+
+export declare type SkipToContentButtonProps = {
+  type?: "default" | "inline";
+  contentId?: string;
+  text?: string;
+  className?: string;
+};

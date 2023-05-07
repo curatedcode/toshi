@@ -56,7 +56,11 @@ function PaginationButtons({
             href={getPageLink(currentPage - 1)}
             disabled
           />
-          <Link href={getPageLink(1)} className={`${className} border-black`}>
+          <Link
+            href={getPageLink(1)}
+            className={`${className} border-black hover:cursor-default hover:bg-white`}
+            aria-disabled
+          >
             {1}
           </Link>
           <Link

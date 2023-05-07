@@ -19,6 +19,7 @@ import { appRouter } from "~/server/api/root";
 import SuperJSON from "superjson";
 import { SearchResultSortBy } from "~/customTypes";
 import type { z } from "zod";
+import SkipToContentButton from "~/components/SkipToContentButton";
 
 type SearchResultSortByType = z.infer<typeof SearchResultSortBy>;
 
@@ -173,48 +174,60 @@ const SearchPage: NextPage = (
         ref={sortResultsLinkRef}
         hidden
       />
-      <div className="shadow shadow-neutral-600">
+      <div
+        id="filters"
+        className="mb-3 flex flex-col items-end gap-1 px-4 py-1.5 text-sm shadow-md shadow-neutral-300 md:flex-row md:justify-between"
+      >
         {textParam ? (
           <div>
             <span>{data?.totalResults} results for </span>
-            <span>&quot;{textParam}&quot;</span>
+            <span className="text-toshi-red">&quot;{textParam}&quot;</span>
           </div>
         ) : (
           <span>{data?.totalResults} results</span>
         )}
-        <label htmlFor="sortBy" className="sr-only">
-          Choose a method to sort results by
-        </label>
-        <select
-          title="Sort results"
-          name="sortBy"
-          onChange={handleSortByChange}
-        >
-          <option value={"default"} selected={sortByParam === "default"}>
-            Relevance
-          </option>
-          <option
-            value={"priceLowToHigh"}
-            selected={sortByParam === "priceLowToHigh"}
+        <div className="flex items-center gap-2">
+          <label htmlFor="sortBy" className="font-semibold text-toshi-red">
+            Sort by:
+          </label>
+          <select
+            title="Sort results"
+            name="sortBy"
+            onChange={handleSortByChange}
+            className="rounded-md bg-neutral-200 px-2"
           >
-            Price: Low to High
-          </option>
-          <option
-            value={"priceHighToLow"}
-            selected={sortByParam === "priceHighToLow"}
-          >
-            Price: High to Low
-          </option>
-          <option value={"reviews"} selected={sortByParam === "reviews"}>
-            Avg. Customer Review
-          </option>
-          <option value={"newest"} selected={sortByParam === "newest"}>
-            Newest
-          </option>
-        </select>
+            <option value={"default"} selected={sortByParam === "default"}>
+              Relevance
+            </option>
+            <option
+              value={"priceLowToHigh"}
+              selected={sortByParam === "priceLowToHigh"}
+            >
+              Price: Low to High
+            </option>
+            <option
+              value={"priceHighToLow"}
+              selected={sortByParam === "priceHighToLow"}
+            >
+              Price: High to Low
+            </option>
+            <option value={"reviews"} selected={sortByParam === "reviews"}>
+              Avg. Customer Review
+            </option>
+            <option value={"newest"} selected={sortByParam === "newest"}>
+              Newest
+            </option>
+          </select>
+        </div>
       </div>
-      <div className="flex gap-2">
-        <div className="flex flex-col gap-2 divide-y divide-neutral-300 p-3">
+      <div className="flex">
+        <div className="hidden flex-col divide-y divide-neutral-300 px-5 md:flex [&>div]:pb-3 [&>div]:pt-2">
+          <SkipToContentButton
+            type="inline"
+            contentId="#results"
+            className="order-first"
+            text="Skip to results"
+          />
           <Link href={`/search?text=${textParam}`} hidden ref={linkRef} />
           <button
             type="button"
@@ -223,7 +236,7 @@ const SearchPage: NextPage = (
           >
             Clear filters
           </button>
-          <div className="flex flex-col gap-1">
+          <div className="mt-4 flex flex-col gap-1">
             <span className="text-lg font-semibold">Price</span>
             <div className="flex items-center gap-1">
               <PriceInput
@@ -249,7 +262,7 @@ const SearchPage: NextPage = (
               <Link
                 href={getLinkWithAllParams({ rating: 4, page: 1 })}
                 title="4 stars and up"
-                className="flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
               >
                 <RatingStars rating={4} />
                 <span>& Up</span>
@@ -257,7 +270,7 @@ const SearchPage: NextPage = (
               <Link
                 href={getLinkWithAllParams({ rating: 3, page: 1 })}
                 title="3 stars and up"
-                className="flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
               >
                 <RatingStars rating={3} />
                 <span>& Up</span>
@@ -265,7 +278,7 @@ const SearchPage: NextPage = (
               <Link
                 href={getLinkWithAllParams({ rating: 2, page: 1 })}
                 title="2 stars and up"
-                className="flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
               >
                 <RatingStars rating={2} />
                 <span>& Up</span>
@@ -273,7 +286,7 @@ const SearchPage: NextPage = (
               <Link
                 href={getLinkWithAllParams({ rating: 1, page: 1 })}
                 title="1 star and up"
-                className="flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
               >
                 <RatingStars rating={1} />
                 <span>& Up</span>
@@ -287,22 +300,23 @@ const SearchPage: NextPage = (
                 <Link
                   href={getLinkWithAllParams({ category, page: 1 })}
                   key={category}
-                  className="h-fit transition-colors hover:text-toshi-red"
+                  className="w-fit transition-colors hover:text-toshi-red"
                 >
                   {category}
                 </Link>
               ))}
             </div>
           </div>
-          <div className="flex gap-2">
-            <input
-              id="includeOutOfStock"
-              type="checkbox"
-              onChange={(e) => setIncludeOutOfStock(e.currentTarget.checked)}
-              defaultChecked={includeOutOfStock}
-              className="hover:cursor-pointer"
-            />
-            <label htmlFor="includeOutOfStock">Include out of stock</label>
+          <div>
+            <div className="flex w-fit gap-1 hover:text-toshi-red [&>*]:hover:cursor-pointer">
+              <input
+                id="includeOutOfStock"
+                type="checkbox"
+                onChange={(e) => setIncludeOutOfStock(e.currentTarget.checked)}
+                defaultChecked={includeOutOfStock}
+              />
+              <label htmlFor="includeOutOfStock">Include out of stock</label>
+            </div>
           </div>
           <Link
             href={getLinkWithAllParams({
@@ -313,10 +327,16 @@ const SearchPage: NextPage = (
             ref={includeOutOfStockRef}
           />
         </div>
-        <div className="flex w-full flex-col gap-4 bg-white" id="results">
+        <div className="flex w-full flex-col gap-4 bg-white px-3" id="results">
           {data?.products.map((product) => (
             <Product key={product.id} type="alternate" product={product} />
           ))}
+          <SkipToContentButton
+            type="inline"
+            contentId="#filters"
+            className="w-fit px-4"
+            text="Go back to filter menu"
+          />
         </div>
       </div>
       <PaginationButtons

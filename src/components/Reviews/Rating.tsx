@@ -6,13 +6,11 @@ function Rating({ rating, link, _count }: RatingProps) {
   return (
     <Link
       href={link}
-      className="flex w-fit items-center gap-1"
+      className="flex w-fit items-center gap-1 [&>*]:transition-colors [&>*]:hover:text-toshi-red"
       title={rating ? `${rating} out of 5 stars` : "No reviews"}
     >
       <RatingStars rating={rating} />
-      <span className="-mt-0.5 w-fit text-sky-600 transition-colors hover:text-toshi-red">
-        {_count}
-      </span>
+      <span className="-mt-0.5 w-fit text-sky-600">{_count}</span>
     </Link>
   );
 }
