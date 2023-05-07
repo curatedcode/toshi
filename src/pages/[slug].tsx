@@ -98,7 +98,6 @@ const SearchPage: NextPage = (
     const searchPrice = price ?? priceFilter;
     const searchIncludeOutOfStock = includeOutOfStock ?? includeOutOfStockParam;
 
-    console.log(searchSortBy);
     const link = `/search?text=${searchText}&page=${searchPage}&sortBy=${searchSortBy}&dept=${searchCategory}&rating=${searchRating}&pmin=${
       searchPrice.min ?? ""
     }&pmax=${searchPrice.max ?? ""}&includeOutOfStock=${String(

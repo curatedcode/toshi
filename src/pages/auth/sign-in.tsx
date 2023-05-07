@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SimpleLayout from "~/components/SimpleLayout";
@@ -43,14 +42,6 @@ function SignInPage() {
 
   const emailError = errors.email?.message;
   const passwordError = errors.password?.message;
-
-  useEffect(() => {
-    console.log({
-      email: getValues("email"),
-      password: getValues("password"),
-      errors,
-    });
-  });
 
   return (
     <SimpleLayout
