@@ -16,30 +16,14 @@ const Home: NextPage = () => {
     <Product key={product.id} product={product} imageLoading="eager" />
   ));
 
-  const { data: topCategoriesData } = api.category.top.useQuery();
-  const topCategories = topCategoriesData?.map((category) => (
-    <TopCategory
-      key={category}
-      link={`/search?dept=${category}`}
-      name={category}
-      imageURL={`/${category.toLowerCase()}-category.jpg`}
-    />
-  ));
+  const { data: topCategories } = api.category.top.useQuery();
 
   const { data: bestDealsData } = api.category.bestDeals.useQuery();
   const bestDeals = bestDealsData?.map((product) => (
     <Product key={product.id} product={product} imageLoading="eager" />
   ));
 
-  const { data: topBrandsData } = api.category.topBrands.useQuery();
-  const topBrands = topBrandsData?.map((brand) => (
-    <TopCompany
-      key={brand.name}
-      link={`/companies/${brand.id}`}
-      name={brand.name}
-      imageURL={brand.logoURL}
-    />
-  ));
+  const { data: topBrands } = api.category.topBrands.useQuery();
 
   const { data: sellingOutFastData } = api.category.sellingOutFast.useQuery();
   const sellingOutFast = sellingOutFastData?.map((product) => (
@@ -79,21 +63,51 @@ const Home: NextPage = () => {
           </h1>
           {bestDeals && <Slider slides={bestDeals} />}
         </section>
-        <section className="flex flex-col items-center gap-4 md:flex-row">
-          <section className="w-full rounded-md bg-white px-4 pb-4 pt-2 md:w-1/2">
-            <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
-              Top Brands
-            </h1>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:text-lg">
-              {topBrands}
-            </div>
-          </section>
-          <section className="w-full rounded-md bg-white px-4 pb-4 pt-2 md:w-1/2">
-            <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
+        <section className="flex flex-col gap-4">
+          <section className="flex w-full flex-col items-center rounded-md bg-white px-4 pb-4 pt-2">
+            <h1 className="mb-2 text-xl font-semibold sm:text-3xl">
               Top Categories
             </h1>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:text-lg">
-              {topCategories}
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:text-lg lg:grid-cols-6">
+              {topCategories?.map((category) => (
+                <Link
+                  href={`/search?dept=${category}`}
+                  key={category}
+                  className="flex w-full flex-col items-center gap-2 px-6 py-2 text-xl transition-colors hover:bg-neutral-100"
+                >
+                  <Image
+                    src={`/${category.toLowerCase()}-category.jpg`}
+                    alt=""
+                    height={50}
+                    width={50}
+                    className="aspect-square w-full rounded-md"
+                  />
+                  {category}
+                </Link>
+              ))}
+            </div>
+          </section>
+          <section className="flex w-full flex-col items-center rounded-md bg-white px-4 pb-4 pt-2">
+            <h1 className="mb-2 text-xl font-semibold sm:text-3xl">
+              Top Brands
+            </h1>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-6 md:text-lg">
+              {topBrands?.map((brand) => (
+                <Link
+                  href={`/companies/${brand.id}`}
+                  key={brand.name}
+                  className="flex w-full flex-col items-center gap-2 px-6 py-2 text-center leading-tight transition-colors hover:bg-neutral-100"
+                >
+                  <Image
+                    src={brand.logoURL}
+                    alt={`${brand.name} logo`}
+                    height={50}
+                    width={50}
+                    className="aspect-square w-full rounded-md"
+                  />
+                  {brand.name}
+                </Link>
+              ))}
             </div>
           </section>
         </section>
@@ -109,50 +123,6 @@ const Home: NextPage = () => {
     </Layout>
   );
 };
-
-type TopItemProps = {
-  link: string;
-  name: string;
-  imageURL: string;
-};
-
-function TopCategory({ link, name, imageURL }: TopItemProps) {
-  return (
-    <Link
-      href={link}
-      key={name}
-      className="line-clamp-2 flex w-full items-center gap-2 px-6 py-2 text-xl transition-colors hover:bg-neutral-100"
-    >
-      <Image
-        src={imageURL}
-        alt=""
-        height={50}
-        width={50}
-        className="aspect-square w-16 rounded-md"
-      />
-      {name}
-    </Link>
-  );
-}
-
-function TopCompany({ link, name, imageURL }: TopItemProps) {
-  return (
-    <Link
-      href={link}
-      key={name}
-      className="line-clamp-1 flex w-full items-center gap-2 px-6 py-2 text-xl transition-colors hover:bg-neutral-100"
-    >
-      <Image
-        src={imageURL}
-        alt={`${name} logo`}
-        height={50}
-        width={50}
-        className="aspect-square w-16 rounded-md"
-      />
-      {name}
-    </Link>
-  );
-}
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const helpers = createProxySSGHelpers({
