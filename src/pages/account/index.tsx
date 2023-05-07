@@ -148,7 +148,10 @@ const AccountPage: NextPage = () => {
                     </div>
                     <div className="flex flex-col gap-8 md:gap-4">
                       {products.map((product) => (
-                        <OrderedProduct key={product.id} product={product} />
+                        <OrderedProduct
+                          key={product.product.id}
+                          product={product}
+                        />
                       ))}
                     </div>
                   </div>

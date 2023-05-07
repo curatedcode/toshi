@@ -93,6 +93,7 @@ const userRouter = createTRPCRouter({
                     company: { select: { id: true, name: true } },
                   },
                 },
+                priceAtPurchase: true,
               },
             },
           },
@@ -119,16 +120,9 @@ const userRouter = createTRPCRouter({
       };
     });
 
-    const orders = userData?.orders.map((order) => {
-      const products = order.products.map((product) => product.product);
-
-      return { ...order, products };
-    });
-
     return {
       ...userData,
       lists: listsWithRatings,
-      orders,
     };
   }),
 
