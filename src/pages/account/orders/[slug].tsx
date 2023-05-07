@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 
 const OrderPage: NextPage = () => {
   const { query } = useRouter();
-  const orderId = typeof query.slug === "string" ? query.slug : undefined;
+  const orderId = query.slug as string;
 
   const { data } = api.order.getOne.useQuery({ orderId });
 
@@ -26,8 +26,8 @@ const OrderPage: NextPage = () => {
       ) : (
         <h1>Your previous order</h1>
       )}
-      {data?.products?.map((product) => (
-        <OrderedProduct key={product.id} product={product} />
+      {data?.products?.map((data) => (
+        <OrderedProduct key={data.product.id} product={data} />
       ))}
     </Layout>
   );

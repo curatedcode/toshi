@@ -103,7 +103,7 @@ export declare type OrderedProductType = {
 };
 
 export declare type OrderedProductProps = {
-  product: OrderedProductType;
+  product: { product: OrderedProductType; priceAtPurchase: number };
   imageHeight?: number;
   imageWidth?: number;
 };

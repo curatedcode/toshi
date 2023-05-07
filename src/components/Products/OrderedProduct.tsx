@@ -7,7 +7,8 @@ function OrderedProduct({
   imageHeight = 150,
   imageWidth = 200,
 }: OrderedProductProps) {
-  const { id, name, price, images, company } = product;
+  const { priceAtPurchase, product: productData } = product;
+  const { id, name, images, company } = productData;
 
   return (
     <div className="flex flex-col gap-2 md:flex-row">
@@ -35,7 +36,7 @@ function OrderedProduct({
               {company.name}
             </InternalLink>
           </div>
-          <span className="text-toshi-red">${price}</span>
+          <span className="text-toshi-red">${priceAtPurchase}</span>
         </div>
         <div className="md:w-48">
           <button

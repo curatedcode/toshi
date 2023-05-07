@@ -36,12 +36,10 @@ const orderRouter = createTRPCRouter({
     }),
 
   getOne: protectedProcedure
-    .input(z.object({ orderId: z.string().nullish() }))
+    .input(z.object({ orderId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { prisma } = ctx;
       const { orderId } = input;
-
-      if (!orderId) return;
 
       const order = await prisma.order.findUnique({
         where: { id: orderId },
@@ -56,6 +54,7 @@ const orderRouter = createTRPCRouter({
                 select: {
                   id: true,
                   name: true,
+                  price: true,
                   images: { take: 1 },
                   company: { select: { id: true, name: true } },
                 },
