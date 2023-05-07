@@ -1,5 +1,8 @@
-import type { NextPage } from "next";
-import { useRouter } from "next/router";
+import type {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import Product from "~/components/Products/Product";
@@ -9,38 +12,40 @@ import PriceInput from "~/components/Search/PriceInput";
 import PaginationButtons from "~/components/Search/PaginationButtons";
 import Link from "next/link";
 import type { getLinkWithAllParamsProps } from "~/customTypes";
-import { useQueryClient } from "@tanstack/react-query";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { type DehydratedState, useQueryClient } from "@tanstack/react-query";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { createInnerTRPCContext } from "~/server/api/trpc";
+import { appRouter } from "~/server/api/root";
+import SuperJSON from "superjson";
 
-const SearchPage: NextPage = () => {
-  const { query } = useRouter();
-
-  const queryParamText = typeof query.text === "string" ? query.text : "";
-  const queryParamPage =
-    typeof query.page === "string" ? Number(query.page) : 1;
-  const queryParamCategory =
-    typeof query.dept === "string" ? query.dept : undefined;
-  const queryParamRating =
-    typeof query.rating === "string" ? query.rating : undefined;
-  const queryParamPriceMin =
-    typeof query.pmin === "string" ? query.pmin : undefined;
-  const queryParamPriceMax =
-    typeof query.pmax === "string" ? query.pmax : undefined;
-  const queryParamIncludeOutOfStock =
-    typeof query.includeOutOfStock === "string"
-      ? query.includeOutOfStock === "true"
-        ? true
-        : false
-      : false;
-
-  const [showFilters, setShowFilters] = useState(false);
+const SearchPage: NextPage = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) => {
+  const {
+    textParam,
+    pageParam,
+    categoryParam,
+    ratingParam,
+    priceMinParam,
+    priceMaxParam,
+    includeOutOfStockParam,
+  } = props as SSRReturnType;
 
   const [priceFilter, setPriceFilter] = useState({
-    min: undefined,
-    max: undefined,
-  } as { min: number | undefined; max: number | undefined });
+    min: priceMinParam,
+    max: priceMaxParam,
+  });
 
   const [totalPages, setTotalPages] = useState<number>();
+
+  const includeOutOfStockRef = useRef<HTMLAnchorElement>(null);
+  const [includeOutOfStock, setIncludeOutOfStock] = useState(
+    includeOutOfStockParam
+  );
+
+  useEffect(() => {
+    includeOutOfStockRef.current?.click();
+  }, [includeOutOfStock]);
 
   function getLinkWithAllParams({
     text,
@@ -50,14 +55,12 @@ const SearchPage: NextPage = () => {
     price,
     includeOutOfStock,
   }: getLinkWithAllParamsProps) {
-    const searchText = text ? text : queryParamText;
-    const searchPage = page ? page : queryParamPage;
-    const searchCategory = category ? category : queryParamCategory ?? "";
-    const searchRating = rating ? rating : Number(queryParamRating);
+    const searchText = text ?? textParam;
+    const searchPage = page ?? pageParam;
+    const searchCategory = category ?? categoryParam ?? "";
+    const searchRating = rating ?? ratingParam;
     const searchPrice = price ?? priceFilter;
-    const searchIncludeOutOfStock = includeOutOfStock
-      ? includeOutOfStock
-      : queryParamIncludeOutOfStock;
+    const searchIncludeOutOfStock = includeOutOfStock ?? includeOutOfStockParam;
 
     const link = `/search?text=${searchText}&page=${searchPage}&dept=${searchCategory}&rating=${searchRating}&pmin=${
       searchPrice.min ?? ""
@@ -70,17 +73,17 @@ const SearchPage: NextPage = () => {
 
   const { data } = api.product.search.useQuery(
     {
-      text: queryParamText,
+      text: textParam,
       filters: {
         price: {
-          min: queryParamPriceMin ? Number(queryParamPriceMin) : undefined,
-          max: queryParamPriceMax ? Number(queryParamPriceMax) : undefined,
+          min: priceMinParam,
+          max: priceMaxParam,
         },
-        rating: queryParamRating ? Number(queryParamRating) : undefined,
-        category: queryParamCategory,
-        includeOutOfStock: queryParamIncludeOutOfStock,
+        rating: ratingParam,
+        category: categoryParam,
+        includeOutOfStock: includeOutOfStockParam,
       },
-      page: queryParamPage,
+      page: pageParam,
     },
     {
       keepPreviousData: true,
@@ -97,7 +100,6 @@ const SearchPage: NextPage = () => {
   }
 
   useEffect(() => {
-    if (data && data.totalPages === totalPages) return;
     setTotalPages(data?.totalPages ?? 0);
   }, [data, totalPages]);
 
@@ -129,33 +131,14 @@ const SearchPage: NextPage = () => {
 
   return (
     <Layout
-      title={`Search Toshi | ${queryParamText ?? ""}`}
-      description={`Search results for ${queryParamText ?? ""} | Toshi`}
+      title={`Search Toshi | ${textParam}`}
+      description={`Search results for ${textParam} | Toshi`}
       className="flex flex-col"
     >
-      <div className="relative flex flex-col md:flex-row">
-        <button
-          type="button"
-          className="flex w-fit select-none items-center gap-1 self-end px-2 py-1 font-medium text-toshi-red md:hidden"
-          onClick={() => setShowFilters((prev) => !prev)}
-        >
-          <span>Filters</span>
-          <ChevronDownIcon
-            className={`w-4  ${showFilters ? "hidden" : ""}`}
-            aria-hidden
-          />
-          <ChevronUpIcon
-            className={`w-4  ${showFilters ? "" : "hidden"}`}
-            aria-hidden
-          />
-        </button>
-        <div
-          className={`grid w-full auto-rows-min grid-cols-1 bg-white md:relative md:top-0 md:flex md:w-fit md:flex-col ${
-            showFilters ? "" : "hidden"
-          }`}
-        >
+      <div className="flex gap-2">
+        <div className="flex flex-col gap-2 divide-y divide-neutral-300 p-3">
           <Link
-            href={`/search/${queryParamText ?? ""}`}
+            href={`/search?text=${textParam}`}
             aria-hidden
             className="hidden"
             ref={linkRef}
@@ -163,13 +146,13 @@ const SearchPage: NextPage = () => {
           <button
             type="button"
             onClick={resetFilters}
-            className="col-span-full h-fit rounded-md border border-black border-opacity-60 bg-white px-2 text-center text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
+            className="rounded-md bg-toshi-red px-2 text-center text-lg font-semibold text-white shadow shadow-neutral-500 transition-shadow hover:shadow-md hover:shadow-neutral-500"
           >
             Clear filters
           </button>
           <div className="flex flex-col gap-1">
-            <label className="text-lg font-semibold">Price</label>
-            <div className="inline-flex items-center gap-1">
+            <span className="text-lg font-semibold">Price</span>
+            <div className="flex items-center gap-1">
               <PriceInput
                 name="Min"
                 onChange={(e) => setPriceListValues(e, "min")}
@@ -181,43 +164,43 @@ const SearchPage: NextPage = () => {
               />
               <Link
                 href={getLinkWithAllParams({ price: priceFilter, page: 1 })}
-                className="ml-1 h-8 rounded-md border border-black border-opacity-60 bg-white px-2 text-lg shadow shadow-neutral-500 transition-colors hover:bg-neutral-100"
+                className="flex h-8 items-center rounded-md bg-toshi-red px-2 text-center text-lg font-semibold text-white shadow shadow-neutral-500 transition-shadow hover:shadow-md hover:shadow-neutral-500"
               >
                 Go
               </Link>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-lg font-semibold">Customer Reviews</span>
+            <span className="text-lg font-semibold">Reviews</span>
             <div className="grid">
               <Link
                 href={getLinkWithAllParams({ rating: 4, page: 1 })}
-                aria-label="4 stars and up"
-                className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+                title="4 stars and up"
+                className="flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
                 <RatingStars rating={4} />
                 <span>& Up</span>
               </Link>
               <Link
                 href={getLinkWithAllParams({ rating: 3, page: 1 })}
-                aria-label="3 stars and up"
-                className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+                title="3 stars and up"
+                className="flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
                 <RatingStars rating={3} />
                 <span>& Up</span>
               </Link>
               <Link
                 href={getLinkWithAllParams({ rating: 2, page: 1 })}
-                aria-label="2 stars and up"
-                className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+                title="2 stars and up"
+                className="flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
                 <RatingStars rating={2} />
                 <span>& Up</span>
               </Link>
               <Link
                 href={getLinkWithAllParams({ rating: 1, page: 1 })}
-                aria-label="1 star and up"
-                className="inline-flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
+                title="1 star and up"
+                className="flex items-center gap-1 whitespace-nowrap border border-transparent hover:border-black"
               >
                 <RatingStars rating={1} />
                 <span>& Up</span>
@@ -238,14 +221,26 @@ const SearchPage: NextPage = () => {
               ))}
             </div>
           </div>
+          <div className="flex gap-2">
+            <input
+              id="includeOutOfStock"
+              type="checkbox"
+              onChange={(e) => setIncludeOutOfStock(e.currentTarget.checked)}
+              defaultChecked={includeOutOfStock}
+              className="hover:cursor-pointer"
+            />
+            <label htmlFor="includeOutOfStock">Include out of stock</label>
+          </div>
           <Link
-            href={getLinkWithAllParams({ includeOutOfStock: true, page: 1 })}
-            className="h-fit transition-colors hover:text-toshi-red"
-          >
-            Include out of stock
-          </Link>
+            href={getLinkWithAllParams({
+              includeOutOfStock,
+              page: 1,
+            })}
+            className="hidden"
+            ref={includeOutOfStockRef}
+          />
         </div>
-        <div className="grid w-full">
+        <div className="flex w-full flex-col gap-4 bg-white" id="results">
           {data?.products.map((product) =>
             product ? (
               <Product key={product.id} type="alternate" product={product} />
@@ -254,12 +249,78 @@ const SearchPage: NextPage = () => {
         </div>
       </div>
       <PaginationButtons
-        currentPage={queryParamPage}
+        currentPage={pageParam}
         totalPages={totalPages}
         linkTo={getLinkWithAllParams({})}
       />
     </Layout>
   );
+};
+
+type SSRReturnType = {
+  trpcState: DehydratedState;
+  textParam: string;
+  pageParam: number;
+  categoryParam: string | null;
+  ratingParam: number;
+  priceMinParam: number | null;
+  priceMaxParam: number | null;
+  includeOutOfStockParam: boolean;
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const helpers = createProxySSGHelpers({
+    router: appRouter,
+    ctx: createInnerTRPCContext({ session: null }),
+    transformer: SuperJSON,
+  });
+
+  const { query } = context;
+
+  const hasText = typeof query.text === "string" && query.text !== "";
+  const hasPage = typeof query.page === "string" && query.page !== "";
+  const hasCategory = typeof query.dept === "string" && query.dept !== "";
+  const hasRating = typeof query.rating === "string" && query.rating !== "";
+  const hasPriceMin = typeof query.pmin === "string" && query.pmin !== "";
+  const hasPriceMax = typeof query.pmax === "string" && query.pmax !== "";
+  const hasIncludeOutOfStock =
+    typeof query.includeOutOfStock === "string" &&
+    query.includeOutOfStock !== "";
+
+  const text = hasText ? (query.text as string) : "";
+  const page = hasPage ? Number(query.page) : 1;
+  const category = hasCategory ? (query.dept as string) : null;
+  const rating = hasRating ? Number(query.rating) : 0;
+  const priceMin = hasPriceMin ? Number(query.pmin) : null;
+  const priceMax = hasPriceMax ? Number(query.pmax) : null;
+  const includeOutOfStock =
+    hasIncludeOutOfStock && query.includeOutOfStock === "true";
+  console.log({ hasIncludeOutOfStock, includeOutOfStock });
+  await helpers.product.search.prefetch({
+    text,
+    page,
+    filters: {
+      price: {
+        min: priceMin,
+        max: priceMax,
+      },
+      rating,
+      category,
+      includeOutOfStock,
+    },
+  });
+
+  const dataToReturn: SSRReturnType = {
+    trpcState: helpers.dehydrate(),
+    textParam: text,
+    pageParam: page,
+    categoryParam: category,
+    priceMinParam: priceMin,
+    priceMaxParam: priceMax,
+    ratingParam: rating,
+    includeOutOfStockParam: includeOutOfStock,
+  };
+  return { props: dataToReturn };
 };
 
 export default SearchPage;

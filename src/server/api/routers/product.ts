@@ -195,7 +195,7 @@ const productRouter = createTRPCRouter({
           },
         });
       }
-      console.log(productSearchResult);
+
       return {
         products: productsWithRatings,
         categories,

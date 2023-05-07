@@ -178,8 +178,8 @@ export declare type getLinkWithAllParamsProps = {
   category?: string;
   rating?: number;
   price?: {
-    min?: number;
-    max?: number;
+    min?: number | null;
+    max?: number | null;
   };
   includeOutOfStock?: boolean;
 };
