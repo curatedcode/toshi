@@ -1,7 +1,10 @@
-import { type ProductImage } from "@prisma/client";
 import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
-import type { ProductSearchResult, ProductWithReviews } from "~/customTypes";
+import {
+  type ProductSearchResult,
+  type ProductWithReviews,
+  SearchResultSortBy,
+} from "~/customTypes";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 const productRouter = createTRPCRouter({
@@ -52,6 +55,8 @@ const productRouter = createTRPCRouter({
       z.object({
         limit: z.number().min(1).max(16).default(16),
         text: z.string(),
+        page: z.number().min(1),
+        sortBy: SearchResultSortBy,
         filters: z.object({
           price: z.object({
             min: z.number().nullish(),
@@ -61,88 +66,104 @@ const productRouter = createTRPCRouter({
           category: z.string().nullish(),
           includeOutOfStock: z.boolean(),
         }),
-        page: z.number().min(1),
       })
     )
     .query(async ({ ctx, input }) => {
       const { prisma } = ctx;
-      const { limit, text, filters, page } = input;
-      const {
-        rating: ratingFilter,
-        price,
-        category: categoryFilter,
-        includeOutOfStock,
-      } = filters;
+      const { limit, text, filters, page, sortBy } = input;
+      const { rating: ratingFilter, price, includeOutOfStock } = filters;
 
       const querySearchText = `%${text ?? ""}%`;
 
-      let allProducts: object[];
+      const allProducts: object[] = await prisma.$queryRaw`
+        SELECT p.id, AVG(r.rating) AS 'rating'
+        FROM Product p
+        JOIN Review r ON p.id = r.productId
+        WHERE p.name
+        LIKE ${querySearchText}
+        AND p.price >= ${price.min ?? 0}
+        AND p.price <= ${price.max ?? 9_999_999}
+        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+        AND rating >= ${ratingFilter ?? 0}
+        GROUP BY p.id`;
+
       let productSearchResult: ProductSearchResult;
 
-      if (categoryFilter) {
-        const category = await prisma.category.findUnique({
-          where: { name: categoryFilter },
-        });
-
-        allProducts = await prisma.$queryRaw`
-        SELECT p.id, AVG(r.rating) AS 'rating'
-        FROM Product p
-        JOIN _CategoryToProduct ctp ON p.id = ctp.B
-        JOIN Review r ON p.id = r.productId
-        JOIN Category c ON c.id = ${category?.id}
-        WHERE p.name
-        LIKE ${querySearchText}
-        AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9_999_999}
-        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-        AND rating >= ${ratingFilter ?? 0}
-        GROUP BY p.id
-        ORDER BY p.id DESC`;
-
-        productSearchResult = await prisma.$queryRaw`
-        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-        FROM Product p
-        JOIN _CategoryToProduct ctp ON p.id = ctp.B
-        JOIN Review r ON p.id = r.productId
-        JOIN Category c ON c.id = ${category?.id}
-        WHERE p.name
-        LIKE ${querySearchText}
-        AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9_999_999}
-        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-        AND rating >= ${ratingFilter ?? 0}
-        GROUP BY p.id
-        ORDER BY p.id DESC
-        LIMIT ${(page - 1) * limit},${limit}`;
-      } else {
-        allProducts = await prisma.$queryRaw`
-        SELECT p.id, AVG(r.rating) AS 'rating'
-        FROM Product p
-        JOIN _CategoryToProduct ctp ON p.id = ctp.B
-        JOIN Review r ON p.id = r.productId
-        WHERE p.name
-        LIKE ${querySearchText}
-        AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9_999_999}
-        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-        AND rating >= ${ratingFilter ?? 0}
-        GROUP BY p.id
-        ORDER BY p.id DESC`;
-
-        productSearchResult = await prisma.$queryRaw`
-        SELECT p.id, p.name, p.price, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-        FROM Product p
-        JOIN _CategoryToProduct ctp ON p.id = ctp.B
-        JOIN Review r ON p.id = r.productId
-        WHERE p.name
-        LIKE ${querySearchText}
-        AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9_999_999}
-        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-        AND rating >= ${ratingFilter ?? 0}
-        GROUP BY p.id
-        ORDER BY p.id DESC
-        LIMIT ${(page - 1) * limit},${limit}`;
+      switch (sortBy) {
+        case "newest":
+          productSearchResult = await prisma.$queryRaw`
+            SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+            FROM Product p
+            JOIN Review r ON p.id = r.productId
+            WHERE p.name
+            LIKE ${querySearchText}
+            AND p.price >= ${price.min ?? 0}
+            AND p.price <= ${price.max ?? 9_999_999}
+            AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+            AND rating >= ${ratingFilter ?? 0}
+            GROUP BY p.id
+            ORDER BY p.createdAt DESC
+            LIMIT ${(page - 1) * limit},${limit}`;
+          break;
+        case "reviews":
+          productSearchResult = await prisma.$queryRaw`
+            SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+            FROM Product p
+            JOIN Review r ON p.id = r.productId
+            WHERE p.name
+            LIKE ${querySearchText}
+            AND p.price >= ${price.min ?? 0}
+            AND p.price <= ${price.max ?? 9_999_999}
+            AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+            AND rating >= ${ratingFilter ?? 0}
+            GROUP BY p.id
+            ORDER BY rating DESC
+            LIMIT ${(page - 1) * limit},${limit}`;
+          break;
+        case "priceHighToLow":
+          productSearchResult = await prisma.$queryRaw`
+            SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+            FROM Product p
+            JOIN Review r ON p.id = r.productId
+            WHERE p.name
+            LIKE ${querySearchText}
+            AND p.price >= ${price.min ?? 0}
+            AND p.price <= ${price.max ?? 9_999_999}
+            AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+            AND rating >= ${ratingFilter ?? 0}
+            GROUP BY p.id
+            ORDER BY p.price DESC
+            LIMIT ${(page - 1) * limit},${limit}`;
+          break;
+        case "priceLowToHigh":
+          productSearchResult = await prisma.$queryRaw`
+            SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+            FROM Product p
+            JOIN Review r ON p.id = r.productId
+            WHERE p.name
+            LIKE ${querySearchText}
+            AND p.price >= ${price.min ?? 0}
+            AND p.price <= ${price.max ?? 9_999_999}
+            AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+            AND rating >= ${ratingFilter ?? 0}
+            GROUP BY p.id
+            ORDER BY p.price ASC
+            LIMIT ${(page - 1) * limit},${limit}`;
+          break;
+        default:
+          productSearchResult = await prisma.$queryRaw`
+            SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
+            FROM Product p
+            JOIN Review r ON p.id = r.productId
+            WHERE p.name
+            LIKE ${querySearchText}
+            AND p.price >= ${price.min ?? 0}
+            AND p.price <= ${price.max ?? 9_999_999}
+            AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+            AND rating >= ${ratingFilter ?? 0}
+            GROUP BY p.id
+            LIMIT ${(page - 1) * limit},${limit}`;
+          break;
       }
 
       const productResultPageCount = Math.ceil(allProducts.length / limit);
@@ -152,43 +173,26 @@ const productRouter = createTRPCRouter({
       const categories: string[] = [];
 
       for (const product of productSearchResult) {
-        const { id, name, price, rating, reviewCount, category } = product;
+        const { id, name, price, rating, reviewCount, createdAt } = product;
 
-        let data:
-          | [ProductImage[] | null]
-          | [ProductImage[] | null, [{ id: string }]];
-        let categoryName = category;
+        const firstImage = await prisma.productImage.findFirst({
+          where: { productId: id },
+        });
+        const category = await prisma.category.findFirst({
+          where: { products: { some: { id } } },
+          select: { name: true },
+        });
 
-        if (category) {
-          data = await prisma.$transaction([
-            prisma.productImage.findMany({ where: { productId: id } }),
-          ]);
-        } else {
-          data = await prisma.$transaction([
-            prisma.productImage.findMany({ where: { productId: id } }),
-            prisma.$queryRaw`
-              SELECT A AS 'id'
-              FROM _CategoryToProduct
-              WHERE B = ${id}`,
-          ]);
-
-          const categoryData = await prisma.category.findUnique({
-            where: { id: data[1][0].id },
-          });
-          categoryName = categoryData?.name;
-        }
-
-        const firstImage = data[0];
-
-        if (categoryName && !categories.includes(categoryName)) {
-          categories.push(categoryName);
+        if (category?.name && !categories.includes(category.name)) {
+          categories.push(category.name);
         }
 
         productsWithRatings.push({
           id,
           name,
           price,
-          images: firstImage ?? undefined,
+          createdAt,
+          images: firstImage ? [firstImage] : undefined,
           reviews: {
             rating: Math.round(rating * 1e1) / 1e1,
             _count: Number(reviewCount),
@@ -200,6 +204,7 @@ const productRouter = createTRPCRouter({
         products: productsWithRatings,
         categories,
         totalPages: productResultPageCount,
+        totalResults: allProducts.length,
       };
     }),
 
@@ -215,6 +220,7 @@ const productRouter = createTRPCRouter({
         id: true,
         name: true,
         price: true,
+        createdAt: true,
         images: {
           take: 1,
         },

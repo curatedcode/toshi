@@ -10,6 +10,7 @@ import type {
   InputHTMLAttributes,
   SetStateAction,
 } from "react";
+import { z } from "zod";
 
 export declare type LogoProps = {
   width?: number;
@@ -128,6 +129,7 @@ export declare type ProductSearchResult = {
   rating: number;
   reviewCount: number;
   category?: string;
+  createdAt: Date;
 }[];
 
 export declare type ProductWithReviews = {
@@ -139,6 +141,7 @@ export declare type ProductWithReviews = {
     rating: number | null;
     _count: number;
   };
+  createdAt: Date;
 }[];
 
 export declare type ProductSearchQuery = (
@@ -175,6 +178,7 @@ export declare type CarouselThumbProps = {
 export declare type getLinkWithAllParamsProps = {
   text?: string;
   page?: number;
+  sortBy?: z.infer<typeof SearchResultSortBy>;
   category?: string;
   rating?: number;
   price?: {
@@ -255,3 +259,11 @@ export declare type LoadingPageProps = {
   title: string;
   description: string;
 };
+
+export const SearchResultSortBy = z.enum([
+  "reviews",
+  "newest",
+  "priceHighToLow",
+  "priceLowToHigh",
+  "default",
+]);

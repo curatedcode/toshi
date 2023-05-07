@@ -17,6 +17,10 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { createInnerTRPCContext } from "~/server/api/trpc";
 import { appRouter } from "~/server/api/root";
 import SuperJSON from "superjson";
+import { SearchResultSortBy } from "~/customTypes";
+import type { z } from "zod";
+
+type SearchResultSortByType = z.infer<typeof SearchResultSortBy>;
 
 const SearchPage: NextPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -24,6 +28,7 @@ const SearchPage: NextPage = (
   const {
     textParam,
     pageParam,
+    sortByParam,
     categoryParam,
     ratingParam,
     priceMinParam,
@@ -36,7 +41,35 @@ const SearchPage: NextPage = (
     max: priceMaxParam,
   });
 
-  const [totalPages, setTotalPages] = useState<number>();
+  const [sortResults, setSortResults] = useState(sortByParam);
+  const sortResultsLinkRef = useRef<HTMLAnchorElement>(null);
+
+  function handleSortByChange(e: ChangeEvent<HTMLSelectElement>) {
+    const newSortBy = e.currentTarget.value as
+      | SearchResultSortByType
+      | undefined;
+
+    if (!newSortBy) {
+      return setSortResults("default");
+    }
+
+    switch (newSortBy) {
+      case "newest":
+        return setSortResults("newest");
+      case "reviews":
+        return setSortResults("reviews");
+      case "priceHighToLow":
+        return setSortResults("priceHighToLow");
+      case "priceLowToHigh":
+        return setSortResults("priceLowToHigh");
+      default:
+        return setSortResults("default");
+    }
+  }
+
+  useEffect(() => {
+    sortResultsLinkRef.current?.click();
+  }, [sortResults]);
 
   const includeOutOfStockRef = useRef<HTMLAnchorElement>(null);
   const [includeOutOfStock, setIncludeOutOfStock] = useState(
@@ -50,6 +83,7 @@ const SearchPage: NextPage = (
   function getLinkWithAllParams({
     text,
     page,
+    sortBy,
     category,
     rating,
     price,
@@ -57,12 +91,14 @@ const SearchPage: NextPage = (
   }: getLinkWithAllParamsProps) {
     const searchText = text ?? textParam;
     const searchPage = page ?? pageParam;
+    const searchSortBy = sortBy ?? sortByParam;
     const searchCategory = category ?? categoryParam ?? "";
     const searchRating = rating ?? ratingParam;
     const searchPrice = price ?? priceFilter;
     const searchIncludeOutOfStock = includeOutOfStock ?? includeOutOfStockParam;
 
-    const link = `/search?text=${searchText}&page=${searchPage}&dept=${searchCategory}&rating=${searchRating}&pmin=${
+    console.log(searchSortBy);
+    const link = `/search?text=${searchText}&page=${searchPage}&sortBy=${searchSortBy}&dept=${searchCategory}&rating=${searchRating}&pmin=${
       searchPrice.min ?? ""
     }&pmax=${searchPrice.max ?? ""}&includeOutOfStock=${String(
       searchIncludeOutOfStock
@@ -74,6 +110,8 @@ const SearchPage: NextPage = (
   const { data } = api.product.search.useQuery(
     {
       text: textParam,
+      page: pageParam,
+      sortBy: sortByParam,
       filters: {
         price: {
           min: priceMinParam,
@@ -83,7 +121,6 @@ const SearchPage: NextPage = (
         category: categoryParam,
         includeOutOfStock: includeOutOfStockParam,
       },
-      page: pageParam,
     },
     {
       keepPreviousData: true,
@@ -98,10 +135,6 @@ const SearchPage: NextPage = (
     void client.invalidateQueries(["product", "search"]);
     linkRef.current?.click();
   }
-
-  useEffect(() => {
-    setTotalPages(data?.totalPages ?? 0);
-  }, [data, totalPages]);
 
   function setPriceListValues(
     e: ChangeEvent<HTMLInputElement>,
@@ -135,14 +168,54 @@ const SearchPage: NextPage = (
       description={`Search results for ${textParam} | Toshi`}
       className="flex flex-col"
     >
+      <Link
+        href={getLinkWithAllParams({ sortBy: sortResults, page: 1 })}
+        ref={sortResultsLinkRef}
+        hidden
+      />
+      <div className="shadow shadow-neutral-600">
+        {textParam ? (
+          <div>
+            <span>{data?.totalResults} results for </span>
+            <span>&quot;{textParam}&quot;</span>
+          </div>
+        ) : (
+          <span>{data?.totalResults} results</span>
+        )}
+        <label htmlFor="sortBy" className="sr-only">
+          Choose a method to sort results by
+        </label>
+        <select
+          title="Sort results"
+          name="sortBy"
+          onChange={handleSortByChange}
+        >
+          <option value={"default"} selected={sortByParam === "default"}>
+            Relevance
+          </option>
+          <option
+            value={"priceLowToHigh"}
+            selected={sortByParam === "priceLowToHigh"}
+          >
+            Price: Low to High
+          </option>
+          <option
+            value={"priceHighToLow"}
+            selected={sortByParam === "priceHighToLow"}
+          >
+            Price: High to Low
+          </option>
+          <option value={"reviews"} selected={sortByParam === "reviews"}>
+            Avg. Customer Review
+          </option>
+          <option value={"newest"} selected={sortByParam === "newest"}>
+            Newest
+          </option>
+        </select>
+      </div>
       <div className="flex gap-2">
         <div className="flex flex-col gap-2 divide-y divide-neutral-300 p-3">
-          <Link
-            href={`/search?text=${textParam}`}
-            aria-hidden
-            className="hidden"
-            ref={linkRef}
-          />
+          <Link href={`/search?text=${textParam}`} hidden ref={linkRef} />
           <button
             type="button"
             onClick={resetFilters}
@@ -241,16 +314,14 @@ const SearchPage: NextPage = (
           />
         </div>
         <div className="flex w-full flex-col gap-4 bg-white" id="results">
-          {data?.products.map((product) =>
-            product ? (
-              <Product key={product.id} type="alternate" product={product} />
-            ) : undefined
-          )}
+          {data?.products.map((product) => (
+            <Product key={product.id} type="alternate" product={product} />
+          ))}
         </div>
       </div>
       <PaginationButtons
         currentPage={pageParam}
-        totalPages={totalPages}
+        totalPages={data?.totalPages}
         linkTo={getLinkWithAllParams({})}
       />
     </Layout>
@@ -266,6 +337,7 @@ type SSRReturnType = {
   priceMinParam: number | null;
   priceMaxParam: number | null;
   includeOutOfStockParam: boolean;
+  sortByParam: SearchResultSortByType;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -286,6 +358,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const hasIncludeOutOfStock =
     typeof query.includeOutOfStock === "string" &&
     query.includeOutOfStock !== "";
+  const hasSortBy = typeof query.sortBy === "string" && query.sortBy !== "";
 
   const text = hasText ? (query.text as string) : "";
   const page = hasPage ? Number(query.page) : 1;
@@ -295,10 +368,31 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const priceMax = hasPriceMax ? Number(query.pmax) : null;
   const includeOutOfStock =
     hasIncludeOutOfStock && query.includeOutOfStock === "true";
-  console.log({ hasIncludeOutOfStock, includeOutOfStock });
+
+  function getSortBy() {
+    const sortEnum = SearchResultSortBy.Enum;
+
+    if (query.sortBy === sortEnum.newest) {
+      return sortEnum.newest;
+    }
+    if (query.sortBy === sortEnum.reviews) {
+      return sortEnum.reviews;
+    }
+    if (query.sortBy === sortEnum.priceHighToLow) {
+      return sortEnum.priceHighToLow;
+    }
+    if (query.sortBy === sortEnum.priceLowToHigh) {
+      return sortEnum.priceLowToHigh;
+    }
+    return sortEnum.default;
+  }
+
+  const sortBy = hasSortBy ? getSortBy() : "default";
+
   await helpers.product.search.prefetch({
     text,
     page,
+    sortBy,
     filters: {
       price: {
         min: priceMin,
@@ -319,6 +413,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     priceMaxParam: priceMax,
     ratingParam: rating,
     includeOutOfStockParam: includeOutOfStock,
+    sortByParam: sortBy,
   };
   return { props: dataToReturn };
 };
