@@ -4,7 +4,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (!rating || rating < 0.5) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={0}
@@ -21,7 +21,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 1) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={0.5}
@@ -38,7 +38,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 1.5) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={1}
@@ -55,7 +55,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 2) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={1.5}
@@ -72,7 +72,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 2.5) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={2}
@@ -89,7 +89,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 3) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={2.5}
@@ -106,7 +106,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 3.5) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={3}
@@ -123,7 +123,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 4) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={3.5}
@@ -140,7 +140,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 4.5) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={4}
@@ -157,7 +157,7 @@ function RatingStars({ rating }: { rating: number | null }) {
   if (rating < 5) {
     return (
       <div
-        className="-mt-0.5 inline-flex w-fit items-center"
+        className="flex w-fit items-center"
         aria-hidden
         data-testid="rating-stars"
         data-rating={4.5}
@@ -173,7 +173,7 @@ function RatingStars({ rating }: { rating: number | null }) {
 
   return (
     <div
-      className="-mt-0.5 inline-flex w-fit items-center"
+      className="flex w-fit items-center"
       aria-hidden
       data-testid="rating-stars"
       data-rating={5}

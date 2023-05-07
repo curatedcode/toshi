@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
-import RatingStars from "~/components/RatingStars";
+import RatingStars from "~/components/Reviews/RatingStars";
 
 afterEach(() => cleanup());
 
