@@ -93,7 +93,7 @@ const productRouter = createTRPCRouter({
         WHERE p.name
         LIKE ${querySearchText}
         AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9999999}
+        AND p.price <= ${price.max ?? 9_999_999}
         AND p.quantity >= ${includeOutOfStock ? 0 : 1}
         AND rating >= ${ratingFilter ?? 0}
         GROUP BY p.id
@@ -108,7 +108,7 @@ const productRouter = createTRPCRouter({
         WHERE p.name
         LIKE ${querySearchText}
         AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9999999}
+        AND p.price <= ${price.max ?? 9_999_999}
         AND p.quantity >= ${includeOutOfStock ? 0 : 1}
         AND rating >= ${ratingFilter ?? 0}
         GROUP BY p.id
@@ -123,7 +123,7 @@ const productRouter = createTRPCRouter({
         WHERE p.name
         LIKE ${querySearchText}
         AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9999999}
+        AND p.price <= ${price.max ?? 9_999_999}
         AND p.quantity >= ${includeOutOfStock ? 0 : 1}
         AND rating >= ${ratingFilter ?? 0}
         GROUP BY p.id
@@ -137,7 +137,7 @@ const productRouter = createTRPCRouter({
         WHERE p.name
         LIKE ${querySearchText}
         AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9999999}
+        AND p.price <= ${price.max ?? 9_999_999}
         AND p.quantity >= ${includeOutOfStock ? 0 : 1}
         AND rating >= ${ratingFilter ?? 0}
         GROUP BY p.id
@@ -195,7 +195,7 @@ const productRouter = createTRPCRouter({
           },
         });
       }
-
+      console.log(productSearchResult);
       return {
         products: productsWithRatings,
         categories,
