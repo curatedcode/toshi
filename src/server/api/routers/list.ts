@@ -1,6 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
+import { max_list_desc_char, max_list_title_char } from "~/customVariables";
 
 const listRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -81,8 +82,8 @@ const listRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
-        description: z.string().nullish(),
+        name: z.string().min(1).max(max_list_title_char),
+        description: z.string().max(max_list_desc_char).nullish(),
         isPrivate: z.boolean(),
       })
     )
@@ -92,7 +93,7 @@ const listRouter = createTRPCRouter({
 
       const userId = session.user.id;
 
-      await prisma.list.create({
+      const list = await prisma.list.create({
         data: {
           name,
           description,
@@ -101,7 +102,7 @@ const listRouter = createTRPCRouter({
         },
       });
 
-      return;
+      return { listId: list.id };
     }),
 
   delete: protectedProcedure
@@ -162,7 +163,12 @@ const listRouter = createTRPCRouter({
     }),
 
   updateTitle: protectedProcedure
-    .input(z.object({ listId: z.string(), name: z.string() }))
+    .input(
+      z.object({
+        listId: z.string(),
+        name: z.string().min(1).max(max_list_title_char),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const { prisma } = ctx;
       const { listId, name } = input;

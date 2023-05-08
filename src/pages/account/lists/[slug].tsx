@@ -11,6 +11,7 @@ import getRelativeTime from "~/components/Fn/getRelativeDate";
 import Layout from "~/components/Layout";
 import Product from "~/components/Products/Product";
 import TextInputField from "~/components/TextInputField";
+import { max_list_title_char } from "~/customVariables";
 import { api } from "~/utils/api";
 
 const schema = z.object({
@@ -126,7 +127,7 @@ const ListPage: NextPage = () => {
           <TextInputField
             internalLabel="title"
             visibleLabel="List title"
-            maxLength={50}
+            maxLength={max_list_title_char}
             error={titleError}
             defaultValue={list?.name}
             {...register("title")}

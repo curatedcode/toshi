@@ -25,3 +25,9 @@ export const zipCode_regex = /(^\d{5}(?:[\s]?[-\s][\s]?\d{4})?$)/;
 
 export const max_country_char = 100;
 // addresses -end
+
+// list title
+export const max_list_title_char = 50;
+
+// list description
+export const max_list_desc_char = 280;
