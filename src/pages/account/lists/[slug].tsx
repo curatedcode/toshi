@@ -65,7 +65,7 @@ const ListPage: NextPage = () => {
     reset,
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
-  const productsToRemove: string[] = [];
+  const [productsToRemove, setProductsToRemove] = useState<string[]>([]);
 
   function onSubmit() {
     updateTitle({ listId, name: getValues("title") });
@@ -134,22 +134,26 @@ const ListPage: NextPage = () => {
           <div className="flex flex-col">
             <span className="ml-1 font-semibold">Products</span>
             <div className="grid grid-cols-1 gap-4 gap-y-8 md:grid-cols-2">
-              {list?.products?.map(
-                (product) =>
-                  !productsToRemove?.includes(product.id) && (
-                    <div key={product.id} className="flex w-fit flex-col">
-                      <Product product={product} />
-                      <button
-                        type="button"
-                        title="Remove from list"
-                        onClick={() => productsToRemove.push(product.id)}
-                        className="mt-1 w-fit rounded-md bg-toshi-red px-2 py-1 font-semibold text-white"
-                      >
-                        <TrashIcon className="w-6" aria-hidden />
-                      </button>
-                    </div>
-                  )
-              )}
+              {list?.products?.map((product) => (
+                <div
+                  key={product.id}
+                  className={`flex w-fit flex-col ${
+                    productsToRemove.includes(product.id) ? "hidden" : ""
+                  }`}
+                >
+                  <Product product={product} />
+                  <button
+                    type="button"
+                    title="Remove from list"
+                    onClick={() =>
+                      setProductsToRemove((prev) => prev.concat([product.id]))
+                    }
+                    className="mt-1 w-fit rounded-md bg-toshi-red px-2 py-1 font-semibold text-white"
+                  >
+                    <TrashIcon className="w-6" aria-hidden />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </form>
