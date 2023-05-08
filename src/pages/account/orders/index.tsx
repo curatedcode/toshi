@@ -116,10 +116,10 @@ const OrdersPage: NextPage = () => {
                         Order details
                       </Link>
                       <Link
-                        href={`${orderLink}#invoice`}
+                        href={`${orderLink}?print=true`}
                         className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
-                        View invoice
+                        Print invoice
                       </Link>
                     </div>
                   </div>
@@ -132,10 +132,10 @@ const OrdersPage: NextPage = () => {
                         Order details
                       </Link>
                       <Link
-                        href={`${orderLink}#invoice`}
+                        href={`${orderLink}?print=true`}
                         className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
-                        View invoice
+                        Print invoice
                       </Link>
                     </div>
                     <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-4 md:gap-4">
