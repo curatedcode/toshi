@@ -82,6 +82,18 @@ const ListPage: NextPage = () => {
     setEditing(false);
   }
 
+  // warn before exit if editing
+  useEffect(() => {
+    function handleExit(e: BeforeUnloadEvent) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+    if (editing) {
+      window.addEventListener("beforeunload", handleExit);
+      return () => window.removeEventListener("beforeunload", handleExit);
+    }
+  }, [editing]);
+
   return (
     <Layout
       title={`${list?.name ? `${list?.name} list` : "Your list"} | Toshi`}
