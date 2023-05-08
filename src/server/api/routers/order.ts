@@ -78,6 +78,7 @@ const orderRouter = createTRPCRouter({
           id: true,
           createdAt: true,
           deliveredAt: true,
+          total: true,
           products: {
             select: {
               priceAtPurchase: true,
