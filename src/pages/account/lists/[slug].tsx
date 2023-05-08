@@ -31,7 +31,7 @@ const ListPage: NextPage = () => {
 
   const [editing, setEditing] = useState(editParam === "true");
 
-  const { data: list } = api.list.getOne.useQuery({ listId });
+  const { data: list, refetch } = api.list.getOne.useQuery({ listId });
 
   const { mutate: updateTitle, isLoading: titleSaving } =
     api.list.updateTitle.useMutation();
@@ -72,6 +72,7 @@ const ListPage: NextPage = () => {
     const isPrivate = getValues("visibility") === "Private";
     updateVisibility({ listId, isPrivate });
     removeProduct({ listId, productId: productsToRemove });
+    void refetch();
     setEditing(false);
   }
 
