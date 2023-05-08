@@ -80,7 +80,7 @@ const ListPage: NextPage = () => {
                     Edit list
                   </Link>
                 </div>
-                <div className="flex flex-col gap-4 md:grid md:grid-cols-4">
+                <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-4">
                   {products.map((product, index) => {
                     if (index >= 4) return null;
                     return <Product key={product.id} product={product} />;

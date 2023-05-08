@@ -123,7 +123,7 @@ const OrdersPage: NextPage = () => {
                       </Link>
                     </div>
                   </div>
-                  <div className="flex flex-col justify-between px-4 md:flex-row">
+                  <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
                     <div className="order-last hidden w-48 flex-col gap-2 md:flex">
                       <Link
                         href={orderLink}
@@ -138,7 +138,7 @@ const OrdersPage: NextPage = () => {
                         View invoice
                       </Link>
                     </div>
-                    <div className="flex flex-col gap-8 md:gap-4">
+                    <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-4 md:gap-4">
                       {products.map((product) => (
                         <OrderedProduct
                           key={product.product.id}
