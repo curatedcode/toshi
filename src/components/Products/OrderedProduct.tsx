@@ -17,9 +17,9 @@ function OrderedProduct({
         alt={name}
         height={imageHeight}
         width={imageWidth}
-        className="w-full md:max-w-xs"
+        className="w-full md:max-w-[14rem] lg:max-w-xs"
       />
-      <div className="flex flex-col justify-between">
+      <div className="flex flex-col gap-4">
         <div className="grid gap-1">
           <InternalLink
             href={`/products/${id}`}
@@ -36,7 +36,10 @@ function OrderedProduct({
               {company.name}
             </InternalLink>
           </div>
-          <span className="text-toshi-red">${priceAtPurchase}</span>
+          <div className="flex w-fit items-center gap-0.5 text-2xl font-medium text-toshi-red">
+            <span className="-mt-1.5 text-base">$</span>
+            <span>{priceAtPurchase}</span>
+          </div>
         </div>
         <div className="md:w-48">
           <button

@@ -279,3 +279,15 @@ export declare type SkipToContentButtonProps = {
   text?: string;
   className?: string;
 };
+
+export const OrderPlacedOnEnum = z.enum([
+  "pastDay",
+  "pastWeek",
+  "pastMonth",
+  "pastThreeMonths",
+  "pastSixMonths",
+  "pastYear",
+  "anytime",
+]);
+
+export declare type OrderPlacedOnType = z.infer<typeof OrderPlacedOnEnum>;
