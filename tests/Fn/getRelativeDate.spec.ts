@@ -12,7 +12,7 @@ describe("seconds", () => {
     vi.useRealTimers();
   });
 
-  it("should return 1s", () => {
+  it("should return 1s ago", () => {
     // March 30, 2023 @ 5:00:00
     const fakeDate = new Date(2023, 2, 30, 6, 0, 0);
     vi.setSystemTime(fakeDate);
@@ -20,10 +20,10 @@ describe("seconds", () => {
     // March 30, 2023 @ 5:00:01
     const reviewDate = new Date(2023, 2, 30, 6, 0, 1);
 
-    expect(getRelativeDate(reviewDate)).toBe("1s");
+    expect(getRelativeDate(reviewDate)).toBe("1s ago");
   });
 
-  it("should return 5s", () => {
+  it("should return 5s ago", () => {
     // March 30, 2023 @ 6:00:00
     const fakeDate = new Date(2023, 2, 30, 6, 0, 0);
     vi.setSystemTime(fakeDate);
@@ -31,7 +31,7 @@ describe("seconds", () => {
     // March 30, 2023 @ 6:00:05
     const reviewDate = new Date(2023, 2, 30, 6, 0, 5);
 
-    expect(getRelativeDate(reviewDate)).toBe("5s");
+    expect(getRelativeDate(reviewDate)).toBe("5s ago");
   });
 });
 
@@ -46,7 +46,7 @@ describe("minutes", () => {
     vi.useRealTimers();
   });
 
-  it("should return 1m", () => {
+  it("should return 1m ago", () => {
     // March 30, 2023 @ 6:00
     const fakeDate = new Date(2023, 2, 30, 6, 0);
     vi.setSystemTime(fakeDate);
@@ -54,10 +54,10 @@ describe("minutes", () => {
     // March 30, 2023 @ 6:01
     const reviewDate = new Date(2023, 2, 30, 6, 1);
 
-    expect(getRelativeDate(reviewDate)).toBe("1m");
+    expect(getRelativeDate(reviewDate)).toBe("1m ago");
   });
 
-  it("should return 5m", () => {
+  it("should return 5m ago", () => {
     // March 30, 2023 @ 6:00
     const fakeDate = new Date(2023, 2, 30, 6, 0);
     vi.setSystemTime(fakeDate);
@@ -65,7 +65,7 @@ describe("minutes", () => {
     // March 30, 2023 @ 6:05
     const reviewDate = new Date(2023, 2, 30, 6, 5);
 
-    expect(getRelativeDate(reviewDate)).toBe("5m");
+    expect(getRelativeDate(reviewDate)).toBe("5m ago");
   });
 });
 
@@ -80,7 +80,7 @@ describe("hours", () => {
     vi.useRealTimers();
   });
 
-  it("should return 1h", () => {
+  it("should return 1h ago", () => {
     // March 30, 2023 @ 6:00
     const fakeDate = new Date(2023, 2, 30, 6, 0);
     vi.setSystemTime(fakeDate);
@@ -88,10 +88,10 @@ describe("hours", () => {
     // March 30, 2023 @ 7:00
     const reviewDate = new Date(2023, 2, 30, 7, 0);
 
-    expect(getRelativeDate(reviewDate)).toBe("1h");
+    expect(getRelativeDate(reviewDate)).toBe("1h ago");
   });
 
-  it("should return 5h", () => {
+  it("should return 5h ago", () => {
     // March 30, 2023 @ 6:00
     const fakeDate = new Date(2023, 2, 30, 6, 0);
     vi.setSystemTime(fakeDate);
@@ -99,7 +99,7 @@ describe("hours", () => {
     // March 30, 2023 @ 11:00
     const reviewDate = new Date(2023, 2, 30, 11, 0);
 
-    expect(getRelativeDate(reviewDate)).toBe("5h");
+    expect(getRelativeDate(reviewDate)).toBe("5h ago");
   });
 });
 

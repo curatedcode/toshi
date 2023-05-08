@@ -39,8 +39,8 @@ function getRelativeTime(date: Date) {
     return dayjs(date).format("MMM D");
   }
 
-  // return relative with no suffix
-  return currentDate.from(date, true);
+  // return relative time
+  return `${currentDate.from(date, true)} ago`;
 }
 
 export default getRelativeTime;
