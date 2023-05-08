@@ -68,8 +68,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
         <div className="inline-flex items-center justify-end gap-6 font-medium md:order-last">
           <Dropdown
             trigger={
-              <button
-                type="button"
+              <div
                 onClick={
                   status === "authenticated" ? undefined : () => signIn()
                 }
@@ -79,7 +78,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
                 <span className="hidden max-w-[96px] overflow-hidden text-ellipsis whitespace-nowrap md:block">
                   {status === "authenticated" ? name?.firstName : "Sign In"}
                 </span>
-              </button>
+              </div>
             }
             className="place-items-center"
             position="right"
