@@ -62,7 +62,7 @@ const AccountPage: NextPage = () => {
     <Layout
       title="Your Account"
       description="Your account on Toshi | Make Shopping Yours"
-      className="flex flex-col gap-6 md:gap-16"
+      className="flex flex-col gap-6 px-5 md:gap-16"
     >
       <section className="mt-4 flex w-fit flex-col place-items-center gap-2 self-center text-center md:flex-row md:place-items-start md:text-start">
         <Avatar alt="Your profile picture" src={user?.image} size="lg" />
@@ -119,34 +119,34 @@ const AccountPage: NextPage = () => {
                     <div className="flex w-full gap-2 md:hidden">
                       <Link
                         href={orderLink}
-                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
                         Order details
                       </Link>
                       <Link
                         href={`${orderLink}#invoice`}
-                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
                         View invoice
                       </Link>
                     </div>
                   </div>
-                  <div className="flex flex-col justify-between px-4 md:flex-row">
+                  <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
                     <div className="order-last hidden w-48 flex-col gap-2 md:flex">
                       <Link
                         href={orderLink}
-                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
                         Order details
                       </Link>
                       <Link
                         href={`${orderLink}#invoice`}
-                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
                         View invoice
                       </Link>
                     </div>
-                    <div className="flex flex-col gap-8 md:gap-4">
+                    <div className="grid grid-cols-1 gap-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                       {products.map((product) => (
                         <OrderedProduct
                           key={product.product.id}
@@ -205,13 +205,13 @@ const AccountPage: NextPage = () => {
                   <div className="flex w-full gap-2 md:hidden">
                     <Link
                       href={listLink}
-                      className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                     >
                       View list
                     </Link>
                     <Link
                       href={`${listLink}?edit=true`}
-                      className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                     >
                       Edit list
                     </Link>
@@ -221,13 +221,13 @@ const AccountPage: NextPage = () => {
                   <div className="order-last hidden w-48 flex-col gap-2 md:flex">
                     <Link
                       href={listLink}
-                      className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                     >
                       View list
                     </Link>
                     <Link
                       href={`${listLink}?edit=true`}
-                      className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                     >
                       Edit list
                     </Link>

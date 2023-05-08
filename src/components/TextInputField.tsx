@@ -23,6 +23,7 @@ const TextInputField = forwardRef(function TextInputField(
         {visibleLabel}
       </label>
       <input
+        id={internalLabel}
         className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
           error ? "border-red-500 focus-within:border-red-500" : ""
         } ${className ?? ""}`}

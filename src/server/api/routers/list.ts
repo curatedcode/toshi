@@ -12,6 +12,7 @@ const listRouter = createTRPCRouter({
       select: {
         id: true,
         createdAt: true,
+        updatedAt: true,
         name: true,
         isPrivate: true,
         products: {
@@ -49,6 +50,7 @@ const listRouter = createTRPCRouter({
       const list = await prisma.list.findUnique({
         where: { id: listId },
         select: {
+          id: true,
           name: true,
           createdAt: true,
           updatedAt: true,
@@ -136,19 +138,27 @@ const listRouter = createTRPCRouter({
     .input(
       z.object({
         listId: z.string(),
-        productId: z.string(),
+        productId: z.string().or(z.array(z.string())),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { prisma } = ctx;
       const { listId, productId } = input;
 
+      if (typeof productId === "string") {
+        await prisma.list.update({
+          where: { id: listId },
+          data: { products: { disconnect: { id: productId } } },
+        });
+        return;
+      }
+
+      const productIds = productId.map((id) => ({ id }));
+
       await prisma.list.update({
         where: { id: listId },
-        data: { products: { disconnect: { id: productId } } },
+        data: { products: { disconnect: productIds } },
       });
-
-      return;
     }),
 
   updateTitle: protectedProcedure

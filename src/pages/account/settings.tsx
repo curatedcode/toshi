@@ -209,7 +209,7 @@ const SettingsPage: NextPage = () => {
   );
 };
 
-function FormButtons({
+export function FormButtons({
   isLoading,
   resetForm,
 }: {

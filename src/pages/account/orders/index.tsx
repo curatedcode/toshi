@@ -111,13 +111,13 @@ const OrdersPage: NextPage = () => {
                     <div className="flex w-full flex-col gap-2 sm:flex-row md:hidden">
                       <Link
                         href={orderLink}
-                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
                         Order details
                       </Link>
                       <Link
                         href={`${orderLink}#invoice`}
-                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
                         View invoice
                       </Link>
@@ -127,13 +127,13 @@ const OrdersPage: NextPage = () => {
                     <div className="order-last hidden w-48 flex-col gap-2 md:flex">
                       <Link
                         href={orderLink}
-                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
                         Order details
                       </Link>
                       <Link
                         href={`${orderLink}#invoice`}
-                        className="w-full rounded-md bg-neutral-200 py-1 text-center transition-colors hover:bg-neutral-300"
+                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
                       >
                         View invoice
                       </Link>

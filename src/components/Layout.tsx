@@ -102,8 +102,8 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
               </button>
             )}
             <div className="mb-2 flex flex-col items-center gap-2 [&>*]:text-center [&>*]:text-sm">
-              <InternalLink href={"/wishlist"}>Wish List</InternalLink>
-              <InternalLink href={"/wishlist/create"}>
+              <InternalLink href={"/account/lists"}>Wish List</InternalLink>
+              <InternalLink href={"/account/lists/create"}>
                 New Wish List
               </InternalLink>
             </div>

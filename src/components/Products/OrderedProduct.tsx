@@ -1,6 +1,7 @@
 import type { OrderedProductProps } from "~/customTypes";
 import Image from "../Image";
 import InternalLink from "../InternalLink";
+import Link from "next/link";
 
 function OrderedProduct({
   product,
@@ -11,15 +12,15 @@ function OrderedProduct({
   const { id, name, images, company } = productData;
 
   return (
-    <div className="flex flex-col gap-2 md:flex-row">
-      <Image
-        src={images && images[0] && images[0].url}
-        alt={name}
-        height={imageHeight}
-        width={imageWidth}
-        className="w-full md:max-w-[14rem] lg:max-w-xs"
-      />
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col justify-between gap-4">
+      <div className="flex flex-col gap-2">
+        <Image
+          src={images && images[0] && images[0].url}
+          alt={name}
+          height={imageHeight}
+          width={imageWidth}
+          className="w-full rounded-md"
+        />
         <div className="grid gap-1">
           <InternalLink
             href={`/products/${id}`}
@@ -36,23 +37,18 @@ function OrderedProduct({
               {company.name}
             </InternalLink>
           </div>
-          <div className="flex w-fit items-center gap-0.5 text-2xl font-medium text-toshi-red">
+          <div className="flex w-fit items-center gap-0.5 text-2xl font-medium">
             <span className="-mt-1.5 text-base">$</span>
             <span>{priceAtPurchase}</span>
           </div>
         </div>
-        <div className="md:w-48">
-          <button
-            type="button"
-            onClick={() => {
-              null;
-            }}
-            className="mt-2 min-w-full rounded-md bg-neutral-200 px-4 py-1 transition-colors hover:bg-neutral-300 md:mt-0 md:w-fit"
-          >
-            Buy again
-          </button>
-        </div>
       </div>
+      <Link
+        href={`/products/${id}`}
+        className="mt-2 w-full self-end justify-self-end rounded-md bg-neutral-200 px-4 py-1 text-center transition-colors hover:bg-neutral-300"
+      >
+        Buy again
+      </Link>
     </div>
   );
 }
