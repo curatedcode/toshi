@@ -43,7 +43,7 @@ function Controls({ api, visible, type = "filled" }: SliderControlProps) {
         title={canScrollPrev ? "Go back a slide" : "No previous slides"}
         aria-label="previous"
       >
-        <ChevronLeftIcon className="w-12" />
+        <ChevronLeftIcon className="w-12" aria-hidden />
       </button>
       <button
         type="button"
@@ -57,7 +57,7 @@ function Controls({ api, visible, type = "filled" }: SliderControlProps) {
         title={canScrollNext ? "Go forward a slide" : "No next slides"}
         aria-label="next"
       >
-        <ChevronRightIcon className="w-12" />
+        <ChevronRightIcon className="w-12" aria-hidden />
       </button>
     </Transition>
   );

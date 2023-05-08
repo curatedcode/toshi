@@ -121,7 +121,7 @@ const ProductPage: NextPage = (
                 onClick={() => handleOrderQuantity(-1)}
                 className="flex items-center rounded-l-md px-4"
               >
-                <MinusIcon className="w-4" />
+                <MinusIcon className="w-4" aria-hidden />
               </button>
               <input
                 type="number"
@@ -138,7 +138,7 @@ const ProductPage: NextPage = (
                 onClick={() => handleOrderQuantity(1)}
                 className="flex items-center rounded-r-md px-4"
               >
-                <PlusIcon className="w-4" />
+                <PlusIcon className="w-4" aria-hidden />
               </button>
             </div>
           ) : (

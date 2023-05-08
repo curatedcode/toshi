@@ -22,9 +22,9 @@ function NavButton({ name, href, disabled }: NavButtonProps) {
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
     >
-      {name === "Previous" && <ChevronLeftIcon className="w-6" />}
+      {name === "Previous" && <ChevronLeftIcon className="w-6" aria-hidden />}
       {name}
-      {name === "Next" && <ChevronRightIcon className="w-6" />}
+      {name === "Next" && <ChevronRightIcon className="w-6" aria-hidden />}
     </Link>
   );
 }

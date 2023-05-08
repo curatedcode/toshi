@@ -74,7 +74,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
                 }
                 className="inline-flex items-center gap-1"
               >
-                <UserIcon className="w-7" />
+                <UserIcon className="w-7" aria-hidden />
                 <span className="hidden max-w-[96px] overflow-hidden text-ellipsis whitespace-nowrap md:block">
                   {status === "authenticated" ? name?.firstName : "Sign In"}
                 </span>
@@ -116,7 +116,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             </div>
           </Dropdown>
           <Link href={"/cart"} className="inline-flex w-fit items-center gap-1">
-            <ShoppingCartIcon className="w-7" />
+            <ShoppingCartIcon className="w-7" aria-hidden />
             <span className="hidden md:block">Cart</span>
           </Link>
         </div>
@@ -140,7 +140,10 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             onClick={() => linkRef.current?.click()}
             aria-label="Submit search"
           >
-            <MagnifyingGlassIcon className="h-full w-10 rounded-lg border-2 border-l-0 border-white bg-toshi-red p-2 text-white" />
+            <MagnifyingGlassIcon
+              className="h-full w-10 rounded-lg border-2 border-l-0 border-white bg-toshi-red p-2 text-white"
+              aria-hidden
+            />
           </button>
         </div>
         <div className="col-span-full row-start-3 inline-flex items-center justify-evenly gap-4 font-medium md:order-2">
@@ -148,7 +151,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             trigger={
               <div className="inline-flex items-center gap-1">
                 Categories
-                <ChevronDownIcon className="-mb-1 w-5" />
+                <ChevronDownIcon className="-mb-1 w-5" aria-hidden />
               </div>
             }
             className="auto-cols-min grid-cols-1 lg:grid-cols-2"
