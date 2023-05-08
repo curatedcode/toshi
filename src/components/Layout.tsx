@@ -12,9 +12,8 @@ import Dropdown from "./Dropdown";
 import Link from "next/link";
 import { type KeyboardEvent, useRef, useState } from "react";
 import LogoWithText from "./LogoWithText";
-import useDimensions from "./Fn/useDimensions";
 import { Source_Sans_Pro } from "next/font/google";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import InternalLink from "./InternalLink";
 const font = Source_Sans_Pro({
   subsets: ["latin"],
@@ -44,22 +43,10 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
     inputRef.current?.blur();
   }
 
-  const { ref, width: navWidth } = useDimensions();
-
-  const { data } = api.category.getAll.useQuery(undefined, {
+  const { data: categories } = api.category.getAll.useQuery(undefined, {
     keepPreviousData: true,
     staleTime: Infinity,
   });
-
-  const categories = data?.map((category) => (
-    <Link
-      href={`/search?dept=${category.name}`}
-      key={category.name}
-      className="hover:bg-web-white container px-3 py-1 text-black transition-colors duration-75"
-    >
-      {category.name}
-    </Link>
-  ));
 
   return (
     <div className="relative flex min-h-screen flex-col">
@@ -70,10 +57,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
       </Head>
       <SkipToContentButton />
       <Link href={`/search?text=${searchText}`} ref={linkRef} hidden />
-      <nav
-        className="grid w-full grid-cols-2 bg-toshi-red px-2 py-1.5 text-white md:inline-flex md:gap-4 md:px-4"
-        ref={ref}
-      >
+      <nav className="grid w-full grid-cols-2 bg-toshi-red px-2 py-1.5 text-white md:inline-flex md:gap-4 md:px-4">
         <Link
           href={"/"}
           aria-label="Home"
@@ -81,44 +65,49 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
         >
           <LogoWithText />
         </Link>
-        <div className="inline-flex items-center gap-6 justify-self-end font-medium md:order-last">
+        <div className="inline-flex items-center justify-end gap-6 font-medium md:order-last">
           <Dropdown
             trigger={
-              <Link
-                href={status === "authenticated" ? "/account" : ""}
+              <button
+                type="button"
                 onClick={
                   status === "authenticated" ? undefined : () => signIn()
                 }
-                className="flex items-center gap-1"
+                className="inline-flex items-center gap-1"
               >
                 <UserIcon className="w-7" />
                 <span className="hidden max-w-[96px] overflow-hidden text-ellipsis whitespace-nowrap md:block">
                   {status === "authenticated" ? name?.firstName : "Sign In"}
                 </span>
-              </Link>
+              </button>
             }
-            placement={"bottom"}
-            offset={navWidth >= 768 ? 20 : 6}
-            className={{
-              children: "grid grid-cols-2 gap-y-4 bg-white",
-            }}
+            className="place-items-center"
+            position="right"
           >
-            {status !== "authenticated" && (
+            {status === "authenticated" ? (
+              <button
+                type="button"
+                onClick={() => void signOut()}
+                className="col-span-full mb-3 w-full justify-self-center whitespace-nowrap rounded-md bg-toshi-red px-2 py-1 hover:bg-opacity-90"
+              >
+                Sign Out
+              </button>
+            ) : (
               <button
                 type="button"
                 onClick={() => void signIn()}
-                className="col-span-full w-48 justify-self-center whitespace-nowrap rounded-md bg-toshi-red px-2 py-1 hover:bg-opacity-90"
+                className="col-span-full mb-3 w-full justify-self-center whitespace-nowrap rounded-md bg-toshi-red px-2 py-1 hover:bg-opacity-90"
               >
                 Sign In
               </button>
             )}
-            <div className="flex flex-col gap-2">
+            <div className="mb-2 flex flex-col items-center gap-2 [&>*]:text-center [&>*]:text-sm">
               <InternalLink href={"/wishlist"}>Wish List</InternalLink>
               <InternalLink href={"/wishlist/create"}>
                 New Wish List
               </InternalLink>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col items-center gap-2 [&>*]:text-sm">
               <InternalLink href={"/account"}>Account</InternalLink>
               <InternalLink href={"/account/orders"}>Orders</InternalLink>
               <InternalLink href={"/cart"}>Cart</InternalLink>
@@ -163,13 +152,18 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
                 <ChevronDownIcon className="-mb-1 w-5" />
               </div>
             }
-            placement={navWidth >= 768 ? "bottom-start" : "bottom"}
-            offset={navWidth >= 768 ? 20 : 6}
-            className={{
-              children: "grid grid-cols-2 bg-white",
-            }}
+            className="auto-cols-min grid-cols-1 lg:grid-cols-2"
+            position="left"
           >
-            {categories}
+            {categories?.map((category) => (
+              <Link
+                href={`/search?dept=${category.name}`}
+                key={category.name}
+                className="container px-3 py-2 text-center text-black transition-colors duration-75 hover:bg-neutral-100"
+              >
+                {category.name}
+              </Link>
+            ))}
           </Dropdown>
           <Link href={"/new-releases"} className="whitespace-nowrap">
             What&apos;s new

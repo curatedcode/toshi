@@ -1,4 +1,3 @@
-import type { Placement } from "@floating-ui/react";
 import type { Category, Prisma, ProductImage, Review } from "@prisma/client";
 import type { EmblaCarouselType } from "embla-carousel-react";
 import type { Url } from "next/dist/shared/lib/router/router";
@@ -26,18 +25,6 @@ export declare type OffsetValue =
       crossAxis?: number;
       alignmentAxis?: number | null;
     };
-
-export declare type FloatingOptions = {
-  children?: React.ReactNode;
-  offset?: OffsetValue;
-  placement?: Placement;
-  delay?: number | Partial<{ open: number; close: number }>;
-};
-
-export declare interface PopoverProps extends FloatingOptions {
-  trigger: React.ReactNode;
-  className?: Partial<{ trigger: string; children: string }>;
-}
 
 export declare type LayoutProps = {
   title: string;
@@ -291,3 +278,11 @@ export const OrderPlacedOnEnum = z.enum([
 ]);
 
 export declare type OrderPlacedOnType = z.infer<typeof OrderPlacedOnEnum>;
+
+export declare type DropdownProps = {
+  trigger: React.ReactNode;
+  children: JSX.Element[] | undefined;
+  offset?: number;
+  className?: string;
+  position: "left" | "right";
+};

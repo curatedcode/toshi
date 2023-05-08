@@ -1,93 +1,51 @@
-import {
-  autoUpdate,
-  flip,
-  FloatingFocusManager,
-  offset as offsetFunc,
-  shift,
-  useClick,
-  useDismiss,
-  useFloating,
-  useInteractions,
-  useRole,
-  useTransitionStyles,
-} from "@floating-ui/react";
-import { useState } from "react";
-import { type PopoverProps } from "~/customTypes";
+import { Fragment } from "react";
+import type { DropdownProps } from "~/customTypes";
+import { Popover, Transition } from "@headlessui/react";
 
-export default function Dropdown({
-  trigger,
+function Dropdown({
   children,
-  offset = 10,
-  placement = "bottom",
-  className,
-}: PopoverProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMenuHovered, setIsMenuHovered] = useState(false);
-
-  const { x, y, strategy, refs, context } = useFloating({
-    open: isOpen,
-    onOpenChange: setIsOpen,
-    middleware: [offsetFunc(offset), flip(), shift()],
-    whileElementsMounted: autoUpdate,
-    placement: placement,
-  });
-
-  const click = useClick(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context);
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([
-    click,
-    dismiss,
-    role,
-  ]);
-
-  const { isMounted, styles } = useTransitionStyles(context, {
-    duration: 125,
-    initial: {
-      opacity: 0,
-    },
-    common: {
-      opacity: 1,
-    },
-  });
-
+  trigger,
+  offset = 12,
+  className = "",
+  position,
+}: DropdownProps) {
   return (
-    <>
-      <button
-        ref={refs.setReference}
-        {...getReferenceProps()}
-        className={className?.trigger}
-        onClick={() => setIsOpen(true)}
-        onMouseOver={() => setIsOpen(true)}
-        aria-label="Toggle Menu"
-      >
-        {trigger}
-      </button>
-      {isMounted && (
-        <FloatingFocusManager context={context}>
-          <div
-            ref={refs.setFloating}
-            style={{
-              position: strategy,
-              top: y ?? 0,
-              left: x ?? 0,
-              ...styles,
-            }}
-            {...getFloatingProps()}
-            className={`absolute z-50 w-max select-none rounded-md px-3 py-2 text-lg text-black dark:text-white ${
-              className?.children ?? ""
-            }`}
-            onMouseOver={() => setIsMenuHovered(true)}
-            onMouseLeave={() => {
-              setIsMenuHovered(false);
-              setIsOpen(false);
-            }}
-          >
-            {children}
-          </div>
-        </FloatingFocusManager>
-      )}
-    </>
+    <div className="relative">
+      <Popover className="relative">
+        {() => (
+          <>
+            <Popover.Button className="flex">{trigger}</Popover.Button>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-0 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-150"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <Popover.Panel
+                className={`absolute z-10 mt-3 w-screen max-w-[18rem] -translate-x-1/2 px-4 ${
+                  position === "right" ? "dropDownMenu" : ""
+                }`}
+                style={
+                  position === "left"
+                    ? { marginTop: offset, left: "min(100vw - 18rem, 50%" }
+                    : { marginTop: offset }
+                }
+              >
+                <div className="overflow-hidden rounded-lg shadow-lg shadow-neutral-300 ring-1 ring-black ring-opacity-10">
+                  <div className={`relative grid bg-white p-2 ${className}`}>
+                    {children}
+                  </div>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover>
+    </div>
   );
 }
+
+export default Dropdown;

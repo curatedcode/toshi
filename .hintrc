@@ -1,7 +1,5 @@
 {
-  "extends": [
-    "development"
-  ],
+  "extends": ["development"],
   "hints": {
     "no-inline-styles": "off",
     "axe/aria": [
@@ -13,9 +11,7 @@
     "compat-api/html": [
       "default",
       {
-        "ignore": [
-          "img[loading]"
-        ]
+        "ignore": ["img[loading]"]
       }
     ]
   }
