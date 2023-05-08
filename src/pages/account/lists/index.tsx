@@ -50,7 +50,7 @@ const ListPage: NextPage = () => {
                   <span className="mr-2 md:hidden">:</span>
                   <span>{products.length}</span>
                 </div>
-                <div className="flex w-full gap-2 md:hidden">
+                <div className="flex w-full flex-col gap-2 md:hidden">
                   <Link
                     href={listLink}
                     className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
@@ -80,7 +80,7 @@ const ListPage: NextPage = () => {
                     Edit list
                   </Link>
                 </div>
-                <div className="flex flex-col gap-4 md:flex-row">
+                <div className="flex flex-col gap-4 md:grid md:grid-cols-4">
                   {products.map((product, index) => {
                     if (index >= 4) return null;
                     return <Product key={product.id} product={product} />;
