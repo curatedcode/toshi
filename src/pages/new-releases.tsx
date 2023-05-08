@@ -10,11 +10,16 @@ const NewReleasePage: NextPage = () => {
     <Layout
       title="New Releases | Toshi"
       description="New releases on Toshi"
-      className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3"
+      className="flex flex-col px-5 pt-8"
     >
-      {data?.map((product) => (
-        <Product key={product.id} product={product} />
-      ))}
+      <h1 className="my-3 ml-1 text-3xl font-semibold md:text-4xl">
+        New Releases
+      </h1>
+      <div className="grid grid-cols-1 gap-6 gap-y-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {data?.map((product) => (
+          <Product key={product.id} product={product} />
+        ))}
+      </div>
     </Layout>
   );
 };
