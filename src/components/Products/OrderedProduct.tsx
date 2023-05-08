@@ -14,13 +14,15 @@ function OrderedProduct({
   return (
     <div className="flex flex-col justify-between gap-4">
       <div className="flex flex-col gap-2">
-        <Image
-          src={images && images[0] && images[0].url}
-          alt={name}
-          height={imageHeight}
-          width={imageWidth}
-          className="w-full rounded-md"
-        />
+        <Link href={`/products/${id}`} className="w-fit">
+          <Image
+            src={images && images[0] && images[0].url}
+            alt={name}
+            height={imageHeight}
+            width={imageWidth}
+            className="w-full rounded-md"
+          />
+        </Link>
         <div className="grid gap-1">
           <InternalLink
             href={`/products/${id}`}
