@@ -192,10 +192,16 @@ model CartProduct {
     productId   String
     product     Product   @relation(fields: [productId], references: [id])
     quantity    Int
-    userCart    UserCart[]
-    tempCart    TempCart[]
+    userCartId  String?
+    userCart    UserCart? @relation(fields: [userCartId], references: [id])
+    tempCartId  String?
+    tempCart    TempCart? @relation(fields: [tempCartId], references: [id])
 
     @@index([productId])
+    @@index([userCartId])
+    @@index([tempCartId])
+    @@unique([productId, userCartId])
+    @@unique([productId, tempCartId])
 }
 
 model UserCart {
@@ -209,8 +215,15 @@ model UserCart {
 
 model TempCart {
     id          String          @id @default(cuid())
-    cookieId    String
+    cookieId    String          @unique
+    cookie      CartCookie      @relation(fields: [cookieId], references: [id])
     products    CartProduct[]
 
     @@index([cookieId])
+}
+
+model CartCookie {
+    id          String          @id @default(cuid())
+    tempCartId  String
+    tempCart    TempCart?
 }

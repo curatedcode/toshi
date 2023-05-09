@@ -8,7 +8,6 @@ import { api } from "~/utils/api";
 import Carousel from "~/components/Sliders/Carousel";
 import Link from "next/link";
 import { useState } from "react";
-import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Image from "~/components/Image";
 import Rating from "~/components/Reviews/Rating";
 import Review from "~/components/Reviews/Review";
@@ -18,6 +17,7 @@ import { createInnerTRPCContext } from "~/server/api/trpc";
 import superjson from "superjson";
 import Slider from "~/components/Sliders/Slider";
 import Product from "~/components/Products/Product";
+import QuantityControls from "~/components/Products/QuantityControls";
 
 const ProductPage: NextPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -45,16 +45,6 @@ const ProductPage: NextPage = (
     };
 
   const [orderQuantity, setOrderQuantity] = useState(1);
-
-  function handleOrderQuantity(value: number, type: "btn" | "input" = "btn") {
-    if (type === "btn") {
-      if (value + orderQuantity > quantity) return;
-      if (value + orderQuantity < 1) return;
-      return setOrderQuantity((prev) => prev + value);
-    }
-    if (value > quantity) return;
-    return setOrderQuantity(value);
-  }
 
   return (
     <Layout
@@ -113,34 +103,12 @@ const ProductPage: NextPage = (
               quantity <= 10 && quantity > 0 ? "" : "hidden"
             }`}
           >{`Only ${quantity} left in stock - order soon.`}</p>
-          {quantity > 1 ? (
-            <div className="mb-3 flex w-fit rounded-md border border-black bg-neutral-100 text-lg shadow-md shadow-neutral-400/70 md:bg-white">
-              <button
-                type="button"
-                aria-label="minus one"
-                onClick={() => handleOrderQuantity(-1)}
-                className="flex items-center rounded-l-md px-4"
-              >
-                <MinusIcon className="w-4" aria-hidden />
-              </button>
-              <input
-                type="number"
-                onChange={(e) =>
-                  handleOrderQuantity(Number(e.currentTarget.value), "input")
-                }
-                value={orderQuantity}
-                title="set quantity"
-                className="w-10 bg-transparent px-1 text-center"
-              />
-              <button
-                type="button"
-                aria-label="plus one"
-                onClick={() => handleOrderQuantity(1)}
-                className="flex items-center rounded-r-md px-4"
-              >
-                <PlusIcon className="w-4" aria-hidden />
-              </button>
-            </div>
+          {quantity > 0 ? (
+            <QuantityControls
+              maxQuantity={quantity}
+              quantity={orderQuantity}
+              setQuantity={setOrderQuantity}
+            />
           ) : (
             <span className="mb-2 text-xl font-medium text-toshi-red">
               Out of stock

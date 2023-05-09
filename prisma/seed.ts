@@ -41,6 +41,14 @@ const ORDERS_TO_CREATE = 5;
 const PRODUCT_ORDER_MIN = 1;
 const PRODUCT_ORDER_MAX = 10;
 
+// min/max items per user cart
+const CART_ITEM_MIN = 1;
+const CART_ITEM_MAX = 10;
+
+// min/max quantity per item in cart
+const CART_ITEM_QUANTITY_MIN = 1;
+const CART_ITEM_QUANTITY_MAX = 5;
+
 /**
  * reviews per product to create
  *
@@ -295,6 +303,39 @@ async function run() {
 
   await prisma.$transaction(lists);
 
+  // create user carts
+  console.log("creating user carts...");
+
+  for (const user of users) {
+    const itemsToAdd = faker.datatype.number({
+      min: CART_ITEM_MIN,
+      max: CART_ITEM_MAX,
+    });
+
+    const cart = await prisma.userCart.create({
+      data: { userId: user.id },
+    });
+
+    const randomProductIds = Array.from({ length: itemsToAdd })
+      .fill(null)
+      .map((_, index) => getRandomProduct(index, products).id);
+
+    for (const id of randomProductIds) {
+      const quantity = faker.datatype.number({
+        min: CART_ITEM_QUANTITY_MIN,
+        max: CART_ITEM_QUANTITY_MAX,
+      });
+
+      await prisma.cartProduct.create({
+        data: {
+          productId: id,
+          quantity,
+          userCartId: cart.id,
+        },
+      });
+    }
+  }
+
   // create product reviews
   console.log("creating product reviews...");
 
@@ -425,6 +466,34 @@ async function run() {
       }
 
       await prisma.$transaction(listsToCreate);
+
+      const itemsToAdd = faker.datatype.number({
+        min: CART_ITEM_MIN,
+        max: CART_ITEM_MAX,
+      });
+
+      const cart = await prisma.userCart.create({
+        data: { userId: user.id },
+      });
+
+      const randomProductIds = Array.from({ length: itemsToAdd })
+        .fill(null)
+        .map((_, index) => getRandomProduct(index, products).id);
+
+      for (const id of randomProductIds) {
+        const quantity = faker.datatype.number({
+          min: CART_ITEM_QUANTITY_MIN,
+          max: CART_ITEM_QUANTITY_MAX,
+        });
+
+        await prisma.cartProduct.create({
+          data: {
+            productId: id,
+            quantity,
+            userCartId: cart.id,
+          },
+        });
+      }
     })();
   }
 }

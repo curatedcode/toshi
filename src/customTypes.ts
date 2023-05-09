@@ -5,6 +5,7 @@ import type {
   CSSProperties,
   ChangeEventHandler,
   DetailedHTMLProps,
+  Dispatch,
   ImgHTMLAttributes,
   InputHTMLAttributes,
   SetStateAction,
@@ -285,4 +286,34 @@ export declare type DropdownProps = {
   offset?: number;
   className?: string;
   position: "left" | "right";
+};
+
+export declare type QuantityControlsProps = {
+  maxQuantity: number;
+  setQuantity: Dispatch<SetStateAction<number>>;
+  quantity: number;
+  className?: string;
+};
+
+export declare type CartProductProps = {
+  data: {
+    id: string;
+    product: {
+      reviews: {
+        rating: number | null;
+        _count: number;
+      };
+      company: {
+        id: string;
+        name: string;
+      };
+      id: string;
+      name: string;
+      images: ProductImage[];
+      price: number;
+      quantity: number;
+    };
+    quantity: number;
+  };
+  cookieId: string | undefined;
 };
