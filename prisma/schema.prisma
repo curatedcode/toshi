@@ -60,6 +60,7 @@ model User {
     reviews       Review[]
     lists         List[]
     orders        Order[]
+    cart          UserCart?
 }
 
 model VerificationToken {
@@ -166,6 +167,8 @@ model Product {
     images          ProductImage[]
     lists           List[]
     orderedProduct  OrderedProduct[]
+    userCart        UserCart[]
+    tempCart        TempCart[]
     createdAt       DateTime            @default(now())
 
     @@index([companyId])
@@ -183,4 +186,21 @@ model OrderedProduct {
     @@index([productId])
     @@index([orderId])
     @@unique([productId, orderId])
+}
+
+model UserCart {
+    id          String    @id @default(cuid())
+    userId      String    @unique
+    user        User      @relation(fields: [userId], references: [id])
+    products    Product[]
+
+    @@index([userId])
+}
+
+model TempCart {
+    id          String          @id @default(cuid())
+    cookieId    String
+    products    Product[]
+
+    @@index([cookieId])
 }
