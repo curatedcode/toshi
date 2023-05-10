@@ -77,7 +77,6 @@ function Carousel({ slides, controls, thumbnails }: CarouselProps) {
                 slide={slide}
                 onClick={() => onThumbClick(index)}
                 selected={index === selectedIndex}
-                slideCount={slides.length}
                 index={index + 1}
               />
             ))}
@@ -88,13 +87,7 @@ function Carousel({ slides, controls, thumbnails }: CarouselProps) {
   );
 }
 
-function Thumbnail({
-  onClick,
-  selected,
-  slide,
-  slideCount,
-  index,
-}: CarouselThumbProps) {
+function Thumbnail({ onClick, selected, slide, index }: CarouselThumbProps) {
   return (
     <button
       type="button"
@@ -103,7 +96,7 @@ function Thumbnail({
       className={`relative max-h-14 shrink-0 grow-0 rounded-md ${
         selected ? "" : "opacity-50"
       }`}
-      style={{ flexBasis: `${100 / slideCount}%` }}
+      style={{ flexBasis: "25%" }}
       title={`View image ${index}`}
     >
       {slide}

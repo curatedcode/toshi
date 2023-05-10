@@ -163,7 +163,6 @@ export declare type PriceInput = {
 export declare type CarouselThumbProps = {
   onClick: () => void;
   selected: boolean;
-  slideCount: number;
   slide: React.ReactNode;
   index: number;
 };
