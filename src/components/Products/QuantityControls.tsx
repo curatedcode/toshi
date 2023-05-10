@@ -6,6 +6,8 @@ function QuantityControls({
   setQuantity,
   quantity,
   className = "",
+  disabled,
+  disabledMessage,
 }: QuantityControlsProps) {
   function handleOrderQuantity(value: number, type: "btn" | "input" = "btn") {
     if (type === "btn") {
@@ -20,13 +22,16 @@ function QuantityControls({
 
   return (
     <div
-      className={`mb-3 flex h-fit w-fit rounded-md border border-black bg-neutral-100 text-lg shadow-md shadow-neutral-400/70 md:bg-white ${className}`}
+      className={`mb-3 flex h-fit w-fit rounded-md border border-black bg-white text-lg shadow-md shadow-neutral-400/70 ${
+        disabled ? "bg-neutral-300 hover:cursor-not-allowed" : ""
+      } ${className}`}
     >
       <button
         type="button"
-        aria-label="minus one"
+        aria-label={disabled ? disabledMessage : "Minus one"}
         onClick={() => handleOrderQuantity(-1)}
-        className="flex items-center rounded-l-md px-4 transition-colors hover:bg-neutral-100"
+        className="flex items-center rounded-l-md px-4 transition-colors hover:bg-neutral-100 disabled:hover:cursor-not-allowed disabled:hover:bg-transparent"
+        disabled={disabled}
       >
         <MinusIcon className="w-4" aria-hidden />
       </button>
@@ -36,14 +41,16 @@ function QuantityControls({
           handleOrderQuantity(Number(e.currentTarget.value), "input")
         }
         value={quantity}
-        title="set quantity"
-        className="w-10 bg-transparent px-1 text-center"
+        title={disabled ? disabledMessage : "Set quantity"}
+        className="w-10 bg-transparent px-1 text-center disabled:hover:cursor-not-allowed disabled:hover:bg-transparent"
+        disabled={disabled}
       />
       <button
         type="button"
-        aria-label="plus one"
+        aria-label={disabled ? disabledMessage : "Plus one"}
         onClick={() => handleOrderQuantity(1)}
-        className="flex items-center rounded-r-md px-4 transition-colors hover:bg-neutral-100"
+        className="flex items-center rounded-r-md px-4 transition-colors hover:bg-neutral-100 disabled:hover:cursor-not-allowed disabled:hover:bg-transparent"
+        disabled={disabled}
       >
         <PlusIcon className="w-4" aria-hidden />
       </button>

@@ -293,6 +293,8 @@ export declare type QuantityControlsProps = {
   setQuantity: Dispatch<SetStateAction<number>>;
   quantity: number;
   className?: string;
+  disabled?: boolean;
+  disabledMessage?: string;
 };
 
 export declare type CartProductProps = {
