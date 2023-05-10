@@ -12,7 +12,6 @@ function Carousel({ slides, controls, thumbnails }: CarouselProps) {
 
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
     containScroll: "keepSnaps",
-    dragFree: true,
   });
 
   const [controlsVisible, setControlVisible] = useState(false);
@@ -45,6 +44,10 @@ function Carousel({ slides, controls, thumbnails }: CarouselProps) {
     emblaMainApi.on("reInit", onSelect);
   }, [emblaMainApi, onSelect]);
 
+  useEffect(() => {
+    emblaMainApi?.reInit();
+  }, [emblaMainApi]);
+
   return (
     <div className="relative flex flex-col gap-2 md:max-w-xs">
       <div
@@ -59,14 +62,14 @@ function Carousel({ slides, controls, thumbnails }: CarouselProps) {
               {slide}
             </div>
           ))}
-          {controls && slides.length > 1 && (
-            <Controls
-              type="shallow"
-              api={emblaMainApi}
-              visible={controlsVisible}
-            />
-          )}
         </div>
+        {controls && slides.length > 1 && (
+          <Controls
+            type="shallow"
+            api={emblaMainApi}
+            visible={controlsVisible}
+          />
+        )}
       </div>
       {thumbnails && (
         <div className="overflow-hidden rounded-md" ref={emblaThumbsRef}>
