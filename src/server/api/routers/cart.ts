@@ -10,7 +10,7 @@ const cartRouter = createTRPCRouter({
       const { cookieId } = input;
       const userId = session?.user.id;
 
-      if (userId && !cookieId) {
+      if (userId) {
         const cartProducts = await prisma.userCart.findUnique({
           where: { userId },
           select: {
@@ -60,7 +60,7 @@ const cartRouter = createTRPCRouter({
       if (!cookieId) {
         return null;
       }
-
+      console.log({ cookieId });
       const cartProducts = await prisma.tempCart.findUnique({
         where: { cookieId },
         select: {
@@ -117,7 +117,7 @@ const cartRouter = createTRPCRouter({
       const { cartProductId, quantity, cookieId } = input;
       const userId = session?.user.id;
 
-      if (userId && !cookieId) {
+      if (userId) {
         await prisma.cartProduct.update({
           where: { id: cartProductId },
           data: { quantity },
@@ -173,7 +173,7 @@ const cartRouter = createTRPCRouter({
       const { productId, cookieId } = input;
       const userId = session?.user.id;
 
-      if (userId && !cookieId) {
+      if (userId) {
         const cart = await prisma.userCart.findUnique({ where: { userId } });
         if (!cart) return;
 
@@ -217,7 +217,7 @@ const cartRouter = createTRPCRouter({
       const { productId, cookieId } = input;
       const userId = session?.user.id;
 
-      if (userId && !cookieId) {
+      if (userId) {
         const cart = await prisma.userCart.findUnique({
           where: { userId },
           select: { products: { where: { productId } } },
