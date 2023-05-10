@@ -133,6 +133,151 @@ const cartRouter = createTRPCRouter({
       });
       return;
     }),
+
+  addProduct: publicProcedure
+    .input(
+      z.object({
+        productId: z.string(),
+        quantity: z.number().min(1),
+        cookieId: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { productId, quantity, cookieId } = input;
+      const userId = session?.user.id;
+
+      if (userId && !cookieId) {
+        await prisma.userCart.update({
+          where: { userId },
+          data: { products: { create: { productId, quantity } } },
+        });
+        return;
+      }
+
+      if (!cookieId) {
+        return;
+      }
+
+      await prisma.tempCart.update({
+        where: { cookieId },
+        data: { products: { create: { productId, quantity } } },
+      });
+      return;
+    }),
+
+  removeProduct: publicProcedure
+    .input(z.object({ productId: z.string(), cookieId: z.string().nullish() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { productId, cookieId } = input;
+      const userId = session?.user.id;
+
+      if (userId && !cookieId) {
+        const cart = await prisma.userCart.findUnique({ where: { userId } });
+        if (!cart) return;
+
+        await prisma.userCart.update({
+          where: { userId },
+          data: {
+            products: {
+              disconnect: {
+                productId_userCartId: { productId, userCartId: cart.id },
+              },
+            },
+          },
+        });
+        return;
+      }
+
+      if (!cookieId) {
+        return;
+      }
+
+      const cart = await prisma.tempCart.findUnique({ where: { cookieId } });
+      if (!cart) return;
+
+      await prisma.tempCart.update({
+        where: { cookieId },
+        data: {
+          products: {
+            disconnect: {
+              productId_tempCartId: { productId, tempCartId: cart.id },
+            },
+          },
+        },
+      });
+      return;
+    }),
+
+  isInCart: publicProcedure
+    .input(z.object({ productId: z.string(), cookieId: z.string().nullish() }))
+    .query(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { productId, cookieId } = input;
+      const userId = session?.user.id;
+
+      if (userId && !cookieId) {
+        const cart = await prisma.userCart.findUnique({
+          where: { userId },
+          select: { products: { where: { productId } } },
+        });
+
+        if (!cart) {
+          return false;
+        }
+        if (cart.products.length < 1) {
+          return false;
+        }
+
+        return true;
+      }
+
+      if (!cookieId) {
+        return false;
+      }
+
+      const cart = await prisma.tempCart.findUnique({
+        where: { cookieId },
+        select: { products: { where: { productId } } },
+      });
+
+      if (!cart) {
+        return false;
+      }
+      if (cart.products.length < 1) {
+        return false;
+      }
+
+      return true;
+    }),
+
+  createTempCart: publicProcedure.mutation(async ({ ctx }) => {
+    const { prisma } = ctx;
+
+    const cookie = await prisma.cartCookie.create({ data: {} });
+
+    const cart = await prisma.tempCart.create({
+      data: { cookie: { connect: { id: cookie.id } } },
+    });
+
+    return { id: cart.cookieId };
+  }),
+
+  isCookieValid: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { id } = input;
+
+      const cookie = await prisma.cartCookie.findUnique({ where: { id } });
+
+      if (!cookie) {
+        return { valid: false, id };
+      }
+
+      return { valid: true, id };
+    }),
 });
 
 export default cartRouter;

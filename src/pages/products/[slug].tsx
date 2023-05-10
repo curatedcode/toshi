@@ -18,11 +18,15 @@ import superjson from "superjson";
 import Slider from "~/components/Sliders/Slider";
 import Product from "~/components/Products/Product";
 import QuantityControls from "~/components/Products/QuantityControls";
+import InternalLink from "~/components/InternalLink";
+import useLocalCart from "~/components/Fn/useLocalCart";
 
 const ProductPage: NextPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const productId = props.productId as string;
+
+  const { cookieId } = useLocalCart();
 
   const { data: mainData } = api.product.getOne.useQuery({ productId });
 
@@ -45,6 +49,23 @@ const ProductPage: NextPage = (
     };
 
   const [orderQuantity, setOrderQuantity] = useState(1);
+
+  const [showAddToCartButton, setShowAddToCartButton] = useState(true);
+
+  const {} = api.cart.isInCart.useQuery(
+    {
+      productId,
+      cookieId,
+    },
+    { onSuccess: (val) => setShowAddToCartButton(!val) }
+  );
+
+  const { mutate: addToCart, isLoading: addingToCart } =
+    api.cart.addProduct.useMutation({
+      onSuccess: () => {
+        setShowAddToCartButton(false);
+      },
+    });
 
   return (
     <Layout
@@ -108,6 +129,8 @@ const ProductPage: NextPage = (
               maxQuantity={quantity}
               quantity={orderQuantity}
               setQuantity={setOrderQuantity}
+              disabled={!showAddToCartButton}
+              disabledMessage="Item already in cart"
             />
           ) : (
             <span className="mb-2 text-xl font-medium text-toshi-red">
@@ -116,11 +139,24 @@ const ProductPage: NextPage = (
           )}
           <button
             type="button"
-            className="w-full rounded-md bg-toshi-red py-2 text-lg font-semibold text-white disabled:cursor-not-allowed disabled:bg-opacity-40 sm:w-48"
-            disabled={quantity < 1 || orderQuantity < 1}
+            onClick={() =>
+              addToCart({ productId, quantity: orderQuantity, cookieId })
+            }
+            className={`w-full rounded-md bg-toshi-red py-2 text-lg font-semibold text-white disabled:cursor-not-allowed disabled:bg-opacity-40 sm:w-48 ${
+              showAddToCartButton ? "" : "hidden"
+            }`}
+            disabled={quantity < 1 || orderQuantity < 1 || addingToCart}
           >
             Add to cart
           </button>
+          <InternalLink
+            href={"/cart"}
+            className={`w-full rounded-md bg-neutral-300 py-2 text-center text-lg font-semibold sm:w-48 ${
+              showAddToCartButton ? "hidden" : ""
+            }`}
+          >
+            Already in cart
+          </InternalLink>
         </div>
       </div>
       <div id="reviews" className="pt-4 md:pt-0">

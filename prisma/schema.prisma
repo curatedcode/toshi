@@ -215,7 +215,7 @@ model UserCart {
 
 model TempCart {
     id          String          @id @default(cuid())
-    cookieId    String          @unique
+    cookieId    String          @unique @default(cuid())
     cookie      CartCookie      @relation(fields: [cookieId], references: [id])
     products    CartProduct[]
 
@@ -224,6 +224,6 @@ model TempCart {
 
 model CartCookie {
     id          String          @id @default(cuid())
-    tempCartId  String
+    tempCartId  String?
     tempCart    TempCart?
 }
