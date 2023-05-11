@@ -107,9 +107,17 @@ model Order {
     products    OrderedProduct[]
     total       Float
     createdAt   DateTime            @default(now())
-    deliveredAt DateTime  
+    status      OrderStatus
+    deliveredAt DateTime?
 
     @@index([userId])
+}
+
+enum OrderStatus {
+    processing
+    shipped
+    enRoute
+    delivered
 }
 
 model Company {

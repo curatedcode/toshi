@@ -280,6 +280,7 @@ async function run() {
           createdAt: date,
           userId: user.id,
           total: orderTotal,
+          status: "delivered",
         },
       });
 
@@ -445,6 +446,7 @@ async function run() {
             createdAt: date,
             userId: user.id,
             total: orderTotal,
+            status: "delivered",
           },
         });
 
