@@ -16,6 +16,7 @@ import type {
 import { useQueryClient } from "@tanstack/react-query";
 import TextInputField from "~/components/TextInputField";
 import {
+  addressSchema,
   max_city_char,
   max_country_char,
   max_email_char,
@@ -27,9 +28,8 @@ import {
   max_streetAddress_char,
   max_zipCode_char,
   min_password_char,
-  min_zipCode_char,
+  nameSchema,
   phone_regex,
-  zipCode_regex,
 } from "~/customVariables";
 
 const SettingsPage: NextPage = () => {
@@ -238,28 +238,15 @@ export function FormButtons({
 }
 
 function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
-  const schema = z.object({
-    firstName: z
-      .string()
-      .min(1, { message: "Please enter your first name" })
-      .max(max_firstName_char, {
-        message: "First name must not be longer than 25 characters",
-      }),
-    lastName: z
-      .string()
-      .min(1, { message: "Please enter your last name" })
-      .max(max_lastName_char, {
-        message: "Last name must not be longer than 25 characters",
-      }),
-  });
-
   const {
     register,
     handleSubmit,
     getValues,
     formState: { errors },
     reset,
-  } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
+  } = useForm<z.infer<typeof nameSchema>>({
+    resolver: zodResolver(nameSchema),
+  });
 
   const queryClient = useQueryClient();
 
@@ -547,51 +534,15 @@ function AddressForm({
   initialAddress,
   refetch,
 }: AddressFormProps) {
-  const schema = z.object({
-    streetAddress: z
-      .string()
-      .min(1, { message: "Please enter your street address" })
-      .max(max_streetAddress_char, {
-        message: "Street address must not be longer than 100 characters",
-      }),
-    city: z
-      .string()
-      .min(1, { message: "Please enter your city" })
-      .max(max_city_char, {
-        message: "City must not be longer than 100 characters",
-      }),
-    state: z
-      .string()
-      .min(1, { message: "Please enter your state" })
-      .max(max_state_char, {
-        message: "State must not be longer than 100 characters",
-      }),
-    country: z
-      .string()
-      .min(1, { message: "Please enter your country" })
-      .max(max_country_char, {
-        message: "Country must not be longer than 100 characters",
-      }),
-    zipCode: z
-      .string()
-      .min(min_zipCode_char, {
-        message: "ZIP Code must be at least 5 characters",
-      })
-      .max(max_zipCode_char, {
-        message: "ZIP Code must not be longer than 100 characters",
-      })
-      .regex(zipCode_regex, {
-        message: "Zip Code is incorrect or invalid",
-      }),
-  });
-
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
     reset,
-  } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
+  } = useForm<z.infer<typeof addressSchema>>({
+    resolver: zodResolver(addressSchema),
+  });
 
   const { mutate, isLoading } = api.user.updateAddress.useMutation({
     onSuccess: () => {

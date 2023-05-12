@@ -1,8 +1,17 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { z } from "zod";
 import { OrderPlacedOnEnum } from "~/customTypes";
 import dayjs from "dayjs";
 import getPreviousDate from "~/components/Fn/getPreviousDate";
+import {
+  paymentSchema,
+  shippingAddressSchema,
+  taxPercentage,
+} from "~/customVariables";
 
 const orderRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -97,6 +106,145 @@ const orderRouter = createTRPCRouter({
       });
 
       return order;
+    }),
+
+  create: publicProcedure
+    .input(
+      z.object({
+        shippingAddress: shippingAddressSchema,
+        billing: paymentSchema,
+        cookieId: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { shippingAddress, billing, cookieId } = input;
+      const userId = session?.user.id;
+
+      type OrderProduct = {
+        productId: string;
+        quantity: number;
+        priceAtPurchase: number;
+      };
+
+      const date = dayjs(Date());
+
+      if (userId) {
+        const cart = await prisma.userCart.findUnique({
+          where: { userId },
+          select: {
+            products: {
+              select: {
+                quantity: true,
+                product: {
+                  select: {
+                    id: true,
+                    price: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        let totalBeforeTax = 0;
+        const orderedProducts: OrderProduct[] = [];
+
+        cart?.products.forEach((data) => {
+          const { product, quantity } = data;
+          const { id, price } = product;
+
+          const total = price * quantity;
+          totalBeforeTax += total;
+
+          orderedProducts.push({
+            productId: id,
+            priceAtPurchase: price,
+            quantity,
+          });
+        });
+
+        const taxToBeCollected =
+          Math.round(totalBeforeTax * taxPercentage * 1e2) / 1e2;
+        const totalAfterTax = totalBeforeTax + taxToBeCollected;
+
+        const order = await prisma.order.create({
+          data: {
+            status: "processing",
+            total: totalAfterTax,
+            products: { createMany: { data: orderedProducts } },
+            billingAddress: { create: billing },
+            shippingAddress: { create: shippingAddress },
+            user: { connect: { id: userId } },
+            estimatedDelivery: date.add(2, "day").toDate(),
+          },
+        });
+
+        return {
+          orderId: order.id,
+          shippingAddress,
+          estimatedDelivery: order.estimatedDelivery,
+        };
+      }
+
+      if (!cookieId) {
+        return;
+      }
+
+      const cart = await prisma.tempCart.findUnique({
+        where: { cookieId },
+        select: {
+          products: {
+            select: {
+              quantity: true,
+              product: {
+                select: {
+                  id: true,
+                  price: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      let totalBeforeTax = 0;
+      const orderedProducts: OrderProduct[] = [];
+
+      cart?.products.forEach((data) => {
+        const { product, quantity } = data;
+        const { id, price } = product;
+
+        const total = price * quantity;
+        totalBeforeTax += total;
+
+        orderedProducts.push({
+          productId: id,
+          priceAtPurchase: price,
+          quantity,
+        });
+      });
+
+      const taxToBeCollected =
+        Math.round(totalBeforeTax * taxPercentage * 1e2) / 1e2;
+      const totalAfterTax = totalBeforeTax + taxToBeCollected;
+
+      const order = await prisma.order.create({
+        data: {
+          status: "processing",
+          total: totalAfterTax,
+          products: { createMany: { data: orderedProducts } },
+          billingAddress: { create: billing },
+          shippingAddress: { create: shippingAddress },
+          estimatedDelivery: date.add(2, "day").toDate(),
+        },
+      });
+
+      return {
+        orderId: order.id,
+        shippingAddress,
+        estimatedDelivery: order.estimatedDelivery,
+      };
     }),
 });
 

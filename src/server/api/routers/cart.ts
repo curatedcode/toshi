@@ -1,6 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
+import { taxPercentage } from "~/customVariables";
 
 const cartRouter = createTRPCRouter({
   get: publicProcedure
@@ -60,7 +61,7 @@ const cartRouter = createTRPCRouter({
       if (!cookieId) {
         return null;
       }
-      console.log({ cookieId });
+
       const cartProducts = await prisma.tempCart.findUnique({
         where: { cookieId },
         select: {
@@ -277,6 +278,118 @@ const cartRouter = createTRPCRouter({
       }
 
       return { valid: true, id };
+    }),
+
+  checkout: publicProcedure
+    .input(z.object({ cookieId: z.string().nullish() }))
+    .query(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { cookieId } = input;
+      const userId = session?.user.id;
+
+      if (userId) {
+        const cart = await prisma.userCart.findUnique({
+          where: { userId },
+          select: {
+            products: {
+              select: {
+                quantity: true,
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                    company: { select: { name: true } },
+                    price: true,
+                    images: { take: 1, select: { url: true } },
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        let totalBeforeTax = 0;
+        let totalProducts = 0;
+
+        const productsWithTotal = cart?.products.map((data) => {
+          const { product, quantity } = data;
+          const total = product.price * quantity;
+
+          totalBeforeTax += total;
+          totalProducts += quantity;
+
+          return {
+            data: product,
+            quantity,
+            total,
+          };
+        });
+
+        const taxToBeCollected =
+          Math.round(totalBeforeTax * taxPercentage * 1e2) / 1e2;
+        const totalAfterTax = totalBeforeTax + taxToBeCollected;
+
+        return {
+          cart: productsWithTotal,
+          totalBeforeTax,
+          totalProducts,
+          totalAfterTax,
+          taxToBeCollected,
+        };
+      }
+
+      if (!cookieId) {
+        return;
+      }
+
+      const cart = await prisma.tempCart.findUnique({
+        where: { cookieId },
+        select: {
+          products: {
+            select: {
+              quantity: true,
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  company: { select: { name: true } },
+                  price: true,
+                  images: { take: 1, select: { url: true } },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      let totalBeforeTax = 0;
+      let totalProducts = 0;
+
+      const productsWithTotal = cart?.products.map((data) => {
+        const { product, quantity } = data;
+        const total = product.price * quantity;
+
+        totalBeforeTax += total;
+        totalProducts += quantity;
+
+        return {
+          data: product,
+          quantity,
+          total,
+        };
+      });
+
+      const taxToBeCollected =
+        Math.round(totalBeforeTax * taxPercentage * 1e2) / 1e2;
+      const totalAfterTax = totalBeforeTax + taxToBeCollected;
+
+      return {
+        cart: productsWithTotal,
+        totalBeforeTax,
+        totalProducts,
+        totalAfterTax,
+        taxToBeCollected,
+      };
     }),
 });
 

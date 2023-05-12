@@ -19,7 +19,7 @@ const TextInputField = forwardRef(function TextInputField(
 ) {
   return (
     <div className="flex flex-col">
-      <label htmlFor={internalLabel} className="ml-1 font-semibold">
+      <label htmlFor={internalLabel} className="ml-1 w-fit font-semibold">
         {visibleLabel}
       </label>
       <input

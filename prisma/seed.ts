@@ -192,7 +192,6 @@ async function run() {
   console.log("creating users...");
 
   for (let i = 0; i < USERS_TO_CREATE; i++) {
-    const name = faker.name.fullName();
     const state = faker.address.state();
 
     await prisma.user.create({
@@ -203,7 +202,6 @@ async function run() {
         image: faker.internet.avatar(),
         addresses: {
           create: {
-            addressee: name,
             streetAddress: faker.address.streetAddress(),
             city: faker.address.city(),
             state,
@@ -215,7 +213,7 @@ async function run() {
     });
   }
 
-  const users = await prisma.user.findMany({ select: { id: true } });
+  const users = await prisma.user.findMany();
   const products = await prisma.product.findMany();
 
   // create lists & orders for users
@@ -274,13 +272,30 @@ async function run() {
         (total, price) => (total += price)
       );
 
+      const address = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        streetAddress: faker.address.streetAddress(),
+        city: faker.address.city(),
+        state: faker.address.state(),
+        zipCode: faker.address.zipCode(),
+        country: faker.address.country(),
+      };
+
+      const deliveryDate = getRandomDate(date);
+
       const order = await prisma.order.create({
         data: {
-          deliveredAt: getRandomDate(date),
+          deliveredAt: deliveryDate,
           createdAt: date,
-          userId: user.id,
+          user: { connect: { id: user.id } },
           total: orderTotal,
           status: "delivered",
+          shippingAddress: {
+            create: address,
+          },
+          billingAddress: { create: address },
+          estimatedDelivery: deliveryDate,
         },
       });
 
@@ -388,8 +403,6 @@ async function run() {
               state: faker.address.state(),
               zipCode: faker.address.zipCode(),
               country: faker.address.country(),
-              addressee: "John Doe",
-              isPrimary: true,
             },
           },
         },
@@ -440,13 +453,28 @@ async function run() {
           (total, price) => (total += price)
         );
 
+        const address = {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          streetAddress: faker.address.streetAddress(),
+          city: faker.address.city(),
+          state: faker.address.state(),
+          zipCode: faker.address.zipCode(),
+          country: faker.address.country(),
+        };
+
+        const deliveryDate = getRandomDate(date);
+
         const order = await prisma.order.create({
           data: {
-            deliveredAt: getRandomDate(date),
+            deliveredAt: deliveryDate,
             createdAt: date,
-            userId: user.id,
+            user: { connect: { id: user.id } },
             total: orderTotal,
             status: "delivered",
+            billingAddress: { create: address },
+            shippingAddress: { create: address },
+            estimatedDelivery: deliveryDate,
           },
         });
 

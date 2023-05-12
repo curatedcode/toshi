@@ -46,21 +46,21 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    firstName     String
-    lastName      String
-    email         String    @unique
-    emailVerified DateTime?
-    phoneNumber   String?
-    hash          String?
-    image         String?
-    addresses     Address[]
-    accounts      Account[]
-    sessions      Session[]
-    reviews       Review[]
-    lists         List[]
-    orders        Order[]
-    cart          UserCart?
+    id                  String    @id @default(cuid())
+    firstName           String
+    lastName            String
+    email               String    @unique
+    emailVerified       DateTime?
+    phoneNumber         String?
+    hash                String?
+    image               String?
+    addresses           UserAddress[]
+    accounts            Account[]
+    sessions            Session[]
+    reviews             Review[]
+    lists               List[]
+    orders              Order[]
+    cart                UserCart?
 }
 
 model VerificationToken {
@@ -71,19 +71,31 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model Address {
+model UserAddress {
     id              String    @id @default(cuid())
-    addressee       String
     streetAddress   String
     city            String
     state           String
     zipCode         String
     country         String
-    isPrimary       Boolean?
     userId          String
     user            User      @relation(fields: [userId], references: [id])
 
     @@index([userId])
+}
+
+model FullAddress {
+    id              String    @id @default(cuid())
+    firstName       String
+    lastName        String
+    streetAddress   String
+    city            String
+    state           String
+    zipCode         String
+    country         String
+    shipping        Order[]
+    billing         Order[]   @relation("billing")
+    createdAt       DateTime  @default(now())
 }
 
 model List {
@@ -101,16 +113,24 @@ model List {
 }
 
 model Order {
-    id          String              @id @default(cuid())
-    userId      String
-    user        User                @relation(fields: [userId], references: [id])
-    products    OrderedProduct[]
-    total       Float
-    createdAt   DateTime            @default(now())
-    status      OrderStatus
-    deliveredAt DateTime?
+    id                  String              @id @default(cuid())
+    userId              String
+    user                User?               @relation(fields: [userId], references: [id])
+    products            OrderedProduct[]
+    total               Float
+    shippingAddressId   String                  
+    shippingAddress     FullAddress         @relation(fields: [shippingAddressId], references: [id])
+    billingAddressId    String
+    billingAddress      FullAddress         @relation(fields: [billingAddressId], references: [id], name: "billing")
+    status              OrderStatus
+    estimatedDelivery   DateTime
+    deliveredAt         DateTime?
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
 
     @@index([userId])
+    @@index([shippingAddressId])
+    @@index([billingAddressId])
 }
 
 enum OrderStatus {
@@ -119,6 +139,7 @@ enum OrderStatus {
     enRoute
     delivered
 }
+
 
 model Company {
     id          String    @id @default(cuid())

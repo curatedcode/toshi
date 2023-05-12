@@ -318,3 +318,5 @@ export declare type CartProductProps = {
   };
   cookieId: string | undefined;
 };
+
+export declare type CheckoutSteps = "address" | "payment" | "review";
