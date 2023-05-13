@@ -36,20 +36,15 @@ const Home: NextPage = () => {
       description="Make shopping yours at Toshi."
       className="flex flex-col gap-6 bg-neutral-100"
     >
-      <div className="flex h-fit w-full justify-center bg-[#ffcdff]">
-        <Image
-          className="max-h-80 md:hidden"
+      <picture className="flex justify-center bg-[#ffcdff]">
+        <source srcSet="/hero-desktop.png" media="(min-width: 768px)" />
+        <img
           src="/hero-mobile.png"
           alt=""
+          className="w-full max-w-5xl"
           loading="eager"
         />
-        <Image
-          className="hidden max-h-96 md:block"
-          src="/hero-desktop.png"
-          alt=""
-          loading="eager"
-        />
-      </div>
+      </picture>
       <div className="flex flex-col gap-8 px-2 md:gap-10 md:px-4">
         <section className="flex flex-col items-center rounded-md bg-white px-4 py-2">
           <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
