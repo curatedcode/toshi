@@ -61,7 +61,6 @@ const userRouter = createTRPCRouter({
             name: true,
             createdAt: true,
             updatedAt: true,
-            isPrivate: true,
             products: {
               select: {
                 id: true,
@@ -171,7 +170,6 @@ const userRouter = createTRPCRouter({
         firstName: true,
         lastName: true,
         email: true,
-        addresses: { where: { isPrimary: { equals: true } } },
         image: true,
         phoneNumber: true,
       },
@@ -181,7 +179,7 @@ const userRouter = createTRPCRouter({
       firstName: user?.firstName,
       lastName: user?.lastName,
       email: user?.email,
-      address: user?.addresses[0],
+
       image: user?.image,
       phoneNumber: user?.phoneNumber ?? undefined,
     };
@@ -293,7 +291,7 @@ const userRouter = createTRPCRouter({
       const { id, streetAddress, city, state, zipCode, country } = input;
 
       if (!id) {
-        await prisma.address.create({
+        await prisma.userAddress.create({
           data: {
             streetAddress,
             city,
@@ -301,7 +299,6 @@ const userRouter = createTRPCRouter({
             zipCode,
             country,
             userId: session.user.id,
-            addressee: session.user.name,
           },
         });
         return;

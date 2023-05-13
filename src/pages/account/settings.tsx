@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import type {
-  AddressFormProps,
   EmailFormProps,
   FormProps,
   NameFormProps,
@@ -16,17 +15,11 @@ import type {
 import { useQueryClient } from "@tanstack/react-query";
 import TextInputField from "~/components/TextInputField";
 import {
-  addressSchema,
-  max_city_char,
-  max_country_char,
   max_email_char,
   max_firstName_char,
   max_lastName_char,
   max_password_char,
   max_phoneNumber_char,
-  max_state_char,
-  max_streetAddress_char,
-  max_zipCode_char,
   min_password_char,
   nameSchema,
   phone_regex,
@@ -34,11 +27,11 @@ import {
 
 const SettingsPage: NextPage = () => {
   const { data: settings, refetch, isLoading } = api.user.settings.useQuery();
+
   const [editName, setEditName] = useState(false);
   const [editEmail, setEditEmail] = useState(false);
   const [editPhoneNumber, setEditPhoneNumber] = useState(false);
   const [editPassword, setEditPassword] = useState(false);
-  const [editAddress, setEditAddress] = useState(false);
 
   // warn before exit if any field is active
   useEffect(() => {
@@ -46,17 +39,11 @@ const SettingsPage: NextPage = () => {
       e.preventDefault();
       e.returnValue = "";
     }
-    if (
-      editName ||
-      editEmail ||
-      editPhoneNumber ||
-      editPassword ||
-      editAddress
-    ) {
+    if (editName || editEmail || editPhoneNumber || editPassword) {
       window.addEventListener("beforeunload", handleExit);
       return () => window.removeEventListener("beforeunload", handleExit);
     }
-  }, [editName, editEmail, editPhoneNumber, editPassword, editAddress]);
+  }, [editName, editEmail, editPhoneNumber, editPassword]);
 
   const placeholder = isLoading ? "" : "Not set";
 
@@ -170,37 +157,6 @@ const SettingsPage: NextPage = () => {
           <PasswordForm
             hidden={!editPassword}
             setHidden={setEditPassword}
-            refetch={refetch}
-          />
-          <div
-            className={`flex justify-between px-3 py-2 ${
-              editAddress ? "hidden" : ""
-            }`}
-          >
-            <div>
-              <h2 className="text-lg font-semibold">Address</h2>
-              <div className="flex flex-col">
-                <span>{settings?.address?.streetAddress ?? placeholder}</span>
-                <span>{settings?.address?.city ?? placeholder}</span>
-                <span>{settings?.address?.state ?? placeholder}</span>
-                <span>{settings?.address?.zipCode ?? placeholder}</span>
-                <span>{settings?.address?.country ?? placeholder}</span>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setEditAddress(true)}
-              title="Edit address"
-              className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-            >
-              Edit
-            </button>
-          </div>
-          <AddressForm
-            hidden={!editAddress}
-            addressId={settings?.address?.id}
-            setHidden={setEditAddress}
-            initialAddress={settings?.address}
             refetch={refetch}
           />
         </div>
@@ -522,103 +478,6 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
         error={confirmPasswordError}
         {...register("confirmPassword")}
       />
-      <FormButtons isLoading={isLoading} resetForm={resetForm} />
-    </form>
-  );
-}
-
-function AddressForm({
-  hidden,
-  setHidden,
-  addressId,
-  initialAddress,
-  refetch,
-}: AddressFormProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    getValues,
-    reset,
-  } = useForm<z.infer<typeof addressSchema>>({
-    resolver: zodResolver(addressSchema),
-  });
-
-  const { mutate, isLoading } = api.user.updateAddress.useMutation({
-    onSuccess: () => {
-      setHidden(false);
-      refetch();
-    },
-  });
-
-  const onSubmit = () =>
-    mutate({
-      id: addressId,
-      streetAddress: getValues("streetAddress"),
-      city: getValues("city"),
-      state: getValues("state"),
-      zipCode: getValues("zipCode"),
-      country: getValues("country"),
-    });
-
-  const streetAddressError = errors.streetAddress?.message;
-  const cityError = errors.city?.message;
-  const stateError = errors.state?.message;
-  const zipCodeError = errors.state?.message;
-  const countryError = errors.country?.message;
-
-  function resetForm() {
-    setHidden(false);
-    reset();
-  }
-
-  return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className={`flex justify-between px-3 py-2 ${hidden ? "hidden" : ""}`}
-    >
-      <div className="flex w-max flex-col">
-        <TextInputField
-          internalLabel="streetAddress"
-          visibleLabel="Street Address"
-          maxLength={max_streetAddress_char}
-          error={streetAddressError}
-          defaultValue={initialAddress?.streetAddress}
-          {...register("streetAddress")}
-        />
-        <TextInputField
-          internalLabel="city"
-          visibleLabel="City"
-          maxLength={max_city_char}
-          error={cityError}
-          defaultValue={initialAddress?.city}
-          {...register("city")}
-        />
-        <TextInputField
-          internalLabel="state"
-          visibleLabel="State"
-          maxLength={max_state_char}
-          error={stateError}
-          defaultValue={initialAddress?.state}
-          {...register("state")}
-        />
-        <TextInputField
-          internalLabel="zipCode"
-          visibleLabel="ZIP code"
-          maxLength={max_zipCode_char}
-          error={zipCodeError}
-          defaultValue={initialAddress?.zipCode}
-          {...register("zipCode")}
-        />
-        <TextInputField
-          internalLabel="country"
-          visibleLabel="Country"
-          maxLength={max_country_char}
-          error={countryError}
-          defaultValue={initialAddress?.country}
-          {...register("country")}
-        />
-      </div>
       <FormButtons isLoading={isLoading} resetForm={resetForm} />
     </form>
   );
