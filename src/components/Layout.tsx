@@ -15,6 +15,7 @@ import LogoWithText from "./LogoWithText";
 import { Source_Sans_Pro } from "next/font/google";
 import { signIn, signOut, useSession } from "next-auth/react";
 import InternalLink from "./InternalLink";
+import Footer from "./Footer";
 const font = Source_Sans_Pro({
   subsets: ["latin"],
   weight: ["400", "600", "700", "900"],
@@ -167,12 +168,12 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
           </Link>
         </div>
       </nav>
-      <main className={`min-h-full pb-36 ${font.className} ${className}`}>
+      <main
+        className={`min-h-full pb-64 md:pb-52 ${font.className} ${className}`}
+      >
         {children}
       </main>
-      <footer className="absolute bottom-0 mt-12 inline-flex w-full items-center justify-center bg-toshi-red py-12 text-white">
-        FOOTER
-      </footer>
+      <Footer bgColor="red" />
     </div>
   );
 }

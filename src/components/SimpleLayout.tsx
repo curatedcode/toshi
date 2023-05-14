@@ -4,6 +4,7 @@ import SkipToContentButton from "./SkipToContentButton";
 import Head from "next/head";
 import type { LayoutProps } from "~/customTypes";
 import { Source_Sans_Pro } from "next/font/google";
+import Footer from "./Footer";
 const font = Source_Sans_Pro({
   subsets: ["latin"],
   weight: ["200", "300", "400", "600", "700", "900"],
@@ -28,12 +29,10 @@ function SimpleLayout({
           <LogoWithText color="red" />
         </Link>
       </div>
-      <main className={`min-h-full pb-36 ${font.className} ${className}`}>
+      <main className={`min-h-full pb-52 ${font.className} ${className}`}>
         {children}
       </main>
-      <footer className="absolute bottom-0 flex w-full items-center justify-center bg-neutral-100 py-6">
-        FOOTER
-      </footer>
+      <Footer bgColor="web-white" />
     </div>
   );
 }
