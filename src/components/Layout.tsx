@@ -17,7 +17,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import InternalLink from "./InternalLink";
 const font = Source_Sans_Pro({
   subsets: ["latin"],
-  weight: ["200", "300", "400", "600", "700", "900"],
+  weight: ["400", "600", "700", "900"],
 });
 
 function Layout({ title, description, children, className = "" }: LayoutProps) {
