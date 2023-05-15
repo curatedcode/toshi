@@ -2,7 +2,7 @@
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import Layout from "~/components/Layout";
@@ -15,7 +15,7 @@ import { api } from "~/utils/api";
 // add a cool character counter to message like shopify has
 
 const ContactPage: NextPage = () => {
-  const [submitted, setSubmitted] = useState(true);
+  const [submitted, setSubmitted] = useState(false);
 
   const { mutate } = api.contact.submit.useMutation({
     onSuccess: () => setSubmitted(true),
@@ -26,6 +26,7 @@ const ContactPage: NextPage = () => {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
   });
@@ -41,6 +42,16 @@ const ContactPage: NextPage = () => {
   const fullNameError = errors.fullName?.message;
   const emailError = errors.email?.message;
   const messageError = errors.message?.message;
+
+  useEffect(() => {
+    if (!submitted) return;
+    const resetForm = setTimeout(() => {
+      setSubmitted(false);
+      reset();
+    }, 5000);
+    return () => clearTimeout(resetForm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submitted]);
 
   return (
     <Layout
