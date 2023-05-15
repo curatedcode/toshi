@@ -10,7 +10,7 @@ import { api } from "~/utils/api";
 import type { LayoutProps } from "~/customTypes";
 import Dropdown from "./Dropdown";
 import Link from "next/link";
-import { type KeyboardEvent, useRef, useState } from "react";
+import { type KeyboardEvent, useRef, useState, useEffect } from "react";
 import LogoWithText from "./LogoWithText";
 import { Source_Sans_Pro } from "next/font/google";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -45,6 +45,16 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
   const { data: categories } = api.category.getAll.useQuery(undefined, {
     keepPreviousData: true,
     staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    function searchTrigger(e: globalThis.KeyboardEvent) {
+      e.preventDefault();
+      if (e.key !== "k" || !e.ctrlKey) return;
+      inputRef.current?.focus();
+    }
+    document.addEventListener("keydown", searchTrigger);
+    return () => removeEventListener("keydown", searchTrigger);
   });
 
   return (
