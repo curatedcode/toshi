@@ -10,7 +10,6 @@ function useLocalCart() {
   const { mutate: createCart } = api.cart.createTempCart.useMutation({
     onSuccess: (data) => {
       if (session) return;
-      console.log(session, 3);
       localStorage.setItem("toshiCart", data.id);
       setCookie(data.id);
     },
@@ -19,7 +18,6 @@ function useLocalCart() {
   const { mutate: checkCookie } = api.cart.isCookieValid.useMutation({
     onSuccess: (data) => {
       if (session) return;
-      console.log(session, 2);
       if (data.valid) {
         setCookie(data.id);
         return;
@@ -31,7 +29,6 @@ function useLocalCart() {
   const set = useCallback(() => {
     if (session) return;
     if (cookie) return;
-    console.log(session, 1);
 
     const localCart = localStorage.getItem("toshiCart");
     if (localCart) {
