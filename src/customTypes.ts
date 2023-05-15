@@ -9,6 +9,7 @@ import type {
   ImgHTMLAttributes,
   InputHTMLAttributes,
   SetStateAction,
+  TextareaHTMLAttributes,
 } from "react";
 import { z } from "zod";
 
@@ -226,6 +227,18 @@ export declare type TextInputFieldProps = {
   maxLength: number;
   error: string | undefined;
 } & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+
+export declare type TextAreaInputFieldProps = {
+  internalLabel: string;
+  visibleLabel: string;
+  name: string;
+  className?: string;
+  maxLength: number;
+  error: string | undefined;
+} & DetailedHTMLProps<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  HTMLTextAreaElement
+>;
 
 export declare type RatingProps = {
   rating: number | null;

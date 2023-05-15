@@ -256,3 +256,10 @@ model CartCookie {
     tempCartId  String?
     tempCart    TempCart?
 }
+
+model SupportMessage {
+    id          String          @id @default(cuid())
+    fullName    String
+    email       String
+    message     String    
+}

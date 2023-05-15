@@ -3,6 +3,7 @@ import { z } from "zod";
 // names
 export const max_firstName_char = 25;
 export const max_lastName_char = 25;
+export const max_fullName_char = max_firstName_char + max_lastName_char;
 export const nameSchema = z.object({
   firstName: z
     .string()
@@ -103,4 +104,23 @@ export const paymentSchema = nameSchema.merge(addressSchema).extend({
     }),
 });
 
+// contact form
+export const max_message_char = 1000;
+export const contactFormSchema = z.object({
+  fullName: z
+    .string()
+    .min(1, { message: "Please enter your name" })
+    .max(max_fullName_char, {
+      message: `Name must not be longer than ${max_fullName_char} characters`,
+    }),
+  email: z.string().min(1, { message: "Please enter your email" }).email(),
+  message: z
+    .string()
+    .min(1, { message: "Please enter a message" })
+    .max(max_message_char, {
+      message: "Message must not be over 1000 characters",
+    }),
+});
+
+// etc.
 export const taxPercentage = 0.07;
