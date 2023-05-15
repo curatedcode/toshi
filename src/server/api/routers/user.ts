@@ -8,14 +8,15 @@ import {
 import bcrypt from "bcryptjs";
 import {
   addressSchema,
+  emailSchema,
   max_email_char,
   max_firstName_char,
   max_lastName_char,
   max_password_char,
-  max_phoneNumber_char,
   min_password_char,
   nameSchema,
-  phone_regex,
+  passwordSchemaType,
+  phoneSchema,
 } from "~/customVariables";
 
 const userRouter = createTRPCRouter({
@@ -195,7 +196,7 @@ const userRouter = createTRPCRouter({
     }),
 
   updateEmail: protectedProcedure
-    .input(z.object({ email: z.string().min(1).max(max_email_char).email() }))
+    .input(emailSchema)
     .mutation(async ({ ctx, input }) => {
       const { prisma, session } = ctx;
       const { email } = input;
@@ -209,11 +210,7 @@ const userRouter = createTRPCRouter({
     }),
 
   updatePhoneNumber: protectedProcedure
-    .input(
-      z.object({
-        phoneNumber: z.string().max(max_phoneNumber_char).regex(phone_regex),
-      })
-    )
+    .input(phoneSchema)
     .mutation(async ({ ctx, input }) => {
       const { prisma, session } = ctx;
       const { phoneNumber } = input;
@@ -229,11 +226,8 @@ const userRouter = createTRPCRouter({
   updatePassword: protectedProcedure
     .input(
       z.object({
-        password: z.string().min(min_password_char).max(max_password_char),
-        currentPassword: z
-          .string()
-          .min(min_password_char)
-          .max(max_password_char),
+        password: passwordSchemaType,
+        currentPassword: passwordSchemaType,
       })
     )
     .mutation(async ({ ctx, input }) => {

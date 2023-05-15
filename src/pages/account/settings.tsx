@@ -15,14 +15,15 @@ import type {
 import { useQueryClient } from "@tanstack/react-query";
 import TextInputField from "~/components/TextInputField";
 import {
+  emailSchema,
   max_email_char,
   max_firstName_char,
   max_lastName_char,
   max_password_char,
   max_phoneNumber_char,
-  min_password_char,
   nameSchema,
-  phone_regex,
+  passwordSchemaType,
+  phoneSchema,
 } from "~/customVariables";
 
 const SettingsPage: NextPage = () => {
@@ -262,23 +263,15 @@ function EmailForm({
   initialEmail,
   refetch,
 }: EmailFormProps) {
-  const schema = z.object({
-    email: z
-      .string()
-      .min(1, { message: "Please enter your email" })
-      .max(max_email_char, {
-        message: "Email must not be longer than 64 characters",
-      })
-      .email({ message: "Email is incorrect or invalid" }),
-  });
-
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
     reset,
-  } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
+  } = useForm<z.infer<typeof emailSchema>>({
+    resolver: zodResolver(emailSchema),
+  });
 
   const { mutate, isLoading } = api.user.updateEmail.useMutation({
     onSuccess: () => {
@@ -322,24 +315,15 @@ function PhoneNumberForm({
   initialPhoneNumber,
   refetch,
 }: PhoneNumberFormProps) {
-  const schema = z.object({
-    phoneNumber: z
-      .string()
-      .max(max_phoneNumber_char, {
-        message: "Phone number must not be longer than 100 characters",
-      })
-      .regex(phone_regex, {
-        message: "Phone number is incorrect or invalid",
-      }),
-  });
-
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
     reset,
-  } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
+  } = useForm<z.infer<typeof phoneSchema>>({
+    resolver: zodResolver(phoneSchema),
+  });
 
   const { mutate, isLoading } = api.user.updatePhoneNumber.useMutation({
     onSuccess: () => {
@@ -382,36 +366,19 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
   const confirmPassword = useRef("");
 
   const schema = z.object({
-    currentPassword: z
-      .string()
-      .min(min_password_char, {
-        message: "Password must be longer than 8 characters",
-      })
-      .max(max_password_char, {
-        message: "Password must not be longer than 1024 characters",
-      }),
-    password: z
-      .string()
-      .min(min_password_char, {
-        message: "Password must be longer than 8 characters",
-      })
-      .max(max_password_char, {
-        message: "Password must not be longer than 1024 characters",
-      })
-      .refine((val) => val === confirmPassword.current, {
+    currentPassword: passwordSchemaType,
+    password: passwordSchemaType.refine(
+      (val) => val === confirmPassword.current,
+      {
         message: "Passwords do not match",
-      }),
-    confirmPassword: z
-      .string()
-      .min(min_password_char, {
-        message: "Password must be longer than 8 characters",
-      })
-      .max(max_password_char, {
-        message: "Password must not be longer than 1024 characters",
-      })
-      .refine((val) => val === password.current, {
+      }
+    ),
+    confirmPassword: passwordSchemaType.refine(
+      (val) => val === password.current,
+      {
         message: "Passwords do not match",
-      }),
+      }
+    ),
   });
 
   const {
