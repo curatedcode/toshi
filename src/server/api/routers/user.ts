@@ -7,20 +7,15 @@ import {
 } from "~/server/api/trpc";
 import bcrypt from "bcryptjs";
 import {
-  max_city_char,
-  max_country_char,
+  addressSchema,
   max_email_char,
   max_firstName_char,
   max_lastName_char,
   max_password_char,
   max_phoneNumber_char,
-  max_state_char,
-  max_streetAddress_char,
-  max_zipCode_char,
   min_password_char,
-  min_zipCode_char,
+  nameSchema,
   phone_regex,
-  zipCode_regex,
 } from "~/customVariables";
 
 const userRouter = createTRPCRouter({
@@ -186,12 +181,7 @@ const userRouter = createTRPCRouter({
   }),
 
   updateName: protectedProcedure
-    .input(
-      z.object({
-        firstName: z.string().min(1).max(max_firstName_char),
-        lastName: z.string().min(1).max(max_lastName_char),
-      })
-    )
+    .input(nameSchema)
     .mutation(async ({ ctx, input }) => {
       const { prisma, session } = ctx;
       const { firstName, lastName } = input;
@@ -273,17 +263,8 @@ const userRouter = createTRPCRouter({
 
   updateAddress: protectedProcedure
     .input(
-      z.object({
+      addressSchema.extend({
         id: z.string().nullish(),
-        streetAddress: z.string().min(1).max(max_streetAddress_char),
-        city: z.string().min(1).max(max_city_char),
-        state: z.string().min(1).max(max_state_char),
-        zipCode: z
-          .string()
-          .min(min_zipCode_char)
-          .max(max_zipCode_char)
-          .regex(zipCode_regex),
-        country: z.string().min(1).max(max_country_char),
       })
     )
     .mutation(async ({ ctx, input }) => {
