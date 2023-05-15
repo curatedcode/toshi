@@ -29,6 +29,12 @@ function Footer({ bgColor }: { bgColor: "red" | "web-white" }) {
           Contact Us
         </Link>
       </div>
+      <Link
+        href={"/attribution"}
+        className="text-xs underline underline-offset-1"
+      >
+        Attribution
+      </Link>
     </footer>
   );
 }
