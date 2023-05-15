@@ -79,7 +79,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             trigger={
               <div className="inline-flex items-center gap-1">
                 <UserIcon className="w-7" aria-hidden />
-                <span className="hidden md:block">
+                <span className="hidden whitespace-nowrap md:block">
                   {status === "authenticated" ? "Account" : "Sign In"}
                 </span>
               </div>
