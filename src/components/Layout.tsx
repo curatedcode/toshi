@@ -27,8 +27,6 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
 
   const { status } = useSession();
 
-  const { data: name } = api.user.fullName.useQuery();
-
   function search(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && linkRef.current) {
       linkRef.current.click();
@@ -71,8 +69,8 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             trigger={
               <div className="inline-flex items-center gap-1">
                 <UserIcon className="w-7" aria-hidden />
-                <span className="hidden max-w-[96px] overflow-hidden text-ellipsis whitespace-nowrap md:block">
-                  {status === "authenticated" ? name?.firstName : "Sign In"}
+                <span className="hidden md:block">
+                  {status === "authenticated" ? "Account" : "Sign In"}
                 </span>
               </div>
             }
