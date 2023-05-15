@@ -13,14 +13,14 @@ const schema = z.object({
     .string()
     .min(1, { message: "Please enter your email" })
     .max(max_email_char, {
-      message: "Email must not be longer than 64 characters",
+      message: `Email must not be longer than ${max_email_char} characters`,
     })
     .email({ message: "Email is incorrect or invalid" }),
   password: z
     .string()
     .min(8, { message: "Password must be longer than 8 characters" })
     .max(max_password_char, {
-      message: "Password must not be longer than 1024 characters",
+      message: `Password must not be longer than ${max_password_char} characters`,
     }),
 });
 
