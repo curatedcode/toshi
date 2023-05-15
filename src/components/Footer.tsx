@@ -9,7 +9,7 @@ function Footer({ bgColor }: { bgColor: "red" | "web-white" }) {
       }`}
     >
       <LogoWithText />
-      <div className="flex flex-col items-center justify-center gap-2 md:flex-row md:gap-8">
+      <div className="flex flex-col items-center justify-center gap-2 md:ml-9 md:flex-row md:gap-8">
         <Link
           href={"/policies#privacy"}
           className="text-sky-300 underline underline-offset-1 transition-colors hover:text-sky-400"
