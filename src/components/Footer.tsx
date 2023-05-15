@@ -31,7 +31,7 @@ function Footer({ bgColor }: { bgColor: "red" | "web-white" }) {
       </div>
       <Link
         href={"/attribution"}
-        className="text-xs underline underline-offset-1"
+        className="text-xs text-neutral-200 underline underline-offset-1"
       >
         Attribution
       </Link>
