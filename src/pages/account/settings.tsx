@@ -13,7 +13,7 @@ import type {
   PhoneNumberFormProps,
 } from "~/customTypes";
 import { useQueryClient } from "@tanstack/react-query";
-import TextInputField from "~/components/TextInputField";
+import TextInputField from "~/components/Input/TextInputField";
 import {
   emailSchema,
   max_email_char,

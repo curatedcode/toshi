@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InternalLink from "~/components/InternalLink";
 import SimpleLayout from "~/components/SimpleLayout";
-import TextInputField from "~/components/TextInputField";
+import TextInputField from "~/components/Input/TextInputField";
 import {
   max_email_char,
   max_firstName_char,

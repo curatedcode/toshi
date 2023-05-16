@@ -7,7 +7,7 @@ import useLocalCart from "~/components/Fn/useLocalCart";
 import Layout from "~/components/Layout";
 import type { CheckoutSteps } from "~/customTypes";
 import { api } from "~/utils/api";
-import TextInputField from "~/components/TextInputField";
+import TextInputField from "~/components/Input/TextInputField";
 import {
   max_cardNumber_char,
   max_city_char,

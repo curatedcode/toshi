@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SimpleLayout from "~/components/SimpleLayout";
-import TextInputField from "~/components/TextInputField";
+import TextInputField from "~/components/Input/TextInputField";
 import { max_email_char, max_password_char } from "~/customVariables";
 
 const schema = z.object({
