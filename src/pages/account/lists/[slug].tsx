@@ -98,6 +98,8 @@ const ListPage: NextPage = () => {
     }
   }, [editing]);
 
+  const { mutate: addToCart } = api.cart.addProduct.useMutation();
+
   return (
     <Layout
       title={`${list?.name ? `${list?.name} list` : "Your list"} | Toshi`}
@@ -221,7 +223,18 @@ const ListPage: NextPage = () => {
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {products?.map((product) => (
-                  <Product key={product.id} product={product} />
+                  <div key={product.id}>
+                    <Product product={product} />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addToCart({ productId: product.id, quantity: 1 })
+                      }
+                      className="mb-4 mt-2 w-fit rounded-md bg-toshi-red px-6 py-1 font-semibold text-white"
+                    >
+                      Add to cart
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
