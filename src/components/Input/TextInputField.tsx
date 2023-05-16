@@ -10,23 +10,24 @@ const TextInputField = forwardRef(function TextInputField(
   {
     internalLabel,
     visibleLabel,
-    className,
+    className = "",
     maxLength,
+    classNamecontainer = "",
     error,
     ...props
   }: TextInputFieldProps,
   ref
 ) {
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${classNamecontainer}`}>
       <label htmlFor={internalLabel} className="ml-1 w-fit font-semibold">
         {visibleLabel}
       </label>
       <input
         id={internalLabel}
-        className={`duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 ${
+        className={`${className} duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 ${
           error ? "border-red-500 focus-within:border-red-500" : ""
-        } ${className ?? ""}`}
+        }`}
         maxLength={maxLength}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error

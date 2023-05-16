@@ -10,7 +10,7 @@ import getFormattedDate from "~/components/Fn/getFormattedDate";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
 import Layout from "~/components/Layout";
 import Product from "~/components/Products/Product";
-import TextInputField from "~/components/TextInputField";
+import TextInputField from "~/components/Input/TextInputField";
 import { max_list_title_char } from "~/customVariables";
 import { api } from "~/utils/api";
 
@@ -18,7 +18,9 @@ const schema = z.object({
   title: z
     .string()
     .min(1, { message: "Please enter a list title" })
-    .max(50, { message: "List title must not be longer than 50 characters" }),
+    .max(max_list_title_char, {
+      message: `List title must not be longer than ${max_list_title_char} characters`,
+    }),
   visibility: z.enum(["Public", "Private"]),
 });
 
@@ -104,10 +106,10 @@ const ListPage: NextPage = () => {
     >
       {editing ? (
         <form
-          className="my-2 mt-3 flex max-w-lg flex-col self-center"
+          className="my-2 mt-6 flex max-w-4xl flex-col self-center"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="mb-4 flex gap-2 self-center">
+          <div className="flex gap-2 self-center md:mb-4">
             <button
               type="button"
               disabled={isLoading.current}
@@ -119,35 +121,39 @@ const ListPage: NextPage = () => {
             <button
               type="submit"
               disabled={isLoading.current}
-              className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+              className="h-fit w-20 rounded-md bg-toshi-red px-2 py-1 text-white transition-opacity focus-within:outline-neutral-500 hover:bg-opacity-95"
             >
               {isLoading.current ? "Saving" : "Save"}
             </button>
           </div>
-          <TextInputField
-            internalLabel="title"
-            visibleLabel="List title"
-            maxLength={max_list_title_char}
-            error={titleError}
-            defaultValue={list?.name}
-            {...register("title")}
-          />
-          <div className="my-4 flex flex-col">
-            <label htmlFor="visibility" className="ml-1 font-semibold">
-              Visibility
-            </label>
-            <select
-              id="visibility"
-              className="duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none"
-              {...register("visibility")}
-            >
-              <option value={"Public"}>Public</option>
-              <option value={"Private"}>Private</option>
-            </select>
+          <div className="my-4 flex flex-col items-center justify-center gap-4 md:flex-row">
+            <TextInputField
+              internalLabel="title"
+              visibleLabel="List title"
+              maxLength={max_list_title_char}
+              error={titleError}
+              defaultValue={list?.name}
+              className="w-full md:w-fit"
+              classNamecontainer="w-full md:w-fit"
+              {...register("title")}
+            />
+            <div className="flex w-full flex-col md:w-[229px]">
+              <label htmlFor="visibility" className="ml-1 font-semibold">
+                Visibility
+              </label>
+              <select
+                id="visibility"
+                className="duration-50 rounded-md border-2 bg-neutral-100 px-3 py-[0.3rem] transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none hover:cursor-pointer"
+                {...register("visibility")}
+              >
+                <option value={"Public"}>Public</option>
+                <option value={"Private"}>Private</option>
+              </select>
+            </div>
           </div>
           <div className="flex flex-col">
             <span className="ml-1 font-semibold">Products</span>
-            <div className="grid grid-cols-1 gap-4 gap-y-8 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 gap-y-8 md:grid-cols-4">
               {list?.products?.map((product) => (
                 <div
                   key={product.id}

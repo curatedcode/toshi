@@ -223,6 +223,7 @@ export declare type TextInputFieldProps = {
   internalLabel: string;
   visibleLabel: string;
   name: string;
+  classNamecontainer?: string;
   className?: string;
   maxLength: number;
   error: string | undefined;
