@@ -12,14 +12,14 @@ const TextInputField = forwardRef(function TextInputField(
     visibleLabel,
     className = "",
     maxLength,
-    classNamecontainer = "",
+    classNameContainer = "",
     error,
     ...props
   }: TextInputFieldProps,
   ref
 ) {
   return (
-    <div className={`flex flex-col ${classNamecontainer}`}>
+    <div className={`flex flex-col ${classNameContainer}`}>
       <label htmlFor={internalLabel} className="ml-1 w-fit font-semibold">
         {visibleLabel}
       </label>

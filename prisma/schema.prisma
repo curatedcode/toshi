@@ -159,7 +159,7 @@ model Category {
 model Review {
     id          String    @id @default(cuid())
     rating      Float
-    title       String    
+    title       String?
     body        String?   @db.Text
     userId      String
     user        User      @relation(fields: [userId], references: [id])

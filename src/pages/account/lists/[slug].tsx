@@ -136,7 +136,7 @@ const ListPage: NextPage = () => {
               error={titleError}
               defaultValue={list?.name}
               className="w-full md:w-fit"
-              classNamecontainer="w-full md:w-fit"
+              classNameContainer="w-full md:w-fit"
               {...register("title")}
             />
             <div className="flex w-full flex-col md:w-[229px]">

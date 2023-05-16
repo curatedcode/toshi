@@ -148,8 +148,27 @@ export const contactFormSchema = z.object({
     .string()
     .min(1, { message: "Please enter a message" })
     .max(max_message_char, {
-      message: `Message must not be over ${max_message_char} characters`,
+      message: `Message must not be longer than ${max_message_char} characters`,
     }),
+});
+
+// reviews
+export const max_review_title_char = 100;
+export const max_review_body_char = 5000;
+export const reviewSchema = z.object({
+  title: z
+    .string()
+    .max(max_review_title_char, {
+      message: `Title must not be longer than ${max_review_title_char} characters`,
+    })
+    .nullish(),
+  rating: z.number().min(0).max(5),
+  body: z
+    .string()
+    .max(max_review_body_char, {
+      message: `Body must not be longer than ${max_review_body_char} characters`,
+    })
+    .nullish(),
 });
 
 // etc.

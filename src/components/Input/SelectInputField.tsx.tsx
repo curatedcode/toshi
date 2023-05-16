@@ -1,43 +1,43 @@
 import { forwardRef } from "react";
-import type { TextAreaInputFieldProps } from "~/customTypes";
+import type { SelectInputFieldProps } from "~/customTypes";
 
 /**
  * @param label - string
  * @param maxLength - number
  * @param error - string
+ * @param options - array of options as strings
  */
-const TextAreaInputField = forwardRef(function TextInputField(
+const SelectInputField = forwardRef(function TextInputField(
   {
     internalLabel,
     visibleLabel,
-    className,
-    maxLength,
+    className = "",
     classNameContainer = "",
     error,
+    options,
     ...props
-  }: TextAreaInputFieldProps,
+  }: SelectInputFieldProps,
   ref
 ) {
   return (
-    <div className="flex flex-col">
-      <label
-        htmlFor={internalLabel}
-        className={`${classNameContainer} ml-1 w-fit font-semibold`}
-      >
+    <div className={`flex flex-col ${classNameContainer}`}>
+      <label htmlFor={internalLabel} className="ml-1 w-fit font-semibold">
         {visibleLabel}
       </label>
-      <textarea
+      <select
         id={internalLabel}
-        className={`duration-50 resize-none rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 ${
+        className={`${className} duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 ${
           error ? "border-red-500 focus-within:border-red-500" : ""
-        } ${className ?? ""}`}
-        maxLength={maxLength}
+        }`}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         ref={ref}
-        rows={4}
         {...props}
-      />
+      >
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
       <div
         className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
           error ? "" : "hidden"
@@ -56,4 +56,4 @@ const TextAreaInputField = forwardRef(function TextInputField(
   );
 });
 
-export default TextAreaInputField;
+export default SelectInputField;

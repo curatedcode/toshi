@@ -8,6 +8,7 @@ import type {
   Dispatch,
   ImgHTMLAttributes,
   InputHTMLAttributes,
+  SelectHTMLAttributes,
   SetStateAction,
   TextareaHTMLAttributes,
 } from "react";
@@ -222,8 +223,7 @@ export declare interface AddressFormProps extends FormProps {
 export declare type TextInputFieldProps = {
   internalLabel: string;
   visibleLabel: string;
-  name: string;
-  classNamecontainer?: string;
+  classNameContainer?: string;
   className?: string;
   maxLength: number;
   error: string | undefined;
@@ -232,13 +232,25 @@ export declare type TextInputFieldProps = {
 export declare type TextAreaInputFieldProps = {
   internalLabel: string;
   visibleLabel: string;
-  name: string;
+  classNameContainer?: string;
   className?: string;
   maxLength: number;
   error: string | undefined;
 } & DetailedHTMLProps<
   TextareaHTMLAttributes<HTMLTextAreaElement>,
   HTMLTextAreaElement
+>;
+
+export declare type SelectInputFieldProps = {
+  internalLabel: string;
+  visibleLabel: string;
+  classNameContainer?: string;
+  className?: string;
+  error: string | undefined;
+  options: string[] | number[];
+} & DetailedHTMLProps<
+  SelectHTMLAttributes<HTMLSelectElement>,
+  HTMLSelectElement
 >;
 
 export declare type RatingProps = {
@@ -257,7 +269,7 @@ export declare type ReviewProps = {
   id: string;
   createdAt: Date;
   rating: number;
-  title: string;
+  title: string | null;
   body: string | null;
 };
 

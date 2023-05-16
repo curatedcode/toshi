@@ -5,7 +5,12 @@ import {
   type ProductWithReviews,
   SearchResultSortBy,
 } from "~/customTypes";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { reviewSchema } from "~/customVariables";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 const productRouter = createTRPCRouter({
   getOne: publicProcedure
@@ -285,6 +290,19 @@ const productRouter = createTRPCRouter({
       }));
 
       return similarWithRatings;
+    }),
+
+  createReview: protectedProcedure
+    .input(reviewSchema.extend({ productId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { title, rating, body, productId } = input;
+      const userId = session.user.id;
+
+      await prisma.review.create({
+        data: { title, rating, body, productId, userId },
+      });
+      return;
     }),
 });
 
