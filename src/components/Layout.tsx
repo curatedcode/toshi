@@ -50,8 +50,8 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
 
   useEffect(() => {
     function searchTrigger(e: globalThis.KeyboardEvent) {
-      e.preventDefault();
       if (e.key !== "k" || !e.ctrlKey) return;
+      e.preventDefault();
       inputRef.current?.focus();
     }
     document.addEventListener("keydown", searchTrigger);
