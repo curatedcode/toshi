@@ -21,6 +21,7 @@ const OrderPage: NextPage = () => {
     createdAt = "",
     deliveredAt = "",
     total,
+    status = "",
   } = order || {};
 
   useEffect(() => {
@@ -51,10 +52,17 @@ const OrderPage: NextPage = () => {
               <span>{createdDate}</span>
             </div>
             <div className="flex items-start md:flex-col">
-              <h2 className="md:text-sm">DELIVERED ON</h2>
+              <h2 className="md:text-sm">STATUS</h2>
               <span className="mr-2 md:hidden">:</span>
-              <span>{getFormattedDate(deliveredAt)}</span>
+              <span>{status.toUpperCase()}</span>
             </div>
+            {status === "delivered" && (
+              <div className="flex items-start md:flex-col">
+                <h2 className="md:text-sm">DELIVERED ON</h2>
+                <span className="mr-2 md:hidden">:</span>
+                <span>{getFormattedDate(deliveredAt as Date)}</span>
+              </div>
+            )}
             <div className="flex items-start md:flex-col">
               <h2 className="md:text-sm">TOTAL</h2>
               <span className="mr-2 md:hidden">:</span>

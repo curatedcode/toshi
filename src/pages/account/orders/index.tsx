@@ -77,7 +77,8 @@ const OrdersPage: NextPage = () => {
         <div className="flex flex-col">
           <div className="grid gap-8 md:gap-16">
             {orders.map((order) => {
-              const { id, products, total, createdAt, deliveredAt } = order;
+              const { id, products, total, createdAt, deliveredAt, status } =
+                order;
               const orderLink = `/account/orders/${id}`;
 
               return (
@@ -92,10 +93,17 @@ const OrdersPage: NextPage = () => {
                       <span>{getFormattedDate(createdAt)}</span>
                     </div>
                     <div className="flex items-start md:flex-col">
-                      <h2 className="md:text-sm">DELIVERED ON</h2>
+                      <h2 className="md:text-sm">STATUS</h2>
                       <span className="mr-2 md:hidden">:</span>
-                      <span>{getFormattedDate(deliveredAt)}</span>
+                      <span>{status.toUpperCase()}</span>
                     </div>
+                    {status === "delivered" && (
+                      <div className="flex items-start md:flex-col">
+                        <h2 className="md:text-sm">DELIVERED ON</h2>
+                        <span className="mr-2 md:hidden">:</span>
+                        <span>{getFormattedDate(deliveredAt as Date)}</span>
+                      </div>
+                    )}
                     <div className="flex items-start md:flex-col">
                       <h2 className="md:text-sm">TOTAL</h2>
                       <span className="mr-2 md:hidden">:</span>

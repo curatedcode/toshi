@@ -54,6 +54,7 @@ const orderRouter = createTRPCRouter({
           id: true,
           createdAt: true,
           deliveredAt: true,
+          status: true,
           total: true,
           products: {
             select: {
@@ -87,6 +88,7 @@ const orderRouter = createTRPCRouter({
           id: true,
           createdAt: true,
           deliveredAt: true,
+          status: true,
           total: true,
           products: {
             select: {
