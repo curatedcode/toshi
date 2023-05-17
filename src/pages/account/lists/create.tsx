@@ -11,6 +11,7 @@ import TextInputField from "~/components/Input/TextInputField";
 import { max_list_desc_char, max_list_title_char } from "~/customVariables";
 import { api } from "~/utils/api";
 import Button from "~/components/Input/Button";
+import TextAreaInputField from "~/components/Input/TextAreaInputField";
 
 const schema = z.object({
   title: z
@@ -76,35 +77,13 @@ const CreateListPage: NextPage = () => {
           visibleLabel="List title"
           {...register("title")}
         />
-        <div className="flex flex-col">
-          <label htmlFor="description" className="ml-1 font-semibold">
-            Description
-          </label>
-          <textarea
-            id="description"
-            className={`duration-50 resize-none rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none ${
-              descriptionError
-                ? "border-red-500 focus-within:border-red-500"
-                : ""
-            }`}
-            maxLength={max_list_desc_char}
-            rows={4}
-          />
-          <div
-            className={`ml-1 flex items-center gap-1 text-sm text-red-500 ${
-              descriptionError ? "" : "hidden"
-            }`}
-          >
-            <span className="text-lg font-semibold">!</span>
-            <p
-              role="alert"
-              aria-hidden={descriptionError ? "false" : "true"}
-              className="text-red-500"
-            >
-              {descriptionError}
-            </p>
-          </div>
-        </div>
+        <TextAreaInputField
+          error={descriptionError}
+          maxLength={max_list_desc_char}
+          internalLabel="description"
+          visibleLabel="Description"
+          {...register("description")}
+        />
         <div className="flex flex-col">
           <label htmlFor="visibility" className="ml-1 font-semibold">
             Visibility
