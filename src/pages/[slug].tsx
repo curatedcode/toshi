@@ -194,28 +194,13 @@ const SearchPage: NextPage = (
             name="sortBy"
             onChange={handleSortByChange}
             className="rounded-md bg-neutral-200 px-2"
+            defaultValue={sortByParam}
           >
-            <option value={"default"} selected={sortByParam === "default"}>
-              Relevance
-            </option>
-            <option
-              value={"priceLowToHigh"}
-              selected={sortByParam === "priceLowToHigh"}
-            >
-              Price: Low to High
-            </option>
-            <option
-              value={"priceHighToLow"}
-              selected={sortByParam === "priceHighToLow"}
-            >
-              Price: High to Low
-            </option>
-            <option value={"reviews"} selected={sortByParam === "reviews"}>
-              Avg. Customer Review
-            </option>
-            <option value={"newest"} selected={sortByParam === "newest"}>
-              Newest
-            </option>
+            <option value={"default"}>Relevance</option>
+            <option value={"priceLowToHigh"}>Price: Low to High</option>
+            <option value={"priceHighToLow"}>Price: High to Low</option>
+            <option value={"reviews"}>Avg. Customer Review</option>
+            <option value={"newest"}>Newest</option>
           </select>
         </div>
       </div>
