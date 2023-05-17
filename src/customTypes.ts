@@ -101,6 +101,7 @@ export declare type OrderedProductProps = {
   product: { product: OrderedProductType; priceAtPurchase: number };
   imageHeight?: number;
   imageWidth?: number;
+  buttons?: boolean;
 };
 
 export declare type ListProductProps = {

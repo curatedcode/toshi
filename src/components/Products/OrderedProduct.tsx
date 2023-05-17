@@ -22,6 +22,7 @@ function OrderedProduct({
   product,
   imageHeight = 150,
   imageWidth = 200,
+  buttons,
 }: OrderedProductProps) {
   const { priceAtPurchase, product: productData } = product;
   const { id, name, images, company } = productData;
@@ -94,14 +95,19 @@ function OrderedProduct({
           </div>
         </div>
       </div>
-      <div className="mt-2 flex w-full flex-col gap-2 self-end justify-self-end md:flex-row">
-        <Button onClick={() => setAddingReview(true)} className="md:basis-1/2">
-          Add review
-        </Button>
-        <Button link={{ href: productLink }} className="md:basis-1/2">
-          Buy again
-        </Button>
-      </div>
+      {buttons && (
+        <div className="mt-2 flex w-full flex-col gap-2 self-end justify-self-end md:flex-row">
+          <Button
+            onClick={() => setAddingReview(true)}
+            className="md:basis-1/2"
+          >
+            Add review
+          </Button>
+          <Button link={{ href: productLink }} className="md:basis-1/2">
+            Buy again
+          </Button>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit(() =>
           createReview({

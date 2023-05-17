@@ -90,7 +90,11 @@ const OrderPage: NextPage = () => {
             </div>
             <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-4 md:gap-4">
               {products?.map((product) => (
-                <OrderedProduct key={product.product.id} product={product} />
+                <OrderedProduct
+                  key={product.product.id}
+                  product={product}
+                  buttons
+                />
               ))}
             </div>
           </div>
