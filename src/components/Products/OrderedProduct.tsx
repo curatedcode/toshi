@@ -16,6 +16,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import TextAreaInputField from "../Input/TextAreaInputField";
 import SelectInputField from "../Input/SelectInputField.tsx";
+import Button from "../Input/Button";
 
 function OrderedProduct({
   product,
@@ -94,19 +95,12 @@ function OrderedProduct({
         </div>
       </div>
       <div className="mt-2 flex w-full flex-col gap-2 self-end justify-self-end md:flex-row">
-        <button
-          type="button"
-          onClick={() => setAddingReview(true)}
-          className="rounded-md bg-neutral-200 px-4 py-1 text-center transition-colors hover:bg-neutral-300 md:basis-1/2"
-        >
+        <Button onClick={() => setAddingReview(true)} className="md:basis-1/2">
           Add review
-        </button>
-        <Link
-          href={productLink}
-          className="rounded-md bg-neutral-200 px-4 py-1 text-center transition-colors hover:bg-neutral-300 md:basis-1/2"
-        >
+        </Button>
+        <Button link={{ href: productLink }} className="md:basis-1/2">
           Buy again
-        </Link>
+        </Button>
       </div>
       <form
         onSubmit={handleSubmit(() =>

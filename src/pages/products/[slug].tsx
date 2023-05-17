@@ -20,6 +20,7 @@ import Product from "~/components/Products/Product";
 import QuantityControls from "~/components/Products/QuantityControls";
 import InternalLink from "~/components/InternalLink";
 import useLocalCart from "~/components/Fn/useLocalCart";
+import Button from "~/components/Input/Button";
 
 const ProductPage: NextPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -137,18 +138,18 @@ const ProductPage: NextPage = (
               Out of stock
             </span>
           )}
-          <button
-            type="button"
+          <Button
+            style="toshi"
             onClick={() =>
               addToCart({ productId, quantity: orderQuantity, cookieId })
             }
-            className={`w-full rounded-md bg-toshi-red py-2 text-lg font-semibold text-white disabled:cursor-not-allowed disabled:bg-opacity-40 sm:w-48 ${
-              showAddToCartButton ? "" : "hidden"
-            }`}
+            className={
+              showAddToCartButton ? "w-full text-lg sm:w-48" : "hidden"
+            }
             disabled={quantity < 1 || orderQuantity < 1 || addingToCart}
           >
             Add to cart
-          </button>
+          </Button>
           <InternalLink
             href={"/cart"}
             className={`w-full rounded-md bg-neutral-300 py-2 text-center text-lg font-semibold sm:w-48 ${

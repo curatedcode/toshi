@@ -10,6 +10,7 @@ import Layout from "~/components/Layout";
 import TextInputField from "~/components/Input/TextInputField";
 import { max_list_desc_char, max_list_title_char } from "~/customVariables";
 import { api } from "~/utils/api";
+import Button from "~/components/Input/Button";
 
 const schema = z.object({
   title: z
@@ -116,12 +117,9 @@ const CreateListPage: NextPage = () => {
             <option value="public">Public</option>
           </select>
         </div>
-        <button
-          type="submit"
-          className="mt-2 w-fit self-end rounded-md bg-toshi-red px-4 py-1 font-semibold text-white"
-        >
+        <Button type="submit" style="toshi" className="mt-2 self-end">
           Create list
-        </button>
+        </Button>
       </form>
       <Transition
         as={Fragment}

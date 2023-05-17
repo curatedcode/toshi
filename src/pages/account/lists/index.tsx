@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
-import Link from "next/link";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
+import Button from "~/components/Input/Button";
 import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
 import Product from "~/components/Products/Product";
@@ -51,34 +51,34 @@ const ListPage: NextPage = () => {
                   <span>{products.length}</span>
                 </div>
                 <div className="flex w-full flex-col gap-2 md:hidden">
-                  <Link
-                    href={listLink}
-                    className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                  <Button
+                    link={{ href: listLink }}
+                    className="w-full min-w-[12rem]"
                   >
                     View list
-                  </Link>
-                  <Link
-                    href={`${listLink}?edit=true`}
-                    className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                  </Button>
+                  <Button
+                    link={{ href: `${listLink}?edit=true` }}
+                    className="w-full min-w-[12rem]"
                   >
                     Edit list
-                  </Link>
+                  </Button>
                 </div>
               </div>
               <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
                 <div className="order-last hidden w-48 flex-col gap-2 md:flex">
-                  <Link
-                    href={listLink}
-                    className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                  <Button
+                    link={{ href: listLink }}
+                    className="w-full min-w-[12rem]"
                   >
                     View list
-                  </Link>
-                  <Link
-                    href={`${listLink}?edit=true`}
-                    className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                  </Button>
+                  <Button
+                    link={{ href: `${listLink}?edit=true` }}
+                    className="w-full min-w-[12rem]"
                   >
                     Edit list
-                  </Link>
+                  </Button>
                 </div>
                 <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-4">
                   {products.map((product, index) => {

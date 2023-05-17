@@ -16,6 +16,7 @@ import { Source_Sans_Pro } from "next/font/google";
 import { signIn, signOut, useSession } from "next-auth/react";
 import InternalLink from "./InternalLink";
 import Footer from "./Footer";
+import Button from "./Input/Button";
 const font = Source_Sans_Pro({
   subsets: ["latin"],
   weight: ["400", "600", "700", "900"],
@@ -88,21 +89,21 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             position="right"
           >
             {status === "authenticated" ? (
-              <button
-                type="button"
+              <Button
+                style="toshi"
                 onClick={() => void signOut()}
-                className="col-span-full mb-3 w-full justify-self-center whitespace-nowrap rounded-md bg-toshi-red px-2 py-1 hover:bg-opacity-90"
+                className="col-span-full mb-3 w-full"
               >
                 Sign Out
-              </button>
+              </Button>
             ) : (
-              <button
-                type="button"
+              <Button
+                style="toshi"
                 onClick={() => void signIn()}
-                className="col-span-full mb-3 w-full justify-self-center whitespace-nowrap rounded-md bg-toshi-red px-2 py-1 hover:bg-opacity-90"
+                className="col-span-full mb-3 w-full"
               >
                 Sign In
-              </button>
+              </Button>
             )}
             <div className="mb-2 flex flex-col items-center gap-2 [&>*]:text-center [&>*]:text-sm">
               <InternalLink href={"/account/lists"}>Wish List</InternalLink>

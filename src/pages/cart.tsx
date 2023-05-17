@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import Button from "~/components/Input/Button";
 import Layout from "~/components/Layout";
 import CartProduct from "~/components/Products/CartProduct";
 import { api } from "~/utils/api";
@@ -53,12 +54,7 @@ const Cart: NextPage = () => {
                   ${totals?.totalPrice}
                 </span>
               </div>
-              <Link
-                href={"/checkout"}
-                className="w-full whitespace-nowrap rounded-md bg-toshi-red px-2 py-1 text-center font-semibold text-white"
-              >
-                Proceed to checkout
-              </Link>
+              <Button link={{ href: "/checkout" }}>Proceed to checkout</Button>
             </div>
           </div>
         </div>

@@ -346,3 +346,13 @@ export declare type CartProductProps = {
 };
 
 export declare type CheckoutSteps = "address" | "payment" | "review";
+
+export declare type ButtonProps = {
+  style?: "standard" | "toshi";
+  link?: { href: Url };
+  className?: string;
+  children: React.ReactNode;
+  type?: "button" | "submit";
+  onClick?: () => void;
+  disabled?: boolean;
+};

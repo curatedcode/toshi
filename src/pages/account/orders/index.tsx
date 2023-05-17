@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
-import Link from "next/link";
 import { useState } from "react";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
+import Button from "~/components/Input/Button";
 import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
 import OrderedProduct from "~/components/Products/OrderedProduct";
@@ -117,34 +117,34 @@ const OrdersPage: NextPage = () => {
                       <span>{id.toUpperCase()}</span>
                     </div>
                     <div className="flex w-full flex-col gap-2 sm:flex-row md:hidden">
-                      <Link
-                        href={orderLink}
-                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      <Button
+                        link={{ href: orderLink }}
+                        className="w-full min-w-[12rem]"
                       >
                         Order details
-                      </Link>
-                      <Link
-                        href={`${orderLink}?print=true`}
-                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      </Button>
+                      <Button
+                        link={{ href: `${orderLink}?print=true` }}
+                        className="w-full min-w-[12rem]"
                       >
                         Print invoice
-                      </Link>
+                      </Button>
                     </div>
                   </div>
                   <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
                     <div className="order-last hidden w-48 flex-col gap-2 md:flex">
-                      <Link
-                        href={orderLink}
-                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      <Button
+                        link={{ href: orderLink }}
+                        className="w-full min-w-[12rem]"
                       >
                         Order details
-                      </Link>
-                      <Link
-                        href={`${orderLink}?print=true`}
-                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      </Button>
+                      <Button
+                        link={{ href: `${orderLink}?print=true` }}
+                        className="w-full min-w-[12rem]"
                       >
                         Print invoice
-                      </Link>
+                      </Button>
                     </div>
                     <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-4 md:gap-4">
                       {products.map((product) => (

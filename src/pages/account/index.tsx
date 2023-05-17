@@ -4,6 +4,7 @@ import Link from "next/link";
 import Avatar from "~/components/Avatar";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
+import Button from "~/components/Input/Button";
 import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
 import OrderedProduct from "~/components/Products/OrderedProduct";
@@ -85,7 +86,8 @@ const AccountPage: NextPage = () => {
         {user?.orders ? (
           <div className="grid gap-8 md:gap-16">
             {user.orders.map((order) => {
-              const { id, products, createdAt, total, deliveredAt } = order;
+              const { id, products, createdAt, total, deliveredAt, status } =
+                order;
               const orderLink = `/account/orders/${id}`;
 
               return (
@@ -100,10 +102,17 @@ const AccountPage: NextPage = () => {
                       <span>{getFormattedDate(createdAt)}</span>
                     </div>
                     <div className="flex items-start md:flex-col">
-                      <h2 className="md:text-sm">DELIVERED ON</h2>
+                      <h2 className="md:text-sm">STATUS</h2>
                       <span className="mr-2 md:hidden">:</span>
-                      <span>{getFormattedDate(deliveredAt)}</span>
+                      <span>{status.toUpperCase()}</span>
                     </div>
+                    {status === "delivered" && (
+                      <div className="flex items-start md:flex-col">
+                        <h2 className="md:text-sm">DELIVERED ON</h2>
+                        <span className="mr-2 md:hidden">:</span>
+                        <span>{getFormattedDate(deliveredAt as Date)}</span>
+                      </div>
+                    )}
                     <div className="flex items-start md:flex-col">
                       <h2 className="md:text-sm">TOTAL</h2>
                       <span className="mr-2 md:hidden">:</span>
@@ -117,34 +126,34 @@ const AccountPage: NextPage = () => {
                       <span>{id.toUpperCase()}</span>
                     </div>
                     <div className="flex w-full gap-2 md:hidden">
-                      <Link
-                        href={orderLink}
-                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      <Button
+                        link={{ href: orderLink }}
+                        className="w-full min-w-[12rem]"
                       >
                         Order details
-                      </Link>
-                      <Link
-                        href={`${orderLink}#invoice`}
-                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      </Button>
+                      <Button
+                        link={{ href: `${orderLink}#invoice` }}
+                        className="w-full min-w-[12rem]"
                       >
                         View invoice
-                      </Link>
+                      </Button>
                     </div>
                   </div>
                   <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
                     <div className="order-last hidden w-48 flex-col gap-2 md:flex">
-                      <Link
-                        href={orderLink}
-                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      <Button
+                        link={{ href: orderLink }}
+                        className="w-full min-w-[12rem]"
                       >
                         Order details
-                      </Link>
-                      <Link
-                        href={`${orderLink}#invoice`}
-                        className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      </Button>
+                      <Button
+                        link={{ href: `${orderLink}#invoice` }}
+                        className="w-full min-w-[12rem]"
                       >
                         View invoice
-                      </Link>
+                      </Button>
                     </div>
                     <div className="grid grid-cols-1 gap-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                       {products.map((product) => (

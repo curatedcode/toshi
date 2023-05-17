@@ -57,6 +57,7 @@ const userRouter = createTRPCRouter({
             name: true,
             createdAt: true,
             updatedAt: true,
+            isPrivate: true,
             products: {
               select: {
                 id: true,
@@ -77,6 +78,7 @@ const userRouter = createTRPCRouter({
             createdAt: true,
             deliveredAt: true,
             total: true,
+            status: true,
             products: {
               select: {
                 product: {
