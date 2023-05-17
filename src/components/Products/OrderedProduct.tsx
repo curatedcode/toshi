@@ -62,7 +62,7 @@ function OrderedProduct({
   }, [addingReview]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col justify-between gap-4">
       <div className="flex flex-col gap-2">
         <Link href={`/products/${id}`} className="w-fit">
           <Image
@@ -96,7 +96,7 @@ function OrderedProduct({
         </div>
       </div>
       {buttons && (
-        <div className="mt-2 flex w-full flex-col gap-2 self-end justify-self-end md:flex-row">
+        <div className="mt-2 flex w-full flex-col gap-2 xl:flex-row">
           <Button
             onClick={() => setAddingReview(true)}
             className="md:basis-1/2"
