@@ -3,6 +3,7 @@ import RatingStars from "./RatingStars";
 import Avatar from "../Avatar";
 import getRelativeTime from "../Fn/getRelativeDate";
 import { useState } from "react";
+import { avatarUrls } from "~/customVariables";
 
 function Review({ review }: { review: ReviewProps }) {
   const { id, title, body, rating, createdAt, user } = review;
@@ -16,7 +17,10 @@ function Review({ review }: { review: ReviewProps }) {
     <div key={id} className="pb-2 pt-4">
       <div className="flex flex-col gap-2 pb-2">
         <div className="flex gap-2">
-          <Avatar alt="" src={user.image ?? "/profile-placeholder.jpg"} />
+          <Avatar
+            alt=""
+            src={avatarUrls[user.avatarColor] ?? "/profile-placeholder.jpg"}
+          />
           <div className="flex flex-col">
             <span>{name}</span>
             <span className="text-sm">• {getRelativeTime(createdAt)}</span>

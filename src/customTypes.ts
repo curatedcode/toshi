@@ -278,7 +278,7 @@ export declare type ReviewProps = {
   user: {
     firstName: string;
     lastName: string;
-    image: string | null;
+    avatarColor: AvatarColor;
   };
   id: string;
   createdAt: Date;

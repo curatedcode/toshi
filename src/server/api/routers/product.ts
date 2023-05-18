@@ -34,7 +34,7 @@ const productRouter = createTRPCRouter({
               id: true,
               createdAt: true,
               user: {
-                select: { firstName: true, lastName: true, image: true },
+                select: { firstName: true, lastName: true, avatarColor: true },
               },
               rating: true,
             },

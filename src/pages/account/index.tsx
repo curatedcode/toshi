@@ -9,6 +9,7 @@ import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
 import OrderedProduct from "~/components/Products/OrderedProduct";
 import Product from "~/components/Products/Product";
+import { avatarUrls } from "~/customVariables";
 import { api } from "~/utils/api";
 
 const AccountPage: NextPage = () => {
@@ -66,7 +67,15 @@ const AccountPage: NextPage = () => {
       className="flex flex-col gap-6 px-5 md:gap-16"
     >
       <section className="mt-4 flex w-fit flex-col place-items-center gap-2 self-center text-center md:flex-row md:place-items-start md:text-start">
-        <Avatar alt="Your profile picture" src={user?.image} size="lg" />
+        <Avatar
+          alt="Your profile picture"
+          src={
+            user?.avatarColor
+              ? avatarUrls[user.avatarColor]
+              : "/profile-placeholder.png"
+          }
+          size="lg"
+        />
         <div>
           <span className="text-2xl font-semibold">{fullName}</span>
           {user?.addresses ? (
