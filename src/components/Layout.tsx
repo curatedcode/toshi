@@ -19,12 +19,14 @@ import Footer from "./Footer";
 import Button from "./Input/Button";
 const font = Source_Sans_Pro({
   subsets: ["latin"],
-  weight: ["400", "600", "700", "900"],
+  weight: ["400", "600"],
 });
 
 function Layout({ title, description, children, className = "" }: LayoutProps) {
   const [searchText, setSearchText] = useState("");
   const linkRef = useRef<HTMLAnchorElement>(null);
+
+  const [windowWidth, setWindowWidth] = useState(0);
 
   const { status } = useSession();
 
@@ -58,6 +60,17 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
     return () => removeEventListener("keydown", searchTrigger);
   });
 
+  useEffect(() => {
+    function resize() {
+      const newWidth = window.innerWidth;
+      if (windowWidth === newWidth) return;
+      setWindowWidth(newWidth);
+      console.log(newWidth);
+    }
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, [windowWidth]);
+
   return (
     <div className="relative flex min-h-screen flex-col print:hidden">
       <Head>
@@ -72,6 +85,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
           href={"/"}
           aria-label="Home"
           className="flex w-fit items-center md:order-1"
+          tabIndex={1}
         >
           <LogoWithText />
         </Link>
@@ -87,6 +101,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             }
             className="place-items-center"
             position="right"
+            tabIndex={windowWidth >= 768 ? 6 : 2}
           >
             {status === "authenticated" ? (
               <Button
@@ -120,7 +135,11 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
               </InternalLink>
             </div>
           </Dropdown>
-          <Link href={"/cart"} className="inline-flex w-fit items-center gap-1">
+          <Link
+            href={"/cart"}
+            className="inline-flex w-fit items-center gap-1"
+            tabIndex={windowWidth >= 768 ? 7 : 3}
+          >
             <ShoppingCartIcon className="w-7" aria-hidden />
             <span className="hidden md:block">Cart</span>
           </Link>
@@ -139,11 +158,13 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             ref={inputRef}
             onChange={(e) => setSearchText(e.currentTarget.value)}
             onKeyDown={search}
+            tabIndex={4}
           />
           <button
             type="button"
             onClick={() => linkRef.current?.click()}
             aria-label="Submit search"
+            tabIndex={5}
           >
             <MagnifyingGlassIcon
               className="h-full w-10 rounded-lg border-2 border-l-0 border-white bg-toshi-red p-2 text-white"
@@ -161,6 +182,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             }
             className="auto-cols-min grid-cols-1 lg:grid-cols-2"
             position="left"
+            tabIndex={windowWidth >= 768 ? 2 : 6}
           >
             {categories?.map((category) => (
               <Link
@@ -172,7 +194,11 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
               </Link>
             ))}
           </Dropdown>
-          <Link href={"/new-releases"} className="whitespace-nowrap">
+          <Link
+            href={"/new-releases"}
+            className="whitespace-nowrap"
+            tabIndex={windowWidth >= 768 ? 3 : 7}
+          >
             What&apos;s new
           </Link>
         </div>

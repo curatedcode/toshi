@@ -8,9 +8,10 @@ function Dropdown({
   offset = 12,
   className = "",
   position,
+  tabIndex,
 }: DropdownProps) {
   return (
-    <div className="relative">
+    <div className="relative" tabIndex={tabIndex}>
       <Popover className="relative">
         {() => (
           <>

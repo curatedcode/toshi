@@ -325,6 +325,7 @@ export declare type DropdownProps = {
   offset?: number;
   className?: string;
   position: "left" | "right";
+  tabIndex?: number;
 };
 
 export declare type QuantityControlsProps = {
@@ -370,3 +371,24 @@ export declare type ButtonProps = {
   onClick?: () => void;
   disabled?: boolean;
 };
+
+export interface DimensionObject {
+  width: number;
+  height: number;
+  top: number;
+  left: number;
+  x: number;
+  y: number;
+  right: number;
+  bottom: number;
+}
+
+export type UseDimensionsHook = [
+  (node: HTMLElement) => void,
+  object | DimensionObject,
+  HTMLElement
+];
+
+export interface UseDimensionsArgs {
+  liveMeasure?: boolean;
+}
