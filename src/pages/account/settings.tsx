@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { type NextPage } from "next";
-import { useEffect, useRef, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import type {
+  AvatarFormProps,
   EmailFormProps,
   FormProps,
   NameFormProps,
@@ -15,6 +16,8 @@ import type {
 import { useQueryClient } from "@tanstack/react-query";
 import TextInputField from "~/components/Input/TextInputField";
 import {
+  avatarColors,
+  avatarUrls,
   emailSchema,
   max_email_char,
   max_firstName_char,
@@ -25,10 +28,14 @@ import {
   passwordSchemaType,
   phoneSchema,
 } from "~/customVariables";
+import Avatar from "~/components/Avatar";
+import Image from "~/components/Image";
+import { type AvatarColor } from "@prisma/client";
 
 const SettingsPage: NextPage = () => {
   const { data: settings, refetch, isLoading } = api.user.settings.useQuery();
 
+  const [editAvatar, setEditAvatar] = useState(false);
   const [editName, setEditName] = useState(false);
   const [editEmail, setEditEmail] = useState(false);
   const [editPhoneNumber, setEditPhoneNumber] = useState(false);
@@ -64,6 +71,36 @@ const SettingsPage: NextPage = () => {
         <div className="grid divide-y-2 divide-neutral-200 rounded-md border-2 border-neutral-200">
           <div
             className={`flex justify-between px-3 py-2 ${
+              editAvatar ? "hidden" : ""
+            }`}
+          >
+            <div>
+              <h2 className="text-lg font-semibold">Avatar</h2>
+              <Avatar
+                alt="Your avatar"
+                src={settings?.avatarColor && avatarUrls[settings?.avatarColor]}
+                size="lg"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setEditAvatar(true)}
+              title="Edit name"
+              className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
+            >
+              Edit
+            </button>
+          </div>
+          {settings?.avatarColor && (
+            <AvatarForm
+              hidden={!editAvatar}
+              setVisible={setEditAvatar}
+              initialAvatarColor={settings?.avatarColor}
+              refetch={refetch}
+            />
+          )}
+          <div
+            className={`flex justify-between px-3 py-2 ${
               editName ? "hidden" : ""
             }`}
           >
@@ -82,7 +119,7 @@ const SettingsPage: NextPage = () => {
           </div>
           <NameForm
             hidden={!editName}
-            setHidden={setEditName}
+            setVisible={setEditName}
             initialName={{
               firstName: settings?.firstName,
               lastName: settings?.lastName,
@@ -109,7 +146,7 @@ const SettingsPage: NextPage = () => {
           </div>
           <EmailForm
             hidden={!editEmail}
-            setHidden={setEditEmail}
+            setVisible={setEditEmail}
             initialEmail={settings?.email}
             refetch={refetch}
           />
@@ -133,8 +170,8 @@ const SettingsPage: NextPage = () => {
           </div>
           <PhoneNumberForm
             hidden={!editPhoneNumber}
-            setHidden={setEditPhoneNumber}
-            initialPhoneNumber={settings?.phoneNumber}
+            setVisible={setEditPhoneNumber}
+            initialPhoneNumber={settings?.phoneNumber ?? undefined}
             refetch={refetch}
           />
           <div
@@ -157,7 +194,7 @@ const SettingsPage: NextPage = () => {
           </div>
           <PasswordForm
             hidden={!editPassword}
-            setHidden={setEditPassword}
+            setVisible={setEditPassword}
             refetch={refetch}
           />
         </div>
@@ -194,7 +231,64 @@ export function FormButtons({
   );
 }
 
-function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
+function AvatarForm({
+  hidden,
+  setVisible,
+  initialAvatarColor,
+  refetch,
+}: AvatarFormProps) {
+  const [selectedColor, setSelectedColor] =
+    useState<AvatarColor>(initialAvatarColor);
+
+  const { mutate, isLoading } = api.user.updateAvatar.useMutation({
+    onSuccess: () => {
+      setVisible(false);
+      refetch();
+    },
+  });
+
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (initialAvatarColor === selectedColor) {
+      setVisible(false);
+      return;
+    }
+    mutate({ color: selectedColor });
+  }
+
+  return (
+    <form
+      className={`flex justify-between px-3 py-2 ${hidden ? "hidden" : ""}`}
+      onSubmit={onSubmit}
+    >
+      {avatarColors.map((color, index) => {
+        const isSelected = selectedColor === color;
+
+        return (
+          <div
+            key={index}
+            className={`flex flex-col items-center gap-2 rounded-md border border-neutral-200 p-2 ${
+              isSelected ? "border-neutral-600" : ""
+            }`}
+            onClick={() => setSelectedColor(color)}
+          >
+            <Image alt={`${color} avatar`} src={avatarUrls[color]} />
+            <input
+              type="radio"
+              value={color}
+              title={`select ${color} image`}
+              onChange={() => setSelectedColor(color)}
+              checked={isSelected}
+            />
+          </div>
+        );
+      })}
+      <FormButtons isLoading={isLoading} resetForm={() => setVisible(false)} />
+    </form>
+  );
+}
+
+function NameForm({ hidden, setVisible, initialName, refetch }: NameFormProps) {
   const {
     register,
     handleSubmit,
@@ -209,7 +303,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
 
   const { mutate, isLoading } = api.user.updateName.useMutation({
     onSuccess: async () => {
-      setHidden(false);
+      setVisible(false);
       await queryClient.invalidateQueries({ queryKey: [["user", "fullName"]] });
       refetch();
     },
@@ -225,7 +319,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
   const lastNameError = errors.lastName?.message;
 
   function resetForm() {
-    setHidden(false);
+    setVisible(false);
     reset();
   }
 
@@ -259,7 +353,7 @@ function NameForm({ hidden, setHidden, initialName, refetch }: NameFormProps) {
 
 function EmailForm({
   hidden,
-  setHidden,
+  setVisible,
   initialEmail,
   refetch,
 }: EmailFormProps) {
@@ -275,7 +369,7 @@ function EmailForm({
 
   const { mutate, isLoading } = api.user.updateEmail.useMutation({
     onSuccess: () => {
-      setHidden(false);
+      setVisible(false);
       refetch();
     },
   });
@@ -285,7 +379,7 @@ function EmailForm({
   const error = errors.email?.message;
 
   function resetForm() {
-    setHidden(false);
+    setVisible(false);
     reset();
   }
 
@@ -311,7 +405,7 @@ function EmailForm({
 
 function PhoneNumberForm({
   hidden,
-  setHidden,
+  setVisible,
   initialPhoneNumber,
   refetch,
 }: PhoneNumberFormProps) {
@@ -327,7 +421,7 @@ function PhoneNumberForm({
 
   const { mutate, isLoading } = api.user.updatePhoneNumber.useMutation({
     onSuccess: () => {
-      setHidden(false);
+      setVisible(false);
       refetch();
     },
   });
@@ -337,7 +431,7 @@ function PhoneNumberForm({
   const error = errors.phoneNumber?.message;
 
   function resetForm() {
-    setHidden(false);
+    setVisible(false);
     reset();
   }
 
@@ -361,7 +455,7 @@ function PhoneNumberForm({
   );
 }
 
-function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
+function PasswordForm({ hidden, setVisible, refetch }: FormProps) {
   const password = useRef("");
   const confirmPassword = useRef("");
 
@@ -391,7 +485,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
 
   const { mutate, isLoading } = api.user.updatePassword.useMutation({
     onSuccess: () => {
-      setHidden(false);
+      setVisible(false);
       refetch();
     },
   });
@@ -412,7 +506,7 @@ function PasswordForm({ hidden, setHidden, refetch }: FormProps) {
   const confirmPasswordError = errors.confirmPassword?.message;
 
   function resetForm() {
-    setHidden(false);
+    setVisible(false);
     reset();
   }
 

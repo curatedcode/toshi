@@ -8,6 +8,7 @@ import {
 import bcrypt from "bcryptjs";
 import {
   addressSchema,
+  defaultAvatarColor,
   emailSchema,
   max_email_char,
   max_firstName_char,
@@ -18,6 +19,7 @@ import {
   passwordSchemaType,
   phoneSchema,
 } from "~/customVariables";
+import { AvatarType } from "~/customTypes";
 
 const userRouter = createTRPCRouter({
   fullName: protectedProcedure.query(async ({ ctx }) => {
@@ -45,7 +47,7 @@ const userRouter = createTRPCRouter({
       where: { id },
       select: {
         email: true,
-        image: true,
+        avatarColor: true,
         firstName: true,
         lastName: true,
         addresses: {
@@ -146,14 +148,20 @@ const userRouter = createTRPCRouter({
       const hash = await bcrypt.hash(password, 10);
 
       const newUser = await prisma.user.create({
-        data: { email, hash, firstName, lastName },
+        data: {
+          email,
+          hash,
+          firstName,
+          lastName,
+          avatarColor: defaultAvatarColor,
+        },
       });
 
       return {
         id: newUser.id,
         firstName: newUser.firstName,
         lastName: newUser.firstName,
-        image: newUser.image,
+        avatarColor: newUser.avatarColor,
         email: newUser.email,
       };
     }),
@@ -168,20 +176,27 @@ const userRouter = createTRPCRouter({
         firstName: true,
         lastName: true,
         email: true,
-        image: true,
+        avatarColor: true,
         phoneNumber: true,
       },
     });
 
-    return {
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      email: user?.email,
-
-      image: user?.image,
-      phoneNumber: user?.phoneNumber ?? undefined,
-    };
+    return user;
   }),
+
+  updateAvatar: protectedProcedure
+    .input(z.object({ color: AvatarType }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { color } = input;
+      const userId = session.user.id;
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { avatarColor: { set: color } },
+      });
+      return;
+    }),
 
   updateName: protectedProcedure
     .input(nameSchema)

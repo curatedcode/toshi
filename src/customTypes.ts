@@ -1,4 +1,10 @@
-import type { Category, Prisma, ProductImage, Review } from "@prisma/client";
+import type {
+  AvatarColor,
+  Category,
+  Prisma,
+  ProductImage,
+  Review,
+} from "@prisma/client";
 import type { EmblaCarouselType } from "embla-carousel-react";
 import type { Url } from "next/dist/shared/lib/router/router";
 import type {
@@ -13,6 +19,7 @@ import type {
   TextareaHTMLAttributes,
 } from "react";
 import { z } from "zod";
+import { avatarColors } from "./customVariables";
 
 export declare type LogoProps = {
   width?: number;
@@ -194,9 +201,15 @@ export declare type InternalLinkProps = {
 
 export declare type FormProps = {
   hidden: boolean;
-  setHidden: (value: SetStateAction<boolean>) => void;
+  setVisible: (value: SetStateAction<boolean>) => void;
   refetch: () => void;
 };
+
+export const AvatarType = z.enum(avatarColors);
+
+export declare interface AvatarFormProps extends FormProps {
+  initialAvatarColor: AvatarColor;
+}
 
 export declare interface NameFormProps extends FormProps {
   initialName?: Partial<{ firstName: string; lastName: string }>;

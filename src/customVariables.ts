@@ -171,5 +171,15 @@ export const reviewSchema = z.object({
     .nullish(),
 });
 
+// avatars
+export const avatarUrls = {
+  blue: "/blue-avatar.png",
+  green: "/green-avatar.png",
+  red: "/red-avatar.png",
+  yellow: "/yellow-avatar.png",
+};
+export const avatarColors = ["blue", "green", "red", "yellow"] as const;
+export const defaultAvatarColor = avatarColors[2];
+
 // etc.
 export const taxPercentage = 0.07;

@@ -1,6 +1,12 @@
-import { type Category, PrismaClient, type Product } from "@prisma/client";
+import {
+  type Category,
+  PrismaClient,
+  type Product,
+  type AvatarColor,
+} from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
+const avatarColors = ["blue", "green", "red", "yellow"] as const;
 
 const prisma = new PrismaClient();
 
@@ -98,6 +104,13 @@ function getRandomProduct(index: number, products: Product[]): Product {
   if (!product) return getRandomProduct(index - 1, products);
 
   return product;
+}
+
+function getRandomAvatarColor(num?: number): AvatarColor {
+  const randomNum = Math.round(Math.random() * 3);
+  const color = avatarColors[num ?? randomNum];
+  if (!color) return getRandomAvatarColor(randomNum - 1);
+  return color;
 }
 
 async function createCategories() {
@@ -199,7 +212,7 @@ async function run() {
         email: faker.internet.email(),
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
-        image: faker.internet.avatar(),
+        avatarColor: getRandomAvatarColor(),
         addresses: {
           create: {
             streetAddress: faker.address.streetAddress(),
@@ -394,7 +407,7 @@ async function run() {
           firstName: "John",
           lastName: "Doe",
           email: "johnnyBoy@gmail.com",
-          image: faker.internet.avatar(),
+          avatarColor: getRandomAvatarColor(),
           hash: await bcrypt.hash("superSecretPassword123", 10),
           addresses: {
             create: {

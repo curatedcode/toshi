@@ -53,7 +53,7 @@ model User {
     emailVerified       DateTime?
     phoneNumber         String?
     hash                String?
-    image               String?
+    avatarColor         AvatarColor
     addresses           UserAddress[]
     accounts            Account[]
     sessions            Session[]
@@ -61,6 +61,13 @@ model User {
     lists               List[]
     orders              Order[]
     cart                UserCart?
+}
+
+enum AvatarColor {
+    blue
+    green
+    red
+    yellow
 }
 
 model VerificationToken {

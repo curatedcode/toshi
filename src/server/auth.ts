@@ -3,6 +3,7 @@ import { getServerSession, type NextAuthOptions } from "next-auth";
 import { prisma } from "~/server/db";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { type AvatarColor } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -18,7 +19,7 @@ declare module "next-auth" {
       lastName: string;
       name: string;
       email: string;
-      image: string | null | undefined;
+      avatarColor: AvatarColor;
     };
   }
   interface User {
@@ -27,7 +28,7 @@ declare module "next-auth" {
     lastName: string;
     name: string;
     email: string;
-    image: string | null | undefined;
+    avatarColor: AvatarColor;
   }
 }
 
@@ -43,7 +44,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
-        token.image = user.image;
+        token.avatarColor = user.avatarColor;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
       }
@@ -70,7 +71,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials) return null;
-        if (!credentials.email || !credentials.password) return null;
         const { email, password } = credentials;
 
         const user = await prisma.user.findUnique({
@@ -79,7 +79,7 @@ export const authOptions: NextAuthOptions = {
             id: true,
             firstName: true,
             lastName: true,
-            image: true,
+            avatarColor: true,
             email: true,
             hash: true,
           },
@@ -99,7 +99,7 @@ export const authOptions: NextAuthOptions = {
           lastName: user.lastName,
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
-          image: user.image,
+          avatarColor: user.avatarColor,
         };
       },
     }),
