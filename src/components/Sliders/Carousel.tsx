@@ -96,7 +96,7 @@ function Thumbnail({ onClick, selected, slide, index }: CarouselThumbProps) {
       type="button"
       aria-label={`View image ${index}`}
       onClick={onClick}
-      className={`relative max-h-14 shrink-0 grow-0 rounded-md ${
+      className={`relative aspect-square shrink-0 grow-0 rounded-md ${
         selected ? "" : "opacity-50"
       }`}
       style={{ flexBasis: "25%" }}
