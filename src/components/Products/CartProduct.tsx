@@ -49,7 +49,7 @@ function CartProduct({ data, cookieId }: CartProductProps) {
         <div className="flex flex-col">
           <Link
             href={productLink}
-            className="line-clamp-2 w-fit text-xl font-medium leading-tight transition-colors hover:text-toshi-red"
+            className="line-clamp-2 w-fit text-xl font-medium leading-tight transition-colors hover:text-toshi-red md:text-2xl"
           >
             {name}
           </Link>

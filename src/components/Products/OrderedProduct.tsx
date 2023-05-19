@@ -76,7 +76,7 @@ function OrderedProduct({
         <div className="flex flex-col">
           <InternalLink
             href={`/products/${id}`}
-            className="line-clamp-2 text-lg"
+            className="line-clamp-2 text-lg md:text-xl"
           >
             {name}
           </InternalLink>

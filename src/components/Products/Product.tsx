@@ -78,11 +78,8 @@ function Product({
           className="w-full rounded-md"
         />
       </Link>
-      <div className="flex w-full flex-col">
-        <InternalLink
-          href={link}
-          className="line-clamp-2 w-fit text-lg font-medium leading-tight transition-colors hover:text-toshi-red"
-        >
+      <div className="flex flex-col">
+        <InternalLink href={link} className="line-clamp-2 text-xl">
           {name}
         </InternalLink>
         <Rating rating={rating} _count={_count} link={`${link}#reviews`} />
