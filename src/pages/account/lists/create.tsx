@@ -67,9 +67,7 @@ const CreateListPage: NextPage = () => {
       description="Create a list on Toshi.com"
       className="w-full max-w-md self-center"
     >
-      <h1 className="my-3 ml-1 text-3xl font-semibold md:text-4xl">
-        Create a list
-      </h1>
+      <h1 className="my-3 text-3xl md:text-4xl">Create a list</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
         <TextInputField
           error={titleError}

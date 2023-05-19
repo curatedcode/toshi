@@ -68,7 +68,7 @@ const SettingsPage: NextPage = () => {
       className="flex-row justify-center"
     >
       <div className="mt-12 grid w-full max-w-lg">
-        <h1 className="mb-3 ml-1 text-3xl md:text-4xl">Your info</h1>
+        <h1 className="my-3 text-3xl md:text-4xl">Your info</h1>
         <div className="grid divide-y-2 divide-neutral-200 rounded-md border-2 border-neutral-200">
           <div
             className={`flex justify-between px-3 py-2 ${

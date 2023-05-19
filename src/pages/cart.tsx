@@ -31,7 +31,7 @@ const Cart: NextPage = () => {
 
   return (
     <Layout title="My cart | Toshi" description="Your cart on Toshi.com">
-      <h1 className="mt-3 text-3xl md:text-4xl">Shopping Cart</h1>
+      <h1 className="my-3 text-3xl md:text-4xl">Shopping Cart</h1>
       <div className="flex flex-col justify-between gap-2 md:flex-row md:gap-12">
         <div className="flex w-full flex-col divide-y divide-neutral-300">
           {products &&

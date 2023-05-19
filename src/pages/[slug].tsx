@@ -164,14 +164,14 @@ const SearchPage: NextPage = (
     <Layout
       title={`${textParam} | Toshi`}
       description={`Search results for ${textParam} on Toshi.com`}
-      className="!max-w-none"
+      className="!max-w-none !p-0"
     >
       <Link
         href={getLinkWithAllParams({ sortBy: sortResults, page: 1 })}
         ref={sortResultsLinkRef}
         hidden
       />
-      <div className="mb-3 flex items-end justify-between gap-1 px-4 py-1.5 text-sm shadow-md shadow-neutral-300 md:hidden">
+      <div className="mb-5 flex items-end justify-between gap-1 px-4 py-1.5 text-sm shadow-md shadow-neutral-300 md:hidden">
         <div className="flex flex-col">
           {textParam ? (
             <div>
@@ -314,7 +314,7 @@ const SearchPage: NextPage = (
           </Transition>
         </Menu>
       </div>
-      <div className="mb-3 w-full shadow-md shadow-neutral-300">
+      <div className="mb-5 hidden w-full shadow-md shadow-neutral-300 md:block">
         <div
           id="filters"
           className="relative left-1/2 hidden max-w-standard -translate-x-1/2 flex-col items-end gap-1 px-4 py-1.5 text-sm md:flex md:flex-row md:justify-between"
@@ -347,8 +347,8 @@ const SearchPage: NextPage = (
           </div>
         </div>
       </div>
-      <div className="relative left-1/2 flex max-w-standard -translate-x-1/2">
-        <div className="hidden flex-col divide-y divide-neutral-300 px-5 md:flex [&>div]:pb-3 [&>div]:pt-2">
+      <div className="relative left-1/2 flex max-w-standard -translate-x-1/2 gap-5 px-5">
+        <div className="hidden flex-col divide-y divide-neutral-300 md:flex [&>div]:pb-3 [&>div]:pt-2">
           <SkipToContentButton
             type="inline"
             contentId="#results"
@@ -440,7 +440,7 @@ const SearchPage: NextPage = (
             ref={includeOutOfStockRef}
           />
         </div>
-        <div className="flex w-full flex-col gap-4 bg-white px-3" id="results">
+        <div className="flex w-full flex-col gap-4 bg-white" id="results">
           {data?.products.map((product) => (
             <Product key={product.id} type="alternate" product={product} />
           ))}
