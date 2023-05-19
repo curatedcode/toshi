@@ -15,7 +15,7 @@ import {
 } from "~/customVariables";
 import { zodResolver } from "@hookform/resolvers/zod";
 import TextAreaInputField from "../Input/TextAreaInputField";
-import SelectInputField from "../Input/SelectInputField.tsx";
+import SelectInputField from "../Input/SelectInputField";
 import Button from "../Input/Button";
 
 function OrderedProduct({

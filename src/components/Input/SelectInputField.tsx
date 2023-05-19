@@ -7,7 +7,7 @@ import type { SelectInputFieldProps } from "~/customTypes";
  * @param error - string
  * @param options - array of options as strings
  */
-const SelectInputField = forwardRef(function TextInputField(
+const SelectInputField = forwardRef(function SelectInputField(
   {
     internalLabel,
     visibleLabel,
