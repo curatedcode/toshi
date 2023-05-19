@@ -30,7 +30,6 @@ const SearchPage: NextPage = (
     textParam,
     pageParam,
     sortByParam,
-    categoryParam,
     ratingParam,
     priceMinParam,
     priceMaxParam,
@@ -85,7 +84,6 @@ const SearchPage: NextPage = (
     text,
     page,
     sortBy,
-    category,
     rating,
     price,
     includeOutOfStock,
@@ -93,12 +91,11 @@ const SearchPage: NextPage = (
     const searchText = text ?? textParam;
     const searchPage = page ?? pageParam;
     const searchSortBy = sortBy ?? sortByParam;
-    const searchCategory = category ?? categoryParam ?? "";
     const searchRating = rating ?? ratingParam;
     const searchPrice = price ?? priceFilter;
     const searchIncludeOutOfStock = includeOutOfStock ?? includeOutOfStockParam;
 
-    const link = `/search?text=${searchText}&page=${searchPage}&sortBy=${searchSortBy}&dept=${searchCategory}&rating=${searchRating}&pmin=${
+    const link = `/search?text=${searchText}&page=${searchPage}&sortBy=${searchSortBy}&rating=${searchRating}&pmin=${
       searchPrice.min ?? ""
     }&pmax=${searchPrice.max ?? ""}&includeOutOfStock=${String(
       searchIncludeOutOfStock
@@ -118,7 +115,6 @@ const SearchPage: NextPage = (
           max: priceMaxParam,
         },
         rating: ratingParam,
-        category: categoryParam,
         includeOutOfStock: includeOutOfStockParam,
       },
     },
@@ -278,20 +274,6 @@ const SearchPage: NextPage = (
             </div>
           </div>
           <div>
-            <span className="text-lg font-semibold">Department</span>
-            <div className="grid">
-              {data?.categories.map((category) => (
-                <Link
-                  href={getLinkWithAllParams({ category, page: 1 })}
-                  key={category}
-                  className="w-fit transition-colors hover:text-toshi-red"
-                >
-                  {category}
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div>
             <div className="flex w-fit gap-1 hover:text-toshi-red [&>*]:hover:cursor-pointer">
               <input
                 id="includeOutOfStock"
@@ -336,7 +318,6 @@ type SSRReturnType = {
   trpcState: DehydratedState;
   textParam: string;
   pageParam: number;
-  categoryParam: string | null;
   ratingParam: number;
   priceMinParam: number | null;
   priceMaxParam: number | null;
@@ -355,7 +336,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const hasText = typeof query.text === "string" && query.text !== "";
   const hasPage = typeof query.page === "string" && query.page !== "";
-  const hasCategory = typeof query.dept === "string" && query.dept !== "";
   const hasRating = typeof query.rating === "string" && query.rating !== "";
   const hasPriceMin = typeof query.pmin === "string" && query.pmin !== "";
   const hasPriceMax = typeof query.pmax === "string" && query.pmax !== "";
@@ -366,7 +346,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const text = hasText ? (query.text as string) : "";
   const page = hasPage ? Number(query.page) : 1;
-  const category = hasCategory ? (query.dept as string) : null;
   const rating = hasRating ? Number(query.rating) : 0;
   const priceMin = hasPriceMin ? Number(query.pmin) : null;
   const priceMax = hasPriceMax ? Number(query.pmax) : null;
@@ -403,7 +382,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         max: priceMax,
       },
       rating,
-      category,
       includeOutOfStock,
     },
   });
@@ -412,7 +390,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     trpcState: helpers.dehydrate(),
     textParam: text,
     pageParam: page,
-    categoryParam: category,
     priceMinParam: priceMin,
     priceMaxParam: priceMax,
     ratingParam: rating,

@@ -181,7 +181,6 @@ export declare type getLinkWithAllParamsProps = {
   text?: string;
   page?: number;
   sortBy?: z.infer<typeof SearchResultSortBy>;
-  category?: string;
   rating?: number;
   price?: {
     min?: number | null;

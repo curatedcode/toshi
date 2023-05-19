@@ -68,7 +68,6 @@ const productRouter = createTRPCRouter({
             max: z.number().nullish(),
           }),
           rating: z.number().nullish(),
-          category: z.string().nullish(),
           includeOutOfStock: z.boolean(),
         }),
       })
