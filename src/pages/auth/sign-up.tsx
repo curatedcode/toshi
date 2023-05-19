@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { signIn } from "next-auth/react";
 import { useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,7 @@ import {
   max_password_char,
 } from "~/customVariables";
 import { api } from "~/utils/api";
+import { getServerAuthSession } from "~/server/auth";
 
 const SignUpPage: NextPage = () => {
   const email = useRef("");
@@ -118,7 +119,7 @@ const SignUpPage: NextPage = () => {
     <SimpleLayout
       title="Create account | Toshi"
       description="Create an account for Toshi.com"
-      className="flex-row justify-center"
+      className="flex justify-center"
     >
       <div className="mt-16 flex w-full max-w-xs flex-col rounded-sm border border-neutral-300 px-6 pb-6 pt-4">
         <h1 className="mb-2 ml-1 text-2xl font-semibold">Create an account</h1>
@@ -188,6 +189,22 @@ const SignUpPage: NextPage = () => {
       </div>
     </SimpleLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
 };
 
 export default SignUpPage;

@@ -7,6 +7,8 @@ import { z } from "zod";
 import SimpleLayout from "~/components/SimpleLayout";
 import TextInputField from "~/components/Input/TextInputField";
 import { max_email_char, max_password_char } from "~/customVariables";
+import { getServerAuthSession } from "~/server/auth";
+import type { GetServerSideProps } from "next";
 
 const schema = z.object({
   email: z
@@ -47,7 +49,7 @@ function SignInPage() {
     <SimpleLayout
       title="Sign in | Toshi"
       description="Sign in to Toshi.com"
-      className="flex-row justify-center"
+      className="flex justify-center"
     >
       <div className="mt-16 flex w-full max-w-xs flex-col rounded-sm border border-neutral-300 px-6 pb-6 pt-4 md:mt-24 lg:mt-32">
         <h1 className="mb-2 ml-1 text-2xl font-semibold">Sign in</h1>
@@ -90,5 +92,21 @@ function SignInPage() {
     </SimpleLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
+};
 
 export default SignInPage;
