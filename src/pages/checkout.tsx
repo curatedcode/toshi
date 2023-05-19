@@ -35,7 +35,7 @@ const CheckoutPage: NextPage = () => {
 
   const [shippingComplete, setShippingComplete] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
-  const [orderComplete, setOrderComplete] = useState(true);
+  const [orderComplete, setOrderComplete] = useState(false);
 
   const {
     handleSubmit: handleAddressSubmit,
@@ -172,14 +172,12 @@ const CheckoutPage: NextPage = () => {
         }`}
       >
         <h1 className="md:text-2xl">
-          <span className="font-semibold text-toshi-red">Thank you,</span> your
+          <span className="font-semibold text-toshi-red">Thank you, </span>your
           order has been placed.
         </h1>
         <div className="flex gap-1">
           <span>Order Number:</span>
-          <span className="font-semibold">
-            {orderId.toUpperCase()}asdfasd8f8989345asd
-          </span>
+          <span className="font-semibold">{orderId.toUpperCase()}</span>
         </div>
         <ul className="list-inside list-disc [&>*]:indent-2">
           <li>
