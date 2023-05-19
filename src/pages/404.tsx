@@ -16,8 +16,8 @@ const Custom404: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Page not found | 404</title>
-        <meta name="description" content="404 error; page not found" />
+        <title>Page not found | Toshi</title>
+        <meta name="description" content="Page not found on Toshi.com" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="relative flex h-screen flex-col items-center justify-center bg-black text-center text-white">

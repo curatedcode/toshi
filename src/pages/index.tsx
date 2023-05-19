@@ -32,8 +32,8 @@ const Home: NextPage = () => {
 
   return (
     <Layout
-      title="Toshi | Make Shopping Yours"
-      description="Make shopping yours at Toshi."
+      title="Home | Toshi"
+      description="Make shopping yours at Toshi.com"
       className="flex flex-col gap-6 bg-neutral-100"
     >
       <picture className="flex justify-center bg-[#ffcdff]">

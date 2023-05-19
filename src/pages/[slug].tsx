@@ -162,8 +162,8 @@ const SearchPage: NextPage = (
 
   return (
     <Layout
-      title={`Search Toshi | ${textParam}`}
-      description={`Search results for ${textParam} | Toshi`}
+      title={`${textParam} | Toshi`}
+      description={`Search results for ${textParam} on Toshi.com`}
       className="flex flex-col"
     >
       <Link

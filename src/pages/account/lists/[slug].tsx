@@ -103,7 +103,7 @@ const ListPage: NextPage = () => {
   return (
     <Layout
       title={`${list?.name ? `${list?.name} list` : "Your list"} | Toshi`}
-      description="Your custom list on Toshi.com"
+      description="Your list on Toshi.com"
       className="flex flex-col px-5"
     >
       {editing ? (

@@ -70,8 +70,8 @@ const ProductPage: NextPage = (
 
   return (
     <Layout
-      title={`Toshi | ${name}`}
-      description={`${name} on Toshi.com | Make Shopping Yours`}
+      title={`${name} | Toshi`}
+      description={`${name} found on Toshi.com`}
       className="flex flex-col gap-4 divide-y divide-neutral-300 px-3 py-4 md:divide-y-0"
     >
       <div className="flex flex-col md:flex-row md:gap-4">

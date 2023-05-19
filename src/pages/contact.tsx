@@ -55,8 +55,8 @@ const ContactPage: NextPage = () => {
 
   return (
     <Layout
-      title="Contact Us | Toshi"
-      description="Contact Toshi.com support"
+      title="Contact us | Toshi"
+      description="Contact support on Toshi.com"
       className="flex flex-col px-5"
     >
       <div className="mt-16 flex w-full max-w-md flex-col self-center rounded-md border border-neutral-300 px-6 pb-6 pt-4">

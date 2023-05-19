@@ -16,8 +16,8 @@ const Custom500: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Internal Error | 500</title>
-        <meta name="description" content="500 error; internal error" />
+        <title>Internal error | Toshi</title>
+        <meta name="description" content="Internal error on Toshi.com" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="relative flex h-screen flex-col items-center justify-center bg-black text-center text-white">
