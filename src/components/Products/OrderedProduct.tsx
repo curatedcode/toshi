@@ -63,7 +63,7 @@ function OrderedProduct({
 
   return (
     <div className="flex flex-col justify-between gap-4">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <Link href={`/products/${id}`} className="w-fit">
           <Image
             src={images && images[0] && images[0].url}
@@ -73,26 +73,29 @@ function OrderedProduct({
             className="w-full rounded-md"
           />
         </Link>
-        <div className="grid gap-1">
+        <div className="flex flex-col">
           <InternalLink
             href={`/products/${id}`}
-            className="line-clamp-2 text-xl"
+            className="line-clamp-2 text-lg"
           >
             {name}
           </InternalLink>
           <div className="flex gap-1">
-            <span className="whitespace-nowrap">Sold by:</span>
+            <span className="whitespace-nowrap text-sm">Sold by:</span>
             <InternalLink
               href={`/companies/${company.id}`}
-              className="line-clamp-1"
+              className="line-clamp-1 text-sm"
             >
               {company.name}
             </InternalLink>
           </div>
-          <div className="flex w-fit items-center gap-0.5 text-2xl font-medium">
+          <Link
+            href={productLink}
+            className="mt-1 flex w-fit items-center gap-0.5 text-2xl font-medium transition-colors hover:text-toshi-red"
+          >
             <span className="-mt-1.5 text-base">$</span>
             <span>{priceAtPurchase}</span>
-          </div>
+          </Link>
         </div>
       </div>
       {buttons && (
