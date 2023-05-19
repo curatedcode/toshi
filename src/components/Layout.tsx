@@ -184,45 +184,52 @@ function AccountDropdown({
       >
         <Menu.Items className="absolute -right-14 z-10 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-neutral-400 focus:outline-none md:-right-[90%]">
           <div className="flex flex-col items-center p-2">
-            <Menu.Item>
-              {status === "authenticated" ? (
-                <Button
-                  style="toshi"
-                  onClick={() => void signOut()}
-                  className="col-span-full mb-3 w-full"
-                >
-                  Sign Out
-                </Button>
-              ) : (
+            {status === "authenticated" ? (
+              <>
+                <Menu.Item>
+                  <Button
+                    style="toshi"
+                    onClick={() => void signOut()}
+                    className="col-span-full mb-3 w-full"
+                  >
+                    Sign Out
+                  </Button>
+                </Menu.Item>
+                <Menu.Item>
+                  <InternalLink href="/account/lists">Wish Lists</InternalLink>
+                </Menu.Item>
+                <Menu.Item>
+                  <InternalLink href="/account/lists/create">
+                    New Wish List
+                  </InternalLink>
+                </Menu.Item>
+                <Menu.Item>
+                  <InternalLink href="/account">Account</InternalLink>
+                </Menu.Item>
+                <Menu.Item>
+                  <InternalLink href="/account/orders">Orders</InternalLink>
+                </Menu.Item>
+                <Menu.Item>
+                  <InternalLink href="/cart">Cart</InternalLink>
+                </Menu.Item>
+                <Menu.Item>
+                  <InternalLink href="/new-releases">
+                    Recommendations
+                  </InternalLink>
+                </Menu.Item>
+              </>
+            ) : (
+              <>
                 <Button
                   style="toshi"
                   onClick={() => void signIn()}
-                  className="col-span-full mb-3 w-full"
+                  className="col-span-full mb-2 w-full"
                 >
                   Sign In
                 </Button>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              <InternalLink href="/account/lists">Wish Lists</InternalLink>
-            </Menu.Item>
-            <Menu.Item>
-              <InternalLink href="/account/lists/create">
-                New Wish List
-              </InternalLink>
-            </Menu.Item>
-            <Menu.Item>
-              <InternalLink href="/account">Account</InternalLink>
-            </Menu.Item>
-            <Menu.Item>
-              <InternalLink href="/account/orders">Orders</InternalLink>
-            </Menu.Item>
-            <Menu.Item>
-              <InternalLink href="/cart">Cart</InternalLink>
-            </Menu.Item>
-            <Menu.Item>
-              <InternalLink href="/new-releases">Recommendations</InternalLink>
-            </Menu.Item>
+                <InternalLink href="/auth/sign-up">Create Account</InternalLink>
+              </>
+            )}
           </div>
         </Menu.Items>
       </Transition>
