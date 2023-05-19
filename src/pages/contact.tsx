@@ -57,7 +57,6 @@ const ContactPage: NextPage = () => {
     <Layout
       title="Contact us | Toshi"
       description="Contact support on Toshi.com"
-      className="flex flex-col px-5"
     >
       <div className="mt-16 flex w-full max-w-md flex-col self-center rounded-md border border-neutral-300 px-6 pb-6 pt-4">
         <div className={submitted ? "flex flex-col gap-4 py-12" : "hidden"}>

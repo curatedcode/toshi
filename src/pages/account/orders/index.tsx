@@ -26,7 +26,7 @@ const OrdersPage: NextPage = () => {
     <Layout
       title="Your orders | Toshi"
       description="All of your orders on Toshi.com"
-      className="flex flex-col gap-2 px-5"
+      className="gap-2"
     >
       <h1 className="my-3 text-3xl md:text-4xl">Your Orders</h1>
       <div>

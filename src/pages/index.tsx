@@ -34,7 +34,7 @@ const Home: NextPage = () => {
     <Layout
       title="Home | Toshi"
       description="Make shopping yours at Toshi.com"
-      className="flex max-w-none flex-col gap-6 bg-neutral-100"
+      className="max-w-none gap-6 bg-neutral-100"
     >
       <picture className="flex justify-center bg-[#ffcdff]">
         <source srcSet="/hero-desktop.png" media="(min-width: 768px)" />

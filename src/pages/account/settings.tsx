@@ -65,7 +65,7 @@ const SettingsPage: NextPage = () => {
     <Layout
       title="Settings | Toshi"
       description="Edit your account settings on Toshi.com"
-      className="flex justify-center px-2"
+      className="flex-row justify-center"
     >
       <div className="mt-12 grid w-full max-w-lg">
         <h1 className="mb-3 ml-1 text-3xl md:text-4xl">Your info</h1>

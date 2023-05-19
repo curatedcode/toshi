@@ -118,7 +118,7 @@ const SignUpPage: NextPage = () => {
     <SimpleLayout
       title="Create account | Toshi"
       description="Create an account for Toshi.com"
-      className="flex justify-center px-2"
+      className="flex-row justify-center"
     >
       <div className="mt-16 flex w-full max-w-xs flex-col rounded-sm border border-neutral-300 px-6 pb-6 pt-4">
         <h1 className="mb-2 ml-1 text-2xl font-semibold">Create an account</h1>

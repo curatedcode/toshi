@@ -145,7 +145,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
         </div>
       </nav>
       <main
-        className={`relative left-1/2 min-h-full max-w-standard -translate-x-1/2 pb-64 md:pb-52 ${font.className} ${className}`}
+        className={`relative left-1/2 flex min-h-full max-w-standard -translate-x-1/2 flex-col pb-64 md:pb-52 ${font.className} ${className}`}
       >
         {children}
       </main>

@@ -164,7 +164,6 @@ const SearchPage: NextPage = (
     <Layout
       title={`${textParam} | Toshi`}
       description={`Search results for ${textParam} on Toshi.com`}
-      className="flex flex-col"
     >
       <Link
         href={getLinkWithAllParams({ sortBy: sortResults, page: 1 })}

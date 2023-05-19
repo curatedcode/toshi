@@ -65,7 +65,7 @@ const AccountPage: NextPage = () => {
     <Layout
       title="Your account | Toshi"
       description="Your account on Toshi.com"
-      className="flex flex-col gap-6 px-5 md:gap-16"
+      className="gap-6 md:gap-16"
     >
       <section className="mt-4 flex w-fit flex-col place-items-center gap-2 self-center text-center md:flex-row md:place-items-start md:text-start">
         <Avatar

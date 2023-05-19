@@ -165,11 +165,7 @@ const CheckoutPage: NextPage = () => {
   } = orderData || {};
 
   return (
-    <Layout
-      title="Checkout | Toshi"
-      description="Checkout items on Toshi.com"
-      className="flex flex-col px-5"
-    >
+    <Layout title="Checkout | Toshi" description="Checkout items on Toshi.com">
       <div
         className={`mt-16 flex flex-col gap-1 bg-toshi-red/25 px-5 py-2 text-lg md:w-fit md:self-center ${
           orderComplete ? "" : "hidden"

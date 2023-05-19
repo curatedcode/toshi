@@ -41,7 +41,7 @@ const OrderPage: NextPage = () => {
           createdAt ? `Your order from ${createdDate}` : "Your previous order"
         } | Toshi`}
         description="Your previous order on Toshi.com"
-        className="flex flex-col px-5 print:hidden"
+        className="print:hidden"
       >
         <h1 className="my-3 text-3xl md:text-4xl">
           Your order from {createdDate}

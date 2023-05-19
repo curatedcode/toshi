@@ -6,7 +6,7 @@ const PoliciesPage: NextPage = () => {
     <Layout
       title="Policies | Toshi"
       description="Privacy and terms of service policies for Toshi.com"
-      className="flex flex-col gap-8 px-5 pt-4"
+      className="gap-8 pt-4"
     >
       <section id="privacy" className="flex flex-col">
         <h1 className="self-center text-2xl font-semibold">Privacy policy</h1>

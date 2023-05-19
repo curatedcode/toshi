@@ -10,7 +10,7 @@ const NewReleasePage: NextPage = () => {
     <Layout
       title="New releases | Toshi"
       description="New releases on Toshi.com"
-      className="flex flex-col px-5 pt-8"
+      className="pt-8"
     >
       <h1 className="my-3 ml-1 text-3xl font-semibold md:text-4xl">
         New Releases

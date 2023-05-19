@@ -12,11 +12,7 @@ const ListPage: NextPage = () => {
   const { data: lists } = api.list.getAll.useQuery();
 
   return (
-    <Layout
-      title="Your lists | Toshi"
-      description="Your lists on Toshi.com"
-      className="px-5"
-    >
+    <Layout title="Your lists | Toshi" description="Your lists on Toshi.com">
       <h1 className="my-3 text-3xl md:text-4xl">Your Lists</h1>
       <div className="grid gap-8 md:gap-16">
         {lists?.map((list) => {

@@ -6,7 +6,7 @@ const AttributionPage: NextPage = () => {
     <Layout
       title="Attribution | Toshi"
       description="Art attribution for Toshi.com"
-      className="flex flex-col items-center px-5 pt-12 text-lg"
+      className="items-center pt-12 text-lg"
     >
       <p>
         Hero image made in part by{" "}

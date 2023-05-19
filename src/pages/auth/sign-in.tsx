@@ -47,7 +47,7 @@ function SignInPage() {
     <SimpleLayout
       title="Sign in | Toshi"
       description="Sign in to Toshi.com"
-      className="flex justify-center px-2"
+      className="flex-row justify-center"
     >
       <div className="mt-16 flex w-full max-w-xs flex-col rounded-sm border border-neutral-300 px-6 pb-6 pt-4 md:mt-24 lg:mt-32">
         <h1 className="mb-2 ml-1 text-2xl font-semibold">Sign in</h1>

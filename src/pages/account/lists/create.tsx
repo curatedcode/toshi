@@ -65,7 +65,7 @@ const CreateListPage: NextPage = () => {
     <Layout
       title="Create a list | Toshi"
       description="Create a list on Toshi.com"
-      className="relative w-full max-w-md self-center px-5"
+      className="w-full max-w-md self-center"
     >
       <h1 className="my-3 ml-1 text-3xl font-semibold md:text-4xl">
         Create a list
