@@ -1,10 +1,11 @@
-import { type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
 import Button from "~/components/Input/Button";
 import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
 import Product from "~/components/Products/Product";
+import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 
 const ListPage: NextPage = () => {
@@ -98,6 +99,22 @@ const ListPage: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/sign-in",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
 };
 
 export default ListPage;

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -31,6 +31,7 @@ import {
 import Avatar from "~/components/Avatar";
 import Image from "~/components/Image";
 import { type AvatarColor } from "@prisma/client";
+import { getServerAuthSession } from "~/server/auth";
 
 const SettingsPage: NextPage = () => {
   const { data: settings, refetch, isLoading } = api.user.settings.useQuery();
@@ -543,5 +544,21 @@ function PasswordForm({ hidden, setVisible, refetch }: FormProps) {
     </form>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/sign-in",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
+};
 
 export default SettingsPage;

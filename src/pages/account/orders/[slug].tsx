@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
@@ -6,6 +6,7 @@ import Button from "~/components/Input/Button";
 import Layout from "~/components/Layout";
 import LogoWithText from "~/components/LogoWithText";
 import OrderedProduct from "~/components/Products/OrderedProduct";
+import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 
 const OrderPage: NextPage = () => {
@@ -197,6 +198,22 @@ const OrderPage: NextPage = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/sign-in",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
 };
 
 export default OrderPage;

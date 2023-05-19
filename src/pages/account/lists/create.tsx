@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Transition } from "@headlessui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import { max_list_desc_char, max_list_title_char } from "~/customVariables";
 import { api } from "~/utils/api";
 import Button from "~/components/Input/Button";
 import TextAreaInputField from "~/components/Input/TextAreaInputField";
+import { getServerAuthSession } from "~/server/auth";
 
 const schema = z.object({
   title: z
@@ -125,6 +126,22 @@ const CreateListPage: NextPage = () => {
       </Transition>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/sign-in",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
 };
 
 export default CreateListPage;

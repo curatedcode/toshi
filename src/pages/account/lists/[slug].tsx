@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -13,6 +13,7 @@ import Product from "~/components/Products/Product";
 import TextInputField from "~/components/Input/TextInputField";
 import { max_list_title_char } from "~/customVariables";
 import { api } from "~/utils/api";
+import { getServerAuthSession } from "~/server/auth";
 
 const schema = z.object({
   title: z
@@ -243,6 +244,22 @@ const ListPage: NextPage = () => {
       )}
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/sign-in",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
 };
 
 export default ListPage;

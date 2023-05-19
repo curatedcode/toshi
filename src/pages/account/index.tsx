@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import Avatar from "~/components/Avatar";
@@ -10,6 +10,7 @@ import Layout from "~/components/Layout";
 import OrderedProduct from "~/components/Products/OrderedProduct";
 import Product from "~/components/Products/Product";
 import { avatarUrls } from "~/customVariables";
+import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 
 const AccountPage: NextPage = () => {
@@ -271,6 +272,22 @@ const AccountPage: NextPage = () => {
       </section>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/sign-in",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
 };
 
 export default AccountPage;
