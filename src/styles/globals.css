@@ -13,9 +13,6 @@
     margin: 0;
     -moz-appearance: textfield !important;
   }
-  .dropDownMenu {
-    left: min(100vw - 18rem, -200%);
-  }
   @media (min-width: 768px) {
     .dropDownMenu {
       left: min(100vw - 18rem, 0%);

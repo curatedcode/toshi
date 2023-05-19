@@ -8,15 +8,21 @@ import {
 import SkipToContentButton from "./SkipToContentButton";
 import { api } from "~/utils/api";
 import type { LayoutProps } from "~/customTypes";
-import Dropdown from "./Dropdown";
 import Link from "next/link";
-import { type KeyboardEvent, useRef, useState, useEffect } from "react";
+import {
+  type KeyboardEvent,
+  useRef,
+  useState,
+  useEffect,
+  Fragment,
+} from "react";
 import LogoWithText from "./LogoWithText";
 import { Source_Sans_Pro } from "next/font/google";
 import { signIn, signOut, useSession } from "next-auth/react";
 import InternalLink from "./InternalLink";
 import Footer from "./Footer";
 import Button from "./Input/Button";
+import { Menu, Transition } from "@headlessui/react";
 const font = Source_Sans_Pro({
   subsets: ["latin"],
   weight: ["400", "600"],
@@ -89,51 +95,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
           <LogoWithText />
         </Link>
         <div className="inline-flex items-center justify-end gap-6 font-medium md:order-last">
-          <Dropdown
-            trigger={
-              <div className="inline-flex items-center gap-1">
-                <UserIcon className="w-7" aria-hidden />
-                <span className="hidden whitespace-nowrap md:block">
-                  {status === "authenticated" ? "Account" : "Sign In"}
-                </span>
-              </div>
-            }
-            className="place-items-center"
-            position="right"
-            tabIndex={windowWidth >= 768 ? 6 : 2}
-          >
-            {status === "authenticated" ? (
-              <Button
-                style="toshi"
-                onClick={() => void signOut()}
-                className="col-span-full mb-3 w-full"
-              >
-                Sign Out
-              </Button>
-            ) : (
-              <Button
-                style="toshi"
-                onClick={() => void signIn()}
-                className="col-span-full mb-3 w-full"
-              >
-                Sign In
-              </Button>
-            )}
-            <div className="mb-2 flex flex-col items-center gap-2 [&>*]:text-center [&>*]:text-sm">
-              <InternalLink href={"/account/lists"}>Wish List</InternalLink>
-              <InternalLink href={"/account/lists/create"}>
-                New Wish List
-              </InternalLink>
-            </div>
-            <div className="flex flex-col items-center gap-2 [&>*]:text-sm">
-              <InternalLink href={"/account"}>Account</InternalLink>
-              <InternalLink href={"/account/orders"}>Orders</InternalLink>
-              <InternalLink href={"/cart"}>Cart</InternalLink>
-              <InternalLink href={"/new-releases"}>
-                Recommendations
-              </InternalLink>
-            </div>
-          </Dropdown>
+          <AccountDropdown status={status} windowWidth={windowWidth} />
           <Link
             href={"/cart"}
             className="inline-flex w-fit items-center gap-1"
@@ -172,27 +134,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
           </button>
         </div>
         <div className="col-span-full row-start-3 inline-flex items-center justify-evenly gap-4 font-medium md:order-2">
-          <Dropdown
-            trigger={
-              <div className="inline-flex items-center gap-1">
-                Categories
-                <ChevronDownIcon className="-mb-1 w-5" aria-hidden />
-              </div>
-            }
-            className="auto-cols-min grid-cols-1 lg:grid-cols-2"
-            position="left"
-            tabIndex={windowWidth >= 768 ? 2 : 6}
-          >
-            {categories?.map((category) => (
-              <Link
-                href={`/search?dept=${category.name}`}
-                key={category.name}
-                className="container px-3 py-2 text-center text-black transition-colors duration-75 hover:bg-neutral-100"
-              >
-                {category.name}
-              </Link>
-            ))}
-          </Dropdown>
+          <CategoryDropdown categories={categories} windowWidth={windowWidth} />
           <Link
             href={"/new-releases"}
             className="whitespace-nowrap"
@@ -209,6 +151,123 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
       </main>
       <Footer bgColor="red" />
     </div>
+  );
+}
+
+function AccountDropdown({
+  status,
+  windowWidth,
+}: {
+  status: "loading" | "authenticated" | "unauthenticated";
+  windowWidth: number;
+}) {
+  return (
+    <Menu
+      as="div"
+      className="relative inline-block text-left"
+      tabIndex={windowWidth >= 768 ? 6 : 2}
+    >
+      <Menu.Button className="flex items-center gap-1">
+        <UserIcon className="w-7" aria-hidden />
+        <span className="hidden whitespace-nowrap md:block">
+          {status === "authenticated" ? "Account" : "Sign In"}
+        </span>
+      </Menu.Button>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute -right-14 z-10 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-neutral-400 focus:outline-none md:-right-[90%]">
+          <div className="flex flex-col items-center p-2">
+            <Menu.Item>
+              {status === "authenticated" ? (
+                <Button
+                  style="toshi"
+                  onClick={() => void signOut()}
+                  className="col-span-full mb-3 w-full"
+                >
+                  Sign Out
+                </Button>
+              ) : (
+                <Button
+                  style="toshi"
+                  onClick={() => void signIn()}
+                  className="col-span-full mb-3 w-full"
+                >
+                  Sign In
+                </Button>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              <InternalLink href="/account/lists">Wish Lists</InternalLink>
+            </Menu.Item>
+            <Menu.Item>
+              <InternalLink href="/account/lists/create">
+                New Wish List
+              </InternalLink>
+            </Menu.Item>
+            <Menu.Item>
+              <InternalLink href="/account">Account</InternalLink>
+            </Menu.Item>
+            <Menu.Item>
+              <InternalLink href="/account/orders">Orders</InternalLink>
+            </Menu.Item>
+            <Menu.Item>
+              <InternalLink href="/cart">Cart</InternalLink>
+            </Menu.Item>
+            <Menu.Item>
+              <InternalLink href="/new-releases">Recommendations</InternalLink>
+            </Menu.Item>
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  );
+}
+
+function CategoryDropdown({
+  categories,
+  windowWidth,
+}: {
+  categories: { name: string }[] | undefined;
+  windowWidth: number;
+}) {
+  return (
+    <Menu as="div" className="relative" tabIndex={windowWidth >= 768 ? 2 : 6}>
+      <Menu.Button className="inline-flex items-center gap-2">
+        <span>Categories</span>
+        <ChevronDownIcon className="w-5" aria-hidden />
+      </Menu.Button>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute -left-16 z-10 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-neutral-400 focus:outline-none md:-left-[90%]">
+          <div className="flex flex-col p-1">
+            {categories?.map((category) => (
+              <Menu.Item key={category.name}>
+                <Link
+                  href={`/search?dept=${category.name}`}
+                  className="container px-3 py-2 text-center text-black transition-colors duration-75 hover:bg-neutral-100"
+                >
+                  {category.name}
+                </Link>
+              </Menu.Item>
+            ))}
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
   );
 }
 
