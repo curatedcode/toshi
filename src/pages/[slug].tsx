@@ -164,6 +164,7 @@ const SearchPage: NextPage = (
     <Layout
       title={`${textParam} | Toshi`}
       description={`Search results for ${textParam} on Toshi.com`}
+      className="!max-w-none"
     >
       <Link
         href={getLinkWithAllParams({ sortBy: sortResults, page: 1 })}
@@ -313,38 +314,40 @@ const SearchPage: NextPage = (
           </Transition>
         </Menu>
       </div>
-      <div
-        id="filters"
-        className="mb-3 hidden flex-col items-end gap-1 px-4 py-1.5 text-sm shadow-md shadow-neutral-300 md:flex md:flex-row md:justify-between"
-      >
-        {textParam ? (
-          <div>
-            <span>{data?.totalResults} results for </span>
-            <span className="text-toshi-red">&quot;{textParam}&quot;</span>
+      <div className="mb-3 w-full shadow-md shadow-neutral-300">
+        <div
+          id="filters"
+          className="relative left-1/2 hidden max-w-standard -translate-x-1/2 flex-col items-end gap-1 px-4 py-1.5 text-sm md:flex md:flex-row md:justify-between"
+        >
+          {textParam ? (
+            <div>
+              <span>{data?.totalResults} results for </span>
+              <span className="text-toshi-red">&quot;{textParam}&quot;</span>
+            </div>
+          ) : (
+            <span>{data?.totalResults} results</span>
+          )}
+          <div className="flex items-center gap-2">
+            <label htmlFor="sortBy" className="font-semibold text-toshi-red">
+              Sort by:
+            </label>
+            <select
+              title="Sort results"
+              name="sortBy"
+              onChange={handleSortByChange}
+              className="rounded-md bg-neutral-200 px-2"
+              defaultValue={sortByParam}
+            >
+              <option value={"default"}>Relevance</option>
+              <option value={"priceLowToHigh"}>Price: Low to High</option>
+              <option value={"priceHighToLow"}>Price: High to Low</option>
+              <option value={"reviews"}>Avg. Customer Review</option>
+              <option value={"newest"}>Newest</option>
+            </select>
           </div>
-        ) : (
-          <span>{data?.totalResults} results</span>
-        )}
-        <div className="flex items-center gap-2">
-          <label htmlFor="sortBy" className="font-semibold text-toshi-red">
-            Sort by:
-          </label>
-          <select
-            title="Sort results"
-            name="sortBy"
-            onChange={handleSortByChange}
-            className="rounded-md bg-neutral-200 px-2"
-            defaultValue={sortByParam}
-          >
-            <option value={"default"}>Relevance</option>
-            <option value={"priceLowToHigh"}>Price: Low to High</option>
-            <option value={"priceHighToLow"}>Price: High to Low</option>
-            <option value={"reviews"}>Avg. Customer Review</option>
-            <option value={"newest"}>Newest</option>
-          </select>
         </div>
       </div>
-      <div className="flex">
+      <div className="relative left-1/2 flex max-w-standard -translate-x-1/2">
         <div className="hidden flex-col divide-y divide-neutral-300 px-5 md:flex [&>div]:pb-3 [&>div]:pt-2">
           <SkipToContentButton
             type="inline"
