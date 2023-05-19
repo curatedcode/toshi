@@ -10,9 +10,8 @@ import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 
 const OrdersPage: NextPage = () => {
-  const [createdAfter, setCreatedAfter] = useState<
-    OrderPlacedOnType | undefined
-  >(undefined);
+  const [createdAfter, setCreatedAfter] =
+    useState<OrderPlacedOnType>("anytime");
 
   const { data: orders } = api.order.getAll.useQuery({
     createdAfter,
@@ -36,42 +35,18 @@ const OrdersPage: NextPage = () => {
           title="Filter by order date"
           className="mb-2 rounded-md bg-neutral-200 px-2 py-0.5"
           onChange={(e) => {
-            const value = e.currentTarget.value
-              ? (e.currentTarget.value as OrderPlacedOnType)
-              : undefined;
+            const value = e.currentTarget.value as OrderPlacedOnType;
             setCreatedAfter(value);
           }}
+          defaultValue={createdAfter}
         >
-          <option value={"pastDay"} selected={createdAfter === "pastDay"}>
-            past day
-          </option>
-          <option value={"pastWeek"} selected={createdAfter === "pastWeek"}>
-            past week
-          </option>
-          <option value={"pastMonth"} selected={createdAfter === "pastMonth"}>
-            past month
-          </option>
-          <option
-            value={"pastThreeMonths"}
-            selected={createdAfter === "pastThreeMonths"}
-          >
-            past 3 months
-          </option>
-          <option
-            value={"pastSixMonths"}
-            selected={createdAfter === "pastSixMonths"}
-          >
-            past 6 months
-          </option>
-          <option value={"pastYear"} selected={createdAfter === "pastYear"}>
-            past year
-          </option>
-          <option
-            value={undefined}
-            selected={typeof createdAfter === "undefined"}
-          >
-            anytime
-          </option>
+          <option value={"pastDay"}>past day</option>
+          <option value={"pastWeek"}>past week</option>
+          <option value={"pastMonth"}>past month</option>
+          <option value={"pastThreeMonths"}>past 3 months</option>
+          <option value={"pastSixMonths"}>past 6 months</option>
+          <option value={"pastYear"}>past year</option>
+          <option value={"anytime"}>anytime</option>
         </select>
       </div>
       {orders && orders.length > 0 ? (
