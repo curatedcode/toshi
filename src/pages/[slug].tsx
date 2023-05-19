@@ -6,7 +6,7 @@ import type {
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import Product from "~/components/Products/Product";
-import { useEffect, useState, type ChangeEvent, useRef } from "react";
+import { useEffect, useState, type ChangeEvent, useRef, Fragment } from "react";
 import RatingStars from "~/components/Reviews/RatingStars";
 import PriceInput from "~/components/Search/PriceInput";
 import PaginationButtons from "~/components/Search/PaginationButtons";
@@ -20,6 +20,8 @@ import SuperJSON from "superjson";
 import { SearchResultSortBy } from "~/customTypes";
 import type { z } from "zod";
 import SkipToContentButton from "~/components/SkipToContentButton";
+import { FunnelIcon } from "@heroicons/react/24/outline";
+import { Menu, Transition } from "@headlessui/react";
 
 type SearchResultSortByType = z.infer<typeof SearchResultSortBy>;
 
@@ -169,9 +171,152 @@ const SearchPage: NextPage = (
         ref={sortResultsLinkRef}
         hidden
       />
+      <div className="mb-3 flex items-end justify-between gap-1 px-4 py-1.5 text-sm shadow-md shadow-neutral-300 md:hidden">
+        <div className="flex flex-col">
+          {textParam ? (
+            <div>
+              <span>{data?.totalResults} results for </span>
+              <span className="text-toshi-red">&quot;{textParam}&quot;</span>
+            </div>
+          ) : (
+            <span>{data?.totalResults} results</span>
+          )}
+          <div className="flex items-center gap-2">
+            <label htmlFor="sortBy" className="font-semibold text-toshi-red">
+              Sort by:
+            </label>
+            <select
+              title="Sort results"
+              name="sortBy"
+              onChange={handleSortByChange}
+              className="rounded-md bg-neutral-200 px-2"
+              defaultValue={sortByParam}
+            >
+              <option value={"default"}>Relevance</option>
+              <option value={"priceLowToHigh"}>Price: Low to High</option>
+              <option value={"priceHighToLow"}>Price: High to Low</option>
+              <option value={"reviews"}>Avg. Customer Review</option>
+              <option value={"newest"}>Newest</option>
+            </select>
+          </div>
+        </div>
+        <Menu as="div" className="relative">
+          <Menu.Button className="inline-flex items-center gap-1">
+            <span className="font-semibold text-toshi-red">Filters</span>
+            <FunnelIcon className="w-5 stroke-toshi-red" aria-hidden />
+          </Menu.Button>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute -right-4 z-10 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-neutral-400 focus:outline-none md:-right-[90%]">
+              <div className="flex flex-col divide-y divide-neutral-300 p-2">
+                <Link href={`/search?text=${textParam}`} hidden ref={linkRef} />
+                <Menu.Item>
+                  <button
+                    type="button"
+                    onClick={resetFilters}
+                    className="w-full rounded-md bg-toshi-red px-2 text-center text-lg font-semibold text-white shadow shadow-neutral-500 transition-shadow hover:shadow-md hover:shadow-neutral-500"
+                  >
+                    Clear filters
+                  </button>
+                </Menu.Item>
+                <div className="mt-2 flex flex-col gap-1">
+                  <span className="text-lg font-semibold">Price</span>
+                  <div className="flex items-center gap-1">
+                    <PriceInput
+                      name="Min"
+                      onChange={(e) => setPriceListValues(e, "min")}
+                    />
+                    <span>-</span>
+                    <PriceInput
+                      name="Max"
+                      onChange={(e) => setPriceListValues(e, "max")}
+                    />
+                    <Link
+                      href={getLinkWithAllParams({
+                        price: priceFilter,
+                        page: 1,
+                      })}
+                      className="flex h-8 items-center rounded-md bg-toshi-red px-2 text-center text-lg font-semibold text-white shadow shadow-neutral-500 transition-shadow hover:shadow-md hover:shadow-neutral-500"
+                    >
+                      Go
+                    </Link>
+                  </div>
+                </div>
+                <div className="mb-2 mt-2 flex flex-col gap-1">
+                  <span className="text-lg font-semibold">Reviews</span>
+                  <div className="grid">
+                    <Link
+                      href={getLinkWithAllParams({ rating: 4, page: 1 })}
+                      title="4 stars and up"
+                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                    >
+                      <RatingStars rating={4} />
+                      <span>& Up</span>
+                    </Link>
+                    <Link
+                      href={getLinkWithAllParams({ rating: 3, page: 1 })}
+                      title="3 stars and up"
+                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                    >
+                      <RatingStars rating={3} />
+                      <span>& Up</span>
+                    </Link>
+                    <Link
+                      href={getLinkWithAllParams({ rating: 2, page: 1 })}
+                      title="2 stars and up"
+                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                    >
+                      <RatingStars rating={2} />
+                      <span>& Up</span>
+                    </Link>
+                    <Link
+                      href={getLinkWithAllParams({ rating: 1, page: 1 })}
+                      title="1 star and up"
+                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                    >
+                      <RatingStars rating={1} />
+                      <span>& Up</span>
+                    </Link>
+                  </div>
+                </div>
+                <Menu.Item>
+                  <div className="flex gap-1 pt-2 hover:text-toshi-red [&>*]:hover:cursor-pointer">
+                    <input
+                      id="includeOutOfStockMobile"
+                      type="checkbox"
+                      onChange={(e) =>
+                        setIncludeOutOfStock(e.currentTarget.checked)
+                      }
+                      defaultChecked={includeOutOfStock}
+                    />
+                    <label htmlFor="includeOutOfStockMobile">
+                      Include out of stock
+                    </label>
+                  </div>
+                </Menu.Item>
+                <Link
+                  href={getLinkWithAllParams({
+                    includeOutOfStock,
+                    page: 1,
+                  })}
+                  className="hidden"
+                  ref={includeOutOfStockRef}
+                />
+              </div>
+            </Menu.Items>
+          </Transition>
+        </Menu>
+      </div>
       <div
         id="filters"
-        className="mb-3 flex flex-col items-end gap-1 px-4 py-1.5 text-sm shadow-md shadow-neutral-300 md:flex-row md:justify-between"
+        className="mb-3 hidden flex-col items-end gap-1 px-4 py-1.5 text-sm shadow-md shadow-neutral-300 md:flex md:flex-row md:justify-between"
       >
         {textParam ? (
           <div>
