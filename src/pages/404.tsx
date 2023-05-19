@@ -20,9 +20,9 @@ const Custom404: NextPage = () => {
         <meta name="description" content="Page not found on Toshi.com" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="relative flex h-screen flex-col items-center justify-center bg-black text-center text-white">
-        <div className="mb-6 flex items-center gap-2 text-2xl">
-          <span className="border-r pr-3">404</span>
+      <main className="relative flex h-screen flex-col items-center justify-center text-center">
+        <div className="mb-2 flex items-center gap-2 text-2xl">
+          <span className="border-r border-neutral-500 py-1 pr-3">404</span>
           <LogoWithText color="red" />
         </div>
         <h1>We can&apos;t find that page.</h1>

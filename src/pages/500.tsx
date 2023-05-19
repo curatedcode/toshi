@@ -20,12 +20,12 @@ const Custom500: NextPage = () => {
         <meta name="description" content="Internal error on Toshi.com" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="relative flex h-screen flex-col items-center justify-center bg-black text-center text-white">
-        <div className="mb-6 flex items-center gap-2 text-2xl">
-          <span className="border-r pr-3">500</span>
+      <main className="relative flex h-screen flex-col items-center justify-center text-center">
+        <div className="mb-2 flex items-center gap-2 text-2xl">
+          <span className="border-r border-neutral-500 py-1 pr-3">500</span>
           <LogoWithText color="red" />
         </div>
-        <h1>There seems to be something wrong on our end.</h1>
+        <h1>Something is wrong on our end.</h1>
         <p>
           You&apos;ll be redirected to the homepage soon. <br /> Otherwise{" "}
           <Link href={"/"} className="text-sky-600 underline">
