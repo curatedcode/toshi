@@ -6,7 +6,6 @@ import type {
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import Carousel from "~/components/Sliders/Carousel";
-import Link from "next/link";
 import { useState } from "react";
 import Image from "~/components/Image";
 import Rating from "~/components/Reviews/Rating";
@@ -72,7 +71,7 @@ const ProductPage: NextPage = (
     <Layout
       title={`${name} | Toshi`}
       description={`${name} found on Toshi.com`}
-      className="gap-4 divide-y divide-neutral-300 py-4 md:divide-y-0"
+      className="gap-4 divide-y divide-neutral-300 md:divide-y-0"
     >
       <div className="flex flex-col md:flex-row md:gap-4">
         <div className="flex w-full flex-col gap-3 divide-y divide-neutral-300 md:flex-row md:items-start md:divide-y-0">
@@ -104,12 +103,9 @@ const ProductPage: NextPage = (
                 <p>{description}</p>
                 <div className="flex items-center gap-2">
                   <span className="whitespace-nowrap">Sold By:</span>
-                  <Link
-                    href={`/companies/${company.id}`}
-                    className="text-sky-600 underline underline-offset-1"
-                  >
+                  <InternalLink href={`/companies/${company.id}`}>
                     {company.name}
-                  </Link>
+                  </InternalLink>
                 </div>
               </div>
             </div>
