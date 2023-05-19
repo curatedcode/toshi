@@ -1,5 +1,9 @@
 import { type GetServerSidePropsContext } from "next";
-import { getServerSession, type NextAuthOptions } from "next-auth";
+import {
+  getServerSession,
+  type ISODateString,
+  type NextAuthOptions,
+} from "next-auth";
 import { prisma } from "~/server/db";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -21,6 +25,7 @@ declare module "next-auth" {
       email: string;
       avatarColor: AvatarColor;
     };
+    expires: ISODateString;
   }
   interface User {
     id: string;
@@ -29,6 +34,17 @@ declare module "next-auth" {
     name: string;
     email: string;
     avatarColor: AvatarColor;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    name: string;
+    email: string;
+    avatarColor: AvatarColor;
+    firstName: string;
+    lastName: string;
   }
 }
 
@@ -54,8 +70,10 @@ export const authOptions: NextAuthOptions = {
       return {
         ...session,
         user: {
-          ...session.user,
           id: token.id,
+          name: token.name,
+          email: token.email,
+          avatarColor: token.avatarColor,
           firstName: token.firstName,
           lastName: token.lastName,
         },
