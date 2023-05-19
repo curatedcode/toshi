@@ -122,7 +122,7 @@ const OrdersPage: NextPage = () => {
                         Print invoice
                       </Button>
                     </div>
-                    <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-4 md:gap-4">
+                    <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
                       {products.map((product) => (
                         <OrderedProduct
                           key={product.product.id}
