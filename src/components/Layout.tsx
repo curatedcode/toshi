@@ -65,7 +65,6 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
       const newWidth = window.innerWidth;
       if (windowWidth === newWidth) return;
       setWindowWidth(newWidth);
-      console.log(newWidth);
     }
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
