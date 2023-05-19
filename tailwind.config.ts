@@ -10,6 +10,9 @@ export default {
       screens: {
         xs: "420px",
       },
+      maxWidth: {
+        standard: "1800px",
+      },
     },
   },
   plugins: [],

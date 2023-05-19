@@ -34,7 +34,7 @@ const Home: NextPage = () => {
     <Layout
       title="Home | Toshi"
       description="Make shopping yours at Toshi.com"
-      className="flex flex-col gap-6 bg-neutral-100"
+      className="flex max-w-none flex-col gap-6 bg-neutral-100"
     >
       <picture className="flex justify-center bg-[#ffcdff]">
         <source srcSet="/hero-desktop.png" media="(min-width: 768px)" />
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
           loading="eager"
         />
       </picture>
-      <div className="flex flex-col gap-8 px-2 md:gap-10 md:px-4">
+      <div className="relative left-1/2 flex max-w-standard -translate-x-1/2 flex-col gap-8 px-2 md:gap-10 md:px-4">
         <section className="flex flex-col items-center rounded-md bg-white px-4 py-2">
           <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
             Recommendations
