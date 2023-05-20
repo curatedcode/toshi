@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 /**
- * @param type short MMM D, YYYY; e.g. Jan. 1, 2020
+ * @param type short MMM D, YYYY; e.g. Jan 1, 2020
  * @param type - long MMMM D, YYYY; e.g. January 1, 2020 - Default
  */
 function getFormattedDate(
