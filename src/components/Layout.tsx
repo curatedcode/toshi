@@ -169,9 +169,16 @@ function AccountDropdown({
     >
       <Menu.Button className="flex items-center gap-1">
         <UserIcon className="w-7" aria-hidden />
-        <span className="hidden whitespace-nowrap md:block">
-          {status === "authenticated" ? "Account" : "Sign In"}
-        </span>
+        <div className="hidden flex-col items-start whitespace-nowrap md:flex">
+          {status === "authenticated" ? (
+            "Account"
+          ) : (
+            <>
+              <span className="-mb-1 text-xs">Hello,</span>
+              <span className="-mb-1">Sign In</span>
+            </>
+          )}
+        </div>
       </Menu.Button>
       <Transition
         as={Fragment}
