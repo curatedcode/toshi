@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
-import { taxPercentage } from "~/customVariables";
+import getTotals from "~/components/Fn/getTotals";
 
 const cartRouter = createTRPCRouter({
   get: publicProcedure
@@ -325,16 +325,11 @@ const cartRouter = createTRPCRouter({
           };
         });
 
-        const taxToBeCollected =
-          Math.round(totalBeforeTax * taxPercentage * 1e2) / 1e2;
-        const totalAfterTax = totalBeforeTax + taxToBeCollected;
-
         return {
           cart: productsWithTotal,
           totalBeforeTax,
           totalProducts,
-          totalAfterTax,
-          taxToBeCollected,
+          ...getTotals(totalBeforeTax),
         };
       }
 
@@ -379,16 +374,11 @@ const cartRouter = createTRPCRouter({
         };
       });
 
-      const taxToBeCollected =
-        Math.round(totalBeforeTax * taxPercentage * 1e2) / 1e2;
-      const totalAfterTax = totalBeforeTax + taxToBeCollected;
-
       return {
         cart: productsWithTotal,
         totalBeforeTax,
         totalProducts,
-        totalAfterTax,
-        taxToBeCollected,
+        ...getTotals(totalBeforeTax),
       };
     }),
 });

@@ -7,11 +7,8 @@ import { z } from "zod";
 import { OrderPlacedOnEnum } from "~/customTypes";
 import dayjs from "dayjs";
 import getPreviousDate from "~/components/Fn/getPreviousDate";
-import {
-  paymentSchema,
-  shippingAddressSchema,
-  taxPercentage,
-} from "~/customVariables";
+import { paymentSchema, shippingAddressSchema } from "~/customVariables";
+import getTotals from "~/components/Fn/getTotals";
 
 const orderRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -166,14 +163,10 @@ const orderRouter = createTRPCRouter({
           });
         });
 
-        const taxToBeCollected =
-          Math.round(totalBeforeTax * taxPercentage * 1e2) / 1e2;
-        const totalAfterTax = totalBeforeTax + taxToBeCollected;
-
         const order = await prisma.order.create({
           data: {
             status: "processing",
-            total: totalAfterTax,
+            total: parseFloat(getTotals(totalBeforeTax).totalAfterTax),
             products: { createMany: { data: orderedProducts } },
             billingAddress: { create: billing },
             shippingAddress: { create: shippingAddress },
@@ -227,14 +220,10 @@ const orderRouter = createTRPCRouter({
         });
       });
 
-      const taxToBeCollected =
-        Math.round(totalBeforeTax * taxPercentage * 1e2) / 1e2;
-      const totalAfterTax = totalBeforeTax + taxToBeCollected;
-
       const order = await prisma.order.create({
         data: {
           status: "processing",
-          total: totalAfterTax,
+          total: parseFloat(getTotals(totalBeforeTax).totalAfterTax),
           products: { createMany: { data: orderedProducts } },
           billingAddress: { create: billing },
           shippingAddress: { create: shippingAddress },
