@@ -37,13 +37,14 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
 
   const { status } = useSession();
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   function search(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && linkRef.current) {
       linkRef.current.click();
+      inputRef.current?.blur();
     }
   }
-
-  const inputRef = useRef<HTMLInputElement>(null);
 
   function handleFocus() {
     inputRef.current?.focus();
