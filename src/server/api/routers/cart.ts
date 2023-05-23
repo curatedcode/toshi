@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
-import getTotals from "~/components/Fn/getTotals";
+import getTotals, { fixDecimal } from "~/components/Fn/getTotals";
 
 const cartRouter = createTRPCRouter({
   get: publicProcedure
@@ -327,7 +327,7 @@ const cartRouter = createTRPCRouter({
 
         return {
           cart: productsWithTotal,
-          totalBeforeTax,
+          totalBeforeTax: fixDecimal(totalBeforeTax.toString()),
           totalProducts,
           ...getTotals(totalBeforeTax),
         };
@@ -376,7 +376,7 @@ const cartRouter = createTRPCRouter({
 
       return {
         cart: productsWithTotal,
-        totalBeforeTax,
+        totalBeforeTax: fixDecimal(totalBeforeTax.toString()),
         totalProducts,
         ...getTotals(totalBeforeTax),
       };
