@@ -17,15 +17,16 @@ import {
   Fragment,
 } from "react";
 import LogoWithText from "./LogoWithText";
-import { Source_Sans_Pro } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 import { signIn, signOut, useSession } from "next-auth/react";
 import InternalLink from "./InternalLink";
 import Footer from "./Footer";
 import Button from "./Input/Button";
 import { Menu, Transition } from "@headlessui/react";
-const font = Source_Sans_Pro({
+const font = Source_Sans_3({
   subsets: ["latin"],
-  weight: ["400", "600"],
+  weight: ["400", "500", "600"],
+  adjustFontFallback: false,
 });
 
 function Layout({ title, description, children, className = "" }: LayoutProps) {
@@ -146,7 +147,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
         </div>
       </nav>
       <main
-        className={`relative left-1/2 mb-64 flex min-h-full max-w-standard -translate-x-1/2 flex-col px-5 pt-4 md:mb-52 md:pt-6 ${font.className} ${className}`}
+        className={`relative left-1/2 mb-64 flex min-h-full max-w-standard -translate-x-1/2 flex-col px-5 pt-4 font-sans md:mb-52 md:pt-6 ${font.className} ${className}`}
       >
         {children}
       </main>

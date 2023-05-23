@@ -3,11 +3,12 @@ import LogoWithText from "./LogoWithText";
 import SkipToContentButton from "./SkipToContentButton";
 import Head from "next/head";
 import type { LayoutProps } from "~/customTypes";
-import { Source_Sans_Pro } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 import Footer from "./Footer";
-const font = Source_Sans_Pro({
+const font = Source_Sans_3({
   subsets: ["latin"],
-  weight: ["400", "600"],
+  weight: ["400", "500", "600"],
+  adjustFontFallback: false,
 });
 
 function SimpleLayout({
@@ -29,7 +30,9 @@ function SimpleLayout({
           <LogoWithText color="red" />
         </Link>
       </div>
-      <main className={`min-h-full pb-52 ${font.className} ${className}`}>
+      <main
+        className={`min-h-full pb-52 font-sans ${font.className} ${className}`}
+      >
         {children}
       </main>
       <Footer bgColor="web-white" />

@@ -1,4 +1,5 @@
 import { type Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -12,6 +13,9 @@ export default {
       },
       maxWidth: {
         standard: "1800px",
+      },
+      fontFamily: {
+        sans: ["Source\\ Sans\\ 3", ...defaultTheme.fontFamily.sans],
       },
     },
   },
