@@ -195,6 +195,7 @@ export declare type InternalLinkProps = {
   ariaLabel?: string;
   title?: string;
   children?: React.ReactNode;
+  id?: string;
   onClick?: () => void;
 };
 

@@ -100,6 +100,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             href={"/cart"}
             className="inline-flex w-fit items-center gap-1"
             tabIndex={windowWidth >= 768 ? 7 : 3}
+            id="Cart"
           >
             <ShoppingCartIcon className="w-7" aria-hidden />
             <span className="hidden md:block">Cart</span>
@@ -167,7 +168,7 @@ function AccountDropdown({
       className="relative inline-block text-left"
       tabIndex={windowWidth >= 768 ? 6 : 2}
     >
-      <Menu.Button className="flex items-center gap-1">
+      <Menu.Button className="flex items-center gap-1" id="Account">
         <UserIcon className="w-7" aria-hidden />
         <div className="hidden flex-col items-start whitespace-nowrap md:flex">
           {status === "authenticated" ? (
