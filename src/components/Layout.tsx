@@ -95,7 +95,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
         >
           <LogoWithText />
         </Link>
-        <div className="inline-flex items-center justify-end gap-6 font-medium md:order-last">
+        <div className="inline-flex items-center justify-end gap-6 font-semibold md:order-last">
           <AccountDropdown status={status} windowWidth={windowWidth} />
           <Link
             href={"/cart"}
@@ -135,7 +135,7 @@ function Layout({ title, description, children, className = "" }: LayoutProps) {
             />
           </button>
         </div>
-        <div className="col-span-full row-start-3 inline-flex items-center justify-evenly gap-4 font-medium md:order-2">
+        <div className="col-span-full row-start-3 inline-flex items-center justify-evenly gap-4 font-semibold md:order-2">
           <CategoryDropdown categories={categories} windowWidth={windowWidth} />
           <Link
             href={"/new-releases"}
