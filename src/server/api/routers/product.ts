@@ -5,7 +5,7 @@ import {
   type ProductWithReviews,
   SearchResultSortBy,
 } from "~/customTypes";
-import { reviewSchema } from "~/customVariables";
+import { max_search_results, reviewSchema } from "~/customVariables";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -58,7 +58,11 @@ const productRouter = createTRPCRouter({
   search: publicProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(16).default(16),
+        limit: z
+          .number()
+          .min(1)
+          .max(max_search_results)
+          .default(max_search_results),
         text: z.string(),
         page: z.number().min(1),
         sortBy: SearchResultSortBy,

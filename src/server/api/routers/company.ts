@@ -1,5 +1,6 @@
 import { z } from "zod";
 import getProductRating from "~/components/Fn/getProductRating";
+import { max_company_product_results } from "~/customVariables";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 const companyRouter = createTRPCRouter({
@@ -26,7 +27,11 @@ const companyRouter = createTRPCRouter({
     .input(
       z.object({
         companyId: z.string(),
-        limit: z.number().min(1).max(12).default(12),
+        limit: z
+          .number()
+          .min(1)
+          .max(max_company_product_results)
+          .default(max_company_product_results),
         page: z.number().min(1),
       })
     )

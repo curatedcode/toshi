@@ -18,7 +18,7 @@ function Product({
 
   if (type === "alternate") {
     return (
-      <div className="flex flex-col gap-2 md:flex-row">
+      <div className="flex flex-col gap-2 md:flex-row" id="product">
         <Link href={link} aria-label={`Visit product page for ${name}`}>
           <div className="bg-neutral-200 md:max-w-xs">
             <Image
@@ -55,7 +55,7 @@ function Product({
             className="flex w-fit items-center gap-0.5 text-2xl font-medium transition-colors hover:text-toshi-red"
           >
             <span className="-mt-1.5 text-base">$</span>
-            <span>{price}</span>
+            <span id="price">{price}</span>
           </Link>
         </div>
       </div>
@@ -63,7 +63,7 @@ function Product({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" id="product">
       <Link
         href={link}
         aria-label={`Visit product page for ${name}`}
@@ -88,7 +88,7 @@ function Product({
           className="flex w-fit items-center gap-0.5 text-2xl font-medium transition-colors hover:text-toshi-red"
         >
           <span className="-mt-1.5 text-base">$</span>
-          <span>{price}</span>
+          <span id="price">{price}</span>
         </Link>
       </div>
     </div>

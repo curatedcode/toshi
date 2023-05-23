@@ -181,5 +181,11 @@ export const avatarUrls = {
 export const avatarColors = ["blue", "green", "red", "yellow"] as const;
 export const defaultAvatarColor = avatarColors[2];
 
-// etc.
+// tax percentage
 export const taxPercentage = 0.07;
+
+// search
+export const max_search_results = 16;
+
+// companies
+export const max_company_product_results = 12;
