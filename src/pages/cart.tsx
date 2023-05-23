@@ -15,7 +15,7 @@ const Cart: NextPage = () => {
     cookieId = localStorage.getItem("toshiCart") ?? undefined;
   }
 
-  const { data } = api.cart.get.useQuery({ cookieId });
+  const { data, refetch } = api.cart.get.useQuery({ cookieId });
 
   const { products } = data || {};
 
@@ -40,6 +40,7 @@ const Cart: NextPage = () => {
                 key={data.product.id}
                 data={data}
                 cookieId={cookieId}
+                refetch={refetch}
               />
             ))}
           <div className="flex h-fit justify-end px-3 pb-6 pt-4 md:hidden">

@@ -6,13 +6,19 @@ import Link from "next/link";
 import Image from "../Image";
 import Rating from "../Reviews/Rating";
 import InternalLink from "../InternalLink";
+import Button from "../Input/Button";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
-function CartProduct({ data, cookieId }: CartProductProps) {
+function CartProduct({ data, cookieId, refetch }: CartProductProps) {
   const { product, quantity: initialQuantity } = data;
 
   const [quantity, setQuantity] = useState(initialQuantity);
 
   const { mutate: updateQuantity } = api.cart.updateQuantity.useMutation();
+
+  const { mutate: removeProduct } = api.cart.removeProduct.useMutation({
+    onSuccess: () => refetch(),
+  });
 
   useEffect(() => {
     updateQuantity({ cartProductId: data.id, quantity, cookieId });
@@ -76,13 +82,26 @@ function CartProduct({ data, cookieId }: CartProductProps) {
           </Link>
         </div>
       </div>
-      <div className="flex w-fit flex-col items-center gap-2 self-center md:self-start">
-        <span className="text-lg">Quantity</span>
-        <QuantityControls
-          maxQuantity={maxQuantity}
-          quantity={quantity}
-          setQuantity={setQuantity}
-        />
+      <div className="flex justify-between gap-4 md:flex-col">
+        <div className="flex w-fit flex-col items-center gap-1 self-center md:self-start">
+          <span className="text-lg">Quantity</span>
+          <QuantityControls
+            maxQuantity={maxQuantity}
+            quantity={quantity}
+            setQuantity={setQuantity}
+          />
+        </div>
+        <Button
+          style="toshi"
+          className="mb-2.5 self-end md:mb-0 md:w-full"
+          title="Delete from cart"
+          onClick={() => removeProduct({ productId: product.id, cookieId })}
+        >
+          <TrashIcon
+            className="relative left-1/2 w-6 -translate-x-1/2"
+            aria-hidden
+          />
+        </Button>
       </div>
     </div>
   );

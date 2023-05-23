@@ -20,6 +20,11 @@ import type {
 } from "react";
 import { z } from "zod";
 import { avatarColors } from "./customVariables";
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "@tanstack/react-query";
 
 export declare type LogoProps = {
   width?: number;
@@ -358,6 +363,9 @@ export declare type CartProductProps = {
     quantity: number;
   };
   cookieId: string | undefined;
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult>;
 };
 
 export declare type CheckoutSteps = "address" | "payment" | "review";
@@ -370,6 +378,7 @@ export declare type ButtonProps = {
   type?: "button" | "submit";
   onClick?: () => void;
   disabled?: boolean;
+  title?: string;
 };
 
 export interface DimensionObject {
