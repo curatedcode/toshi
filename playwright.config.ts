@@ -55,7 +55,7 @@ export default defineConfig({
     screenshot: "only-on-failure",
 
     /* Run browser in headless mode */
-    headless: false,
+    headless: true,
   },
 
   /* Configure projects for major browsers */
@@ -120,6 +120,6 @@ export default defineConfig({
   webServer: {
     command: `pnpm dev --port=${testingEnv.port}`,
     port: testingEnv.port,
-    reuseExistingServer: false,
+    reuseExistingServer: true,
   },
 });
