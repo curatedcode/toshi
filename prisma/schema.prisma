@@ -121,7 +121,7 @@ model List {
 
 model Order {
     id                  String              @id @default(cuid())
-    userId              String
+    userId              String?
     user                User?               @relation(fields: [userId], references: [id])
     products            OrderedProduct[]
     total               Float

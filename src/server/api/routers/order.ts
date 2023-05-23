@@ -7,8 +7,9 @@ import { z } from "zod";
 import { OrderPlacedOnEnum } from "~/customTypes";
 import dayjs from "dayjs";
 import getPreviousDate from "~/components/Fn/getPreviousDate";
-import { paymentSchema, shippingAddressSchema } from "~/customVariables";
+import { shippingAddressSchema } from "~/customVariables";
 import getTotals from "~/components/Fn/getTotals";
+import { createId } from "@paralleldrive/cuid2";
 
 const orderRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -111,7 +112,7 @@ const orderRouter = createTRPCRouter({
     .input(
       z.object({
         shippingAddress: shippingAddressSchema,
-        billing: paymentSchema,
+        billing: shippingAddressSchema,
         cookieId: z.string().nullish(),
       })
     )
@@ -228,6 +229,14 @@ const orderRouter = createTRPCRouter({
           billingAddress: { create: billing },
           shippingAddress: { create: shippingAddress },
           estimatedDelivery: date.add(2, "day").toDate(),
+          user: {
+            create: {
+              avatarColor: "blue",
+              email: createId(),
+              firstName: shippingAddress.firstName,
+              lastName: shippingAddress.lastName,
+            },
+          },
         },
       });
 

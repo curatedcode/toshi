@@ -113,11 +113,7 @@ const CheckoutPage: NextPage = () => {
 
     if (billingSameAsShipping) {
       createOrder({
-        billing: {
-          ...shippingAddress,
-          cardNumber: getPaymentValues("cardNumber"),
-          securityCode: getPaymentValues("securityCode"),
-        },
+        billing: shippingAddress,
         shippingAddress,
         cookieId,
       });
@@ -133,8 +129,6 @@ const CheckoutPage: NextPage = () => {
         state: getPaymentValues("state"),
         zipCode: getPaymentValues("zipCode"),
         country: getPaymentValues("zipCode"),
-        cardNumber: getPaymentValues("cardNumber"),
-        securityCode: getPaymentValues("securityCode"),
       },
       shippingAddress,
       cookieId,
