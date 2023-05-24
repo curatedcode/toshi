@@ -125,6 +125,9 @@ model Order {
     user                User?               @relation(fields: [userId], references: [id])
     products            OrderedProduct[]
     total               Float
+    subtotal            Float
+    shippingTotal       Float
+    discount            Float?
     shippingAddressId   String                  
     shippingAddress     FullAddress         @relation(fields: [shippingAddressId], references: [id])
     billingAddressId    String
