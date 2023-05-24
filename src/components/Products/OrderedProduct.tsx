@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import TextAreaInputField from "../Input/TextAreaInputField";
 import SelectInputField from "../Input/SelectInputField";
 import Button from "../Input/Button";
+import CustomLink from "../Input/CustomLink";
 
 function OrderedProduct({
   product,
@@ -106,9 +107,9 @@ function OrderedProduct({
           >
             Add review
           </Button>
-          <Button link={{ href: productLink }} className="md:basis-1/2">
+          <CustomLink href={productLink} className="md:basis-1/2">
             Buy again
-          </Button>
+          </CustomLink>
         </div>
       )}
       <form

@@ -61,6 +61,8 @@ export declare type ImageProps = {
 
 export declare interface SliderProps extends Partial<SliderOptions> {
   slides: React.ReactNode[];
+  smallSlides?: boolean;
+  slideShadows?: boolean;
 }
 
 export declare type SliderOptions = {
@@ -373,11 +375,19 @@ export declare type CheckoutSteps = "address" | "payment" | "review";
 
 export declare type ButtonProps = {
   style?: "standard" | "toshi";
-  link?: { href: Url };
   className?: string;
   children: React.ReactNode;
   type?: "button" | "submit";
   onClick?: () => void;
+  disabled?: boolean;
+  title?: string;
+};
+
+export declare type CustomLinkProps = {
+  style?: "standard" | "toshi";
+  className?: string;
+  children: React.ReactNode;
+  href: Url;
   disabled?: boolean;
   title?: string;
 };

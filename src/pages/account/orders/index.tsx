@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
-import Button from "~/components/Input/Button";
+import CustomLink from "~/components/Input/CustomLink";
 import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
 import OrderedProduct from "~/components/Products/OrderedProduct";
@@ -93,34 +93,34 @@ const OrdersPage: NextPage = () => {
                       <span>{id.toUpperCase()}</span>
                     </div>
                     <div className="flex w-full flex-col gap-2 sm:flex-row md:hidden">
-                      <Button
-                        link={{ href: orderLink }}
+                      <CustomLink
+                        href={orderLink}
                         className="w-full min-w-[12rem]"
                       >
                         Order details
-                      </Button>
-                      <Button
-                        link={{ href: `${orderLink}?print=true` }}
+                      </CustomLink>
+                      <CustomLink
+                        href={`${orderLink}?print=true`}
                         className="w-full min-w-[12rem]"
                       >
                         Print invoice
-                      </Button>
+                      </CustomLink>
                     </div>
                   </div>
                   <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
                     <div className="order-last hidden w-48 flex-col gap-2 md:flex">
-                      <Button
-                        link={{ href: orderLink }}
+                      <CustomLink
+                        href={orderLink}
                         className="w-full min-w-[12rem]"
                       >
                         Order details
-                      </Button>
-                      <Button
-                        link={{ href: `${orderLink}?print=true` }}
+                      </CustomLink>
+                      <CustomLink
+                        href={`${orderLink}?print=true`}
                         className="w-full min-w-[12rem]"
                       >
                         Print invoice
-                      </Button>
+                      </CustomLink>
                     </div>
                     <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
                       {products.map((product) => (
