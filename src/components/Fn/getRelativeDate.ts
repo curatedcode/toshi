@@ -4,6 +4,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
 
+const localeList = dayjs.Ls;
+
 const thresholds = [
   { l: "s", r: 1 },
   { l: "m", r: 1 },
@@ -14,6 +16,7 @@ const thresholds = [
 
 dayjs.updateLocale("en", {
   relativeTime: {
+    ...localeList["en"]?.relativeTime,
     s: "%ds",
     m: "1m",
     mm: "%dm",
@@ -39,7 +42,6 @@ function getRelativeTime(date: Date) {
     return dayjs(date).format("MMM D");
   }
 
-  // return relative time
   return `${currentDate.from(date, true)} ago`;
 }
 
