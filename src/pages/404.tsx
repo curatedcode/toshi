@@ -23,7 +23,7 @@ const Custom404: NextPage = () => {
       <main className="relative flex h-screen flex-col items-center justify-center text-center">
         <div className="mb-2 flex items-center gap-2 text-2xl">
           <span className="border-r border-neutral-500 py-1 pr-3">404</span>
-          <LogoWithText color="red" />
+          <LogoWithText color="primary" />
         </div>
         <h1>We can&apos;t find that page.</h1>
         <p>

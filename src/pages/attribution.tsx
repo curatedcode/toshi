@@ -9,21 +9,12 @@ const AttributionPage: NextPage = () => {
       className="items-center pt-12 text-lg"
     >
       <p>
-        Hero image made in part by{" "}
+        Hero image by{" "}
         <a
-          href="https://www.vecteezy.com/members/emojoez"
+          href="https://pixabay.com/users/huoadg5888-8934889/"
           className="underline underline-offset-1"
         >
-          Chalermsuk
-        </a>
-      </p>
-      <p>
-        Hero image made in part by{" "}
-        <a
-          href="https://www.vecteezy.com/members/nurochman3278415"
-          className="underline underline-offset-1"
-        >
-          Nurochman
+          huoadg5888
         </a>
       </p>
       <p>

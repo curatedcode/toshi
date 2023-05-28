@@ -99,12 +99,14 @@ const OrdersPage: NextPage = () => {
                       >
                         Order details
                       </CustomLink>
-                      <CustomLink
-                        href={`${orderLink}?print=true`}
-                        className="w-full min-w-[12rem]"
-                      >
-                        Print invoice
-                      </CustomLink>
+                      {status === "delivered" && (
+                        <CustomLink
+                          href={`${orderLink}?print=true`}
+                          className="w-full min-w-[12rem]"
+                        >
+                          Print invoice
+                        </CustomLink>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
@@ -115,12 +117,14 @@ const OrdersPage: NextPage = () => {
                       >
                         Order details
                       </CustomLink>
-                      <CustomLink
-                        href={`${orderLink}?print=true`}
-                        className="w-full min-w-[12rem]"
-                      >
-                        Print invoice
-                      </CustomLink>
+                      {status === "delivered" && (
+                        <CustomLink
+                          href={`${orderLink}?print=true`}
+                          className="w-full min-w-[12rem]"
+                        >
+                          Print invoice
+                        </CustomLink>
+                      )}
                     </div>
                     <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
                       {products.map((product) => (

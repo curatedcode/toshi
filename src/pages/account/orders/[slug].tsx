@@ -23,7 +23,23 @@ const OrderPage: NextPage = () => {
     createdAt = "",
     deliveredAt = "",
     total,
+    subtotal,
+    shippingTotal,
     status = "",
+    shippingAddress = {
+      streetAddress: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: "",
+    },
+    billingAddress = {
+      streetAddress: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: "",
+    },
   } = order || {};
 
   useEffect(() => {
@@ -77,18 +93,25 @@ const OrderPage: NextPage = () => {
               </div>
               <span>{id.toUpperCase()}</span>
             </div>
-            <div className="flex w-full flex-col gap-2 sm:flex-row md:hidden">
-              <Button onClick={() => print()} className="w-full min-w-[12rem]">
-                Print invoice
-              </Button>
-            </div>
+            {status === "delivered" && (
+              <div className="flex w-full flex-col gap-2 sm:flex-row md:hidden">
+                <Button onClick={() => print()} className="w-full">
+                  Print invoice
+                </Button>
+              </div>
+            )}
           </div>
           <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
-            <div className="order-last hidden w-48 flex-col gap-2 md:flex">
-              <Button onClick={() => print()} className="w-full min-w-[12rem]">
-                Print invoice
-              </Button>
-            </div>
+            {status === "delivered" && (
+              <div className="order-last hidden w-48 flex-col gap-2 md:flex">
+                <Button
+                  onClick={() => print()}
+                  className="w-full min-w-[12rem]"
+                >
+                  Print invoice
+                </Button>
+              </div>
+            )}
             <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 md:grid-cols-4 md:gap-4">
               {products?.map((product) => (
                 <OrderedProduct
@@ -102,7 +125,7 @@ const OrderPage: NextPage = () => {
         </div>
       </Layout>
       <div className="hidden flex-col px-5 pt-4 print:flex">
-        <LogoWithText color="red" className="mb-12 self-center" />
+        <LogoWithText color="primary" className="mb-12 self-center" />
         <div className="mb-4 ml-1 grid">
           <div className="flex gap-1">
             <span className="font-semibold">Order Placed:</span>
@@ -148,21 +171,19 @@ const OrderPage: NextPage = () => {
               <h2 className="mb-2 font-semibold">Delivery Address</h2>
               <div className="flex justify-between">
                 <div className="flex flex-col">
-                  <span>Street address</span>
-                  <span>City</span>
-                  <span>State</span>
-                  <span>Zip</span>
-                  <span>Country</span>
+                  <span>{shippingAddress.streetAddress}</span>
+                  <span>{shippingAddress.city}</span>
+                  <span>{shippingAddress.state}</span>
+                  <span>{shippingAddress.zipCode}</span>
+                  <span>{shippingAddress.country}</span>
                 </div>
                 <div className="grid auto-cols-min grid-cols-2">
                   <span className="justify-self-end">Item(s) Subtotal: </span>
-                  <span className="justify-self-end">$444</span>
+                  <span className="justify-self-end">${subtotal}</span>
                   <span className="justify-self-end">Shipping: </span>
-                  <span className="justify-self-end">$10</span>
+                  <span className="justify-self-end">${shippingTotal}</span>
                   <span className="justify-self-end">Total: </span>
                   <span className="justify-self-end">${total}</span>
-                  <span className="justify-self-end">Discount: </span>
-                  <span className="justify-self-end">0%</span>
                   <span className="mt-1 justify-self-end border-t border-black pt-1 font-semibold">
                     Grand Total:{" "}
                   </span>
@@ -181,16 +202,16 @@ const OrderPage: NextPage = () => {
           <div className="flex flex-col gap-4 px-3 py-4">
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold">Payment Method</h2>
-              <span>Credit/Debit Card | Ending in: 4444</span>
+              <span>Credit/Debit Card | Ending in: 4709</span>
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold">Invoice Address</h2>
               <div className="flex flex-col">
-                <span>Street address</span>
-                <span>City</span>
-                <span>State</span>
-                <span>Zip</span>
-                <span>Country</span>
+                <span>{billingAddress.streetAddress}</span>
+                <span>{billingAddress.city}</span>
+                <span>{billingAddress.state}</span>
+                <span>{billingAddress.zipCode}</span>
+                <span>{billingAddress.country}</span>
               </div>
             </div>
           </div>

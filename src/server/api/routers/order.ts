@@ -10,6 +10,7 @@ import getPreviousDate from "~/components/Fn/getPreviousDate";
 import { shippingAddressSchema } from "~/customVariables";
 import getTotals from "~/components/Fn/getTotals";
 import { createId } from "@paralleldrive/cuid2";
+import getRelativeTime from "~/components/Fn/getRelativeDate";
 
 const orderRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -87,7 +88,27 @@ const orderRouter = createTRPCRouter({
           createdAt: true,
           deliveredAt: true,
           status: true,
+          shippingAddress: {
+            select: {
+              streetAddress: true,
+              city: true,
+              state: true,
+              zipCode: true,
+              country: true,
+            },
+          },
+          billingAddress: {
+            select: {
+              streetAddress: true,
+              city: true,
+              state: true,
+              zipCode: true,
+              country: true,
+            },
+          },
           total: true,
+          subtotal: true,
+          shippingTotal: true,
           products: {
             select: {
               priceAtPurchase: true,
@@ -168,6 +189,8 @@ const orderRouter = createTRPCRouter({
           data: {
             status: "processing",
             total: parseFloat(getTotals(totalBeforeTax).totalAfterTax),
+            subtotal: totalBeforeTax,
+            shippingTotal: 0,
             products: { createMany: { data: orderedProducts } },
             billingAddress: { create: billing },
             shippingAddress: { create: shippingAddress },
@@ -225,6 +248,8 @@ const orderRouter = createTRPCRouter({
         data: {
           status: "processing",
           total: parseFloat(getTotals(totalBeforeTax).totalAfterTax),
+          subtotal: totalBeforeTax,
+          shippingTotal: 0,
           products: { createMany: { data: orderedProducts } },
           billingAddress: { create: billing },
           shippingAddress: { create: shippingAddress },
@@ -246,6 +271,25 @@ const orderRouter = createTRPCRouter({
         estimatedDelivery: order.estimatedDelivery,
       };
     }),
+
+  getFiveSimple: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma, session } = ctx;
+    const userId = session.user.id;
+
+    const orders = await prisma.order.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, createdAt: true },
+      take: 5,
+    });
+
+    const ordersTimeFormatted = orders.map((order) => ({
+      id: order.id,
+      createdAt: getRelativeTime(order.createdAt),
+    }));
+
+    return ordersTimeFormatted;
+  }),
 });
 
 export default orderRouter;

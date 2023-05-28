@@ -111,7 +111,7 @@ const CreateListPage: NextPage = () => {
       >
         <div
           role="alert"
-          className="absolute bottom-0 left-1/2 flex -translate-x-1/2 items-center gap-1 self-center rounded-md bg-toshi-red px-4 py-2 text-lg text-white"
+          className="absolute bottom-0 left-1/2 flex -translate-x-1/2 items-center gap-1 self-center rounded-md bg-toshi-green px-4 py-2 text-lg text-white"
         >
           <span>List created.</span>
           <InternalLink

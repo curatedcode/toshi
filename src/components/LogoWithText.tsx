@@ -7,7 +7,7 @@ function LogoWithText({
   width?: number;
   height?: number;
   className?: string;
-  color?: "white" | "red";
+  color?: "white" | "primary";
 }) {
   return (
     <svg
@@ -16,16 +16,16 @@ function LogoWithText({
       height={height}
       viewBox="0 0 21.761 7.771"
       aria-label="Toshi logo"
-      className={`my-[3px] -ml-1.5 ${className}`}
+      className={`my-[3px] ${className}`}
     >
       <path
         d="M3.885 5.828c.859 0 1.554-.696 1.554-1.554h-.777a.777.777 0 1 1-1.554 0h-.777c0 .858.696 1.554 1.554 1.554zM1.748 0A1.748 1.748 0 0 0 .602 3.068a3.497 3.497 0 1 0 6.567 0A1.748 1.748 0 1 0 4.53.836a3.514 3.514 0 0 0-1.29 0A1.747 1.747 0 0 0 1.747 0Zm-.97 1.748a.971.971 0 0 1 1.884-.33l.124.34.348-.099a2.721 2.721 0 0 1 1.502 0l.349.1.123-.341A.972.972 0 1 1 6.5 2.595l-.316.178.157.328a2.72 2.72 0 1 1-4.91 0l.157-.328-.316-.178a.97.97 0 0 1-.494-.847Z"
-        fill={color === "white" ? "#fff" : "#a91101"}
+        fill={color === "white" ? "#fff" : "#002733"}
         fillOpacity={1}
         strokeWidth={0.388525}
       />
       <g
-        fill={color === "white" ? "#fff" : "#a91101"}
+        fill={color === "white" ? "#fff" : "#002733"}
         strokeWidth={0.1}
         transform="translate(0.5 -7.707)"
       >

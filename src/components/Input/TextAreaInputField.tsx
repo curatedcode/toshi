@@ -10,7 +10,7 @@ const TextAreaInputField = forwardRef(function TextInputField(
   {
     internalLabel,
     visibleLabel,
-    className,
+    className = "",
     maxLength,
     classNameContainer = "",
     error,
@@ -19,18 +19,18 @@ const TextAreaInputField = forwardRef(function TextInputField(
   ref
 ) {
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${classNameContainer}`}>
       <label
         htmlFor={internalLabel}
-        className={`${classNameContainer} ml-1 w-fit font-semibold`}
+        className="ml-1 font-semibold hover:cursor-pointer"
       >
         {visibleLabel}
       </label>
       <textarea
         id={internalLabel}
-        className={`duration-50 resize-none rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 ${
+        className={`${className} duration-50 resize-none rounded-md border-2 bg-neutral-100 px-3 py-1 transition-colors focus-within:border-toshi-primary focus-within:outline-none disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 ${
           error ? "border-red-500 focus-within:border-red-500" : ""
-        } ${className ?? ""}`}
+        }`}
         maxLength={maxLength}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error

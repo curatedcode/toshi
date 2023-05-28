@@ -16,14 +16,50 @@ const Home: NextPage = () => {
     <Product key={product.id} product={product} imageLoading="eager" />
   ));
 
-  const { data: topCategories } = api.category.top.useQuery();
-
   const { data: bestDealsData } = api.category.bestDeals.useQuery();
   const bestDeals = bestDealsData?.map((product) => (
     <Product key={product.id} product={product} imageLoading="eager" />
   ));
 
-  const { data: topBrands } = api.category.topBrands.useQuery();
+  const { data: topCategoriesData } = api.category.top.useQuery();
+  const topCategories = topCategoriesData?.map((category) => (
+    <Link
+      href={`/search?dept=${category}`}
+      key={category}
+      className="flex flex-col items-center text-xl"
+    >
+      <Image
+        src={`/${category.toLowerCase()}-category.jpg`}
+        alt=""
+        height={50}
+        width={50}
+        className="aspect-square w-full rounded-t-lg"
+      />
+      <span className="w-full bg-white px-1 py-1.5 text-center font-semibold">
+        {category}
+      </span>
+    </Link>
+  ));
+
+  const { data: topBrandsData } = api.category.topBrands.useQuery();
+  const topBrands = topBrandsData?.map((brand) => (
+    <Link
+      href={`/companies/${brand.id}`}
+      key={brand.name}
+      className="flex flex-col items-center rounded-md"
+    >
+      <Image
+        src={brand.logoURL}
+        alt={`${brand.name} logo`}
+        height={50}
+        width={50}
+        className="aspect-square w-full rounded-t-md"
+      />
+      <span className="w-full rounded-b-md bg-white px-1 py-1.5 text-center font-semibold">
+        {brand.name}
+      </span>
+    </Link>
+  ));
 
   const { data: sellingOutFastData } = api.category.sellingOutFast.useQuery();
   const sellingOutFast = sellingOutFastData?.map((product) => (
@@ -32,87 +68,44 @@ const Home: NextPage = () => {
 
   return (
     <Layout
-      title="Home | Toshi"
+      title="Toshi.com. Magical Savings."
       description="Make shopping yours at Toshi.com"
-      className="max-w-none gap-6 bg-neutral-100 !p-0"
+      className="gap-6"
     >
-      <picture className="flex justify-center bg-[#ffcdff]">
-        <source srcSet="/hero-desktop.png" media="(min-width: 768px)" />
-        <img
-          src="/hero-mobile.png"
-          alt=""
-          className="w-full max-w-5xl"
-          loading="eager"
-        />
+      <picture className="flex justify-center">
+        <source srcSet="/hero-desktop.jpg" media="(min-width: 768px)" />
+        <img src="/hero-mobile.jpg" alt="" className="w-full" loading="eager" />
       </picture>
-      <div className="relative left-1/2 flex max-w-standard -translate-x-1/2 flex-col gap-8 px-5 md:gap-10">
-        <section className="flex flex-col items-center rounded-md bg-white px-4 py-2">
-          <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
-            Recommendations
-          </h1>
-          {recommended && <Slider slides={recommended} />}
-        </section>
-        <section className="flex flex-col items-center rounded-md bg-white px-4 py-2">
-          <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
+      <div className="flex flex-col gap-4">
+        <section className="flex flex-col items-center rounded-md py-2">
+          <h1 className="mb-3 self-start whitespace-nowrap text-2xl font-semibold">
             Best Deals
           </h1>
           {bestDeals && <Slider slides={bestDeals} />}
         </section>
-        <section className="flex flex-col gap-4">
-          <section className="flex w-full flex-col items-center rounded-md bg-white px-4 pb-4 pt-2">
-            <h1 className="mb-2 text-xl font-semibold sm:text-3xl">
-              Top Categories
-            </h1>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:text-lg lg:grid-cols-6">
-              {topCategories?.map((category) => (
-                <Link
-                  href={`/search?dept=${category}`}
-                  key={category}
-                  className="flex w-full flex-col items-center gap-2 px-6 py-2 text-xl transition-colors hover:bg-neutral-100"
-                >
-                  <Image
-                    src={`/${category.toLowerCase()}-category.jpg`}
-                    alt=""
-                    height={50}
-                    width={50}
-                    className="aspect-square w-full rounded-md"
-                  />
-                  {category}
-                </Link>
-              ))}
-            </div>
-          </section>
-          <section className="flex w-full flex-col items-center rounded-md bg-white px-4 pb-4 pt-2">
-            <h1 className="mb-2 text-xl font-semibold sm:text-3xl">
-              Top Brands
-            </h1>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-6 md:text-lg">
-              {topBrands?.map((brand) => (
-                <Link
-                  href={`/companies/${brand.id}`}
-                  key={brand.name}
-                  className="flex w-full flex-col items-center gap-2 px-6 py-2 text-center leading-tight transition-colors hover:bg-neutral-100"
-                >
-                  <Image
-                    src={brand.logoURL}
-                    alt={`${brand.name} logo`}
-                    height={50}
-                    width={50}
-                    className="aspect-square w-full rounded-md"
-                  />
-                  {brand.name}
-                </Link>
-              ))}
-            </div>
-          </section>
-        </section>
-        <section className="flex flex-col items-center rounded-md bg-white px-4 py-2">
-          <h1 className="mb-2 self-start whitespace-nowrap text-xl font-semibold sm:text-2xl">
-            On The Rise
+        <section className="flex flex-col items-center rounded-md py-2">
+          <h1 className="mb-3 self-start whitespace-nowrap text-2xl font-semibold">
+            Recommendations
           </h1>
-          <div className="grid grid-cols-1 gap-x-4 gap-y-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-            {sellingOutFast}
-          </div>
+          {recommended && <Slider slides={recommended} />}
+        </section>
+        <section className="flex flex-col items-center rounded-md py-2">
+          <h1 className="mb-3 self-start whitespace-nowrap text-2xl font-semibold">
+            Top Categories
+          </h1>
+          {topCategories && <Slider slides={topCategories} smallSlides />}
+        </section>
+        <section className="flex flex-col items-center rounded-md py-2">
+          <h1 className="mb-3 self-start whitespace-nowrap text-2xl font-semibold">
+            Top Brands
+          </h1>
+          {topBrands && <Slider slides={topBrands} smallSlides />}
+        </section>
+        <section className="flex flex-col items-center rounded-md py-2">
+          <h1 className="mb-3 self-start whitespace-nowrap text-2xl font-semibold">
+            On This Rise
+          </h1>
+          {sellingOutFast && <Slider slides={sellingOutFast} />}
         </section>
       </div>
     </Layout>

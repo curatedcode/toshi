@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import CustomLink from "~/components/Input/CustomLink";
 import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
@@ -48,40 +47,48 @@ const Cart: NextPage = () => {
                   refetch={refetch}
                 />
               ))}
-            <div className="flex h-fit justify-end px-3 pb-6 pt-4 md:hidden">
+            <div className="flex h-fit w-full flex-col items-end gap-40 px-3 pb-3 pt-4 md:hidden">
               <div className="flex w-fit flex-col gap-2">
-                <div className="flex gap-1 text-lg font-semibold">
-                  <span>Subtotal ({totals?.quantity} items):</span>
-                  <span className="text-xl text-toshi-red">
+                <div className="flex gap-1 text-lg">
+                  <span>
+                    Subtotal ({totals?.quantity}{" "}
+                    {totals.quantity > 1 ? "items" : "item"}):
+                  </span>
+                  <span className="text-xl font-semibold text-toshi-green">
                     ${totals?.totalPrice}
                   </span>
                 </div>
-                <CustomLink href={"/checkout"}>Proceed to checkout</CustomLink>
+                <CustomLink href={"/checkout"} style="toshi">
+                  Proceed to checkout
+                </CustomLink>
               </div>
             </div>
           </div>
-          <div className="mt-6 hidden h-fit flex-col gap-2 bg-neutral-100 px-3 pb-6 pt-2 md:flex">
-            <div className="flex gap-1 text-lg font-semibold">
+          <div className="mt-6 hidden h-fit flex-col gap-4 rounded-md bg-neutral-200 px-3 pb-3 pt-2 md:flex">
+            <div className="flex gap-3 text-lg">
               <span className="whitespace-nowrap">
-                Subtotal ({totals?.quantity} items):
+                Subtotal ({totals?.quantity}{" "}
+                {totals.quantity > 1 ? "items" : "item"}):
               </span>
-              <span className="text-xl text-toshi-red">
+              <span className="text-xl font-semibold">
                 ${totals?.totalPrice}
               </span>
             </div>
-            <Link
-              href={"/checkout"}
-              className="whitespace-nowrap rounded-md bg-toshi-red px-2 py-1 text-center font-semibold text-white"
-            >
+            <CustomLink href={"/checkout"} style="toshi">
               Proceed to checkout
-            </Link>
+            </CustomLink>
           </div>
         </div>
       ) : (
         <p className="mt-2 text-lg">
-          No items in your cart.{" "}
+          Behold, the noble and brave empty shopping cart, patiently waiting for
+          its destined purpose amidst a sea of products!{" "}
           <InternalLink href="/" className="text-lg">
-            Continue shopping.
+            Continue shopping.{" "}
+          </InternalLink>
+          or{" "}
+          <InternalLink href="/account/lists" className="text-lg">
+            view your lists.
           </InternalLink>
         </p>
       )}

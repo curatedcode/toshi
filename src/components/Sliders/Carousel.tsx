@@ -49,9 +49,9 @@ function Carousel({ slides, controls, thumbnails }: CarouselProps) {
   }, [emblaMainApi]);
 
   return (
-    <div className="relative flex flex-col gap-2 md:max-w-xs">
+    <div className="relative flex flex-col gap-3 md:max-w-xs">
       <div
-        className="overflow-hidden"
+        className="relative overflow-hidden"
         ref={emblaMainRef}
         onMouseEnter={handleMouse}
         onMouseLeave={handleMouse}
@@ -96,8 +96,8 @@ function Thumbnail({ onClick, selected, slide, index }: CarouselThumbProps) {
       type="button"
       aria-label={`View image ${index}`}
       onClick={onClick}
-      className={`relative aspect-square shrink-0 grow-0 rounded-md ${
-        selected ? "" : "opacity-50"
+      className={`relative shrink-0 grow-0 rounded-md border ${
+        selected ? "border-black" : "border-transparent opacity-50"
       }`}
       style={{ flexBasis: "25%" }}
       title={`View image ${index}`}

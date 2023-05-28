@@ -18,7 +18,7 @@ function SimpleLayout({
   className = "",
 }: LayoutProps) {
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="relative min-h-screen bg-gradient-to-br from-toshi-primary to-toshi-green">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -27,15 +27,15 @@ function SimpleLayout({
       <SkipToContentButton />
       <div className="flex justify-center p-2">
         <Link href={"/"} aria-label="Home page" className="w-fit">
-          <LogoWithText color="red" />
+          <LogoWithText color="white" />
         </Link>
       </div>
-      <main
-        className={`min-h-full pb-52 font-sans ${font.className} ${className}`}
-      >
+      <main className={`font-sans ${font.className} ${className}`}>
         {children}
       </main>
-      <Footer bgColor="web-white" />
+      <div className="absolute bottom-0 w-full">
+        <Footer bgColor="none" />
+      </div>
     </div>
   );
 }

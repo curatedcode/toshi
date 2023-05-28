@@ -22,6 +22,8 @@ import type { z } from "zod";
 import SkipToContentButton from "~/components/SkipToContentButton";
 import { FunnelIcon } from "@heroicons/react/24/outline";
 import { Menu, Transition } from "@headlessui/react";
+import Button from "~/components/Input/Button";
+import CustomLink from "~/components/Input/CustomLink";
 
 type SearchResultSortByType = z.infer<typeof SearchResultSortBy>;
 
@@ -168,7 +170,7 @@ const SearchPage: NextPage = (
     <Layout
       title={`${textParam} | Toshi`}
       description={`Search results for ${textParam} on Toshi.com`}
-      className="!max-w-none !p-0"
+      className="!p-0"
     >
       <Link
         href={getLinkWithAllParams({ sortBy: sortResults, page: 1 })}
@@ -180,20 +182,20 @@ const SearchPage: NextPage = (
           {textParam ? (
             <div>
               <span>{data?.totalResults} results for </span>
-              <span className="text-toshi-red">&quot;{textParam}&quot;</span>
+              <span className="text-toshi-green">&quot;{textParam}&quot;</span>
             </div>
           ) : (
             <span>{data?.totalResults} results</span>
           )}
           <div className="flex items-center gap-2">
-            <label htmlFor="sortBy" className="font-semibold text-toshi-red">
+            <label htmlFor="sortBy" className="font-semibold text-toshi-green">
               Sort by:
             </label>
             <select
               title="Sort results"
               name="sortBy"
               onChange={handleSortByChange}
-              className="rounded-md bg-neutral-200 px-2"
+              className="rounded-md bg-neutral-200 px-2 hover:cursor-pointer"
               defaultValue={sortByParam}
             >
               <option value={"default"}>Relevance</option>
@@ -206,31 +208,27 @@ const SearchPage: NextPage = (
         </div>
         <Menu as="div" className="relative">
           <Menu.Button className="inline-flex items-center gap-1">
-            <span className="font-semibold text-toshi-red">Filters</span>
-            <FunnelIcon className="w-5 stroke-toshi-red" aria-hidden />
+            <span className="font-semibold text-toshi-green">Filters</span>
+            <FunnelIcon className="w-5 stroke-toshi-green" aria-hidden />
           </Menu.Button>
           <Transition
             as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
+            enter="transition ease-out duration-50"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-50"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
           >
             <Menu.Items className="absolute -right-4 z-10 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-neutral-400 focus:outline-none md:-right-[90%]">
               <div className="flex flex-col divide-y divide-neutral-300 p-2">
                 <Link href={`/search?text=${textParam}`} hidden ref={linkRef} />
                 <Menu.Item>
-                  <button
-                    type="button"
-                    onClick={resetFilters}
-                    className="w-full rounded-md bg-toshi-red px-2 text-center text-lg font-semibold text-white shadow shadow-neutral-500 transition-shadow hover:shadow-md hover:shadow-neutral-500"
-                  >
+                  <Button style="standard" onClick={resetFilters}>
                     Clear filters
-                  </button>
+                  </Button>
                 </Menu.Item>
-                <div className="mt-2 flex flex-col gap-1">
+                <div className="mt-2 flex flex-col gap-1 p-1">
                   <span className="text-lg font-semibold">Price</span>
                   <div className="flex items-center gap-1">
                     <PriceInput
@@ -242,24 +240,24 @@ const SearchPage: NextPage = (
                       name="Max"
                       onChange={(e) => setPriceListValues(e, "max")}
                     />
-                    <Link
+                    <CustomLink
                       href={getLinkWithAllParams({
                         price: priceFilter,
                         page: 1,
                       })}
-                      className="flex h-8 items-center rounded-md bg-toshi-red px-2 text-center text-lg font-semibold text-white shadow shadow-neutral-500 transition-shadow hover:shadow-md hover:shadow-neutral-500"
+                      className="py-1.5"
                     >
                       Go
-                    </Link>
+                    </CustomLink>
                   </div>
                 </div>
-                <div className="mb-2 mt-2 flex flex-col gap-1">
+                <div className="mb-2 mt-2 flex flex-col gap-1 p-1">
                   <span className="text-lg font-semibold">Reviews</span>
                   <div className="grid">
                     <Link
                       href={getLinkWithAllParams({ rating: 4, page: 1 })}
                       title="4 stars and up"
-                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-green"
                     >
                       <RatingStars rating={4} />
                       <span>& Up</span>
@@ -267,7 +265,7 @@ const SearchPage: NextPage = (
                     <Link
                       href={getLinkWithAllParams({ rating: 3, page: 1 })}
                       title="3 stars and up"
-                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-green"
                     >
                       <RatingStars rating={3} />
                       <span>& Up</span>
@@ -275,7 +273,7 @@ const SearchPage: NextPage = (
                     <Link
                       href={getLinkWithAllParams({ rating: 2, page: 1 })}
                       title="2 stars and up"
-                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-green"
                     >
                       <RatingStars rating={2} />
                       <span>& Up</span>
@@ -283,7 +281,7 @@ const SearchPage: NextPage = (
                     <Link
                       href={getLinkWithAllParams({ rating: 1, page: 1 })}
                       title="1 star and up"
-                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                      className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-green"
                     >
                       <RatingStars rating={1} />
                       <span>& Up</span>
@@ -291,7 +289,7 @@ const SearchPage: NextPage = (
                   </div>
                 </div>
                 <Menu.Item>
-                  <div className="flex gap-1 pt-2 hover:text-toshi-red [&>*]:hover:cursor-pointer">
+                  <div className="flex gap-1 p-1 pt-2 transition-colors hover:text-toshi-green [&>*]:hover:cursor-pointer">
                     <input
                       id="includeOutOfStockMobile"
                       type="checkbox"
@@ -318,7 +316,7 @@ const SearchPage: NextPage = (
           </Transition>
         </Menu>
       </div>
-      <div className="mb-5 hidden w-full shadow-md shadow-neutral-300 md:block">
+      <div className="mb-5 hidden shadow-md shadow-neutral-300 md:block">
         <div
           id="filters"
           className="relative left-1/2 hidden max-w-standard -translate-x-1/2 flex-col items-end gap-1 px-4 py-1.5 text-sm md:flex md:flex-row md:justify-between"
@@ -326,20 +324,20 @@ const SearchPage: NextPage = (
           {textParam ? (
             <div>
               <span>{data?.totalResults} results for </span>
-              <span className="text-toshi-red">&quot;{textParam}&quot;</span>
+              <span className="text-toshi-green">&quot;{textParam}&quot;</span>
             </div>
           ) : (
             <span>{data?.totalResults} results</span>
           )}
           <div className="flex items-center gap-2">
-            <label htmlFor="sortBy" className="font-semibold text-toshi-red">
+            <label htmlFor="sortBy" className="font-semibold text-toshi-green">
               Sort by:
             </label>
             <select
               title="Sort results"
               name="sortBy"
               onChange={handleSortByChange}
-              className="rounded-md bg-neutral-200 px-2"
+              className="rounded-md bg-neutral-200 px-2 hover:cursor-pointer"
               defaultValue={sortByParam}
             >
               <option value={"default"}>Relevance</option>
@@ -351,7 +349,7 @@ const SearchPage: NextPage = (
           </div>
         </div>
       </div>
-      <div className="relative left-1/2 flex max-w-standard -translate-x-1/2 gap-5 px-5">
+      <div className="flex gap-5 px-5">
         <div className="hidden flex-col divide-y divide-neutral-300 md:flex [&>div]:pb-3 [&>div]:pt-2">
           <SkipToContentButton
             type="inline"
@@ -360,13 +358,9 @@ const SearchPage: NextPage = (
             text="Skip to results"
           />
           <Link href={`/search?text=${textParam}`} hidden ref={linkRef} />
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="rounded-md bg-toshi-red px-2 text-center text-lg font-semibold text-white shadow shadow-neutral-500 transition-shadow hover:shadow-md hover:shadow-neutral-500"
-          >
+          <Button style="standard" onClick={resetFilters}>
             Clear filters
-          </button>
+          </Button>
           <div className="mt-4 flex flex-col gap-1">
             <span className="text-lg font-semibold">Price</span>
             <div className="flex items-center gap-1">
@@ -379,12 +373,15 @@ const SearchPage: NextPage = (
                 name="Max"
                 onChange={(e) => setPriceListValues(e, "max")}
               />
-              <Link
-                href={getLinkWithAllParams({ price: priceFilter, page: 1 })}
-                className="flex h-8 items-center rounded-md bg-toshi-red px-2 text-center text-lg font-semibold text-white shadow shadow-neutral-500 transition-shadow hover:shadow-md hover:shadow-neutral-500"
+              <CustomLink
+                href={getLinkWithAllParams({
+                  price: priceFilter,
+                  page: 1,
+                })}
+                className="py-1.5"
               >
                 Go
-              </Link>
+              </CustomLink>
             </div>
           </div>
           <div className="flex flex-col gap-1">
@@ -393,7 +390,7 @@ const SearchPage: NextPage = (
               <Link
                 href={getLinkWithAllParams({ rating: 4, page: 1 })}
                 title="4 stars and up"
-                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-green"
               >
                 <RatingStars rating={4} />
                 <span>& Up</span>
@@ -401,7 +398,7 @@ const SearchPage: NextPage = (
               <Link
                 href={getLinkWithAllParams({ rating: 3, page: 1 })}
                 title="3 stars and up"
-                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-green"
               >
                 <RatingStars rating={3} />
                 <span>& Up</span>
@@ -409,7 +406,7 @@ const SearchPage: NextPage = (
               <Link
                 href={getLinkWithAllParams({ rating: 2, page: 1 })}
                 title="2 stars and up"
-                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-green"
               >
                 <RatingStars rating={2} />
                 <span>& Up</span>
@@ -417,7 +414,7 @@ const SearchPage: NextPage = (
               <Link
                 href={getLinkWithAllParams({ rating: 1, page: 1 })}
                 title="1 star and up"
-                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-red"
+                className="flex w-fit items-center gap-1 whitespace-nowrap transition-colors hover:text-toshi-green"
               >
                 <RatingStars rating={1} />
                 <span>& Up</span>
@@ -431,7 +428,7 @@ const SearchPage: NextPage = (
                 <Link
                   href={getLinkWithAllParams({ category, page: 1 })}
                   key={category}
-                  className="w-fit transition-colors hover:text-toshi-red"
+                  className="w-fit transition-colors hover:text-toshi-green"
                 >
                   {category}
                 </Link>
@@ -439,7 +436,7 @@ const SearchPage: NextPage = (
             </div>
           </div>
           <div>
-            <div className="flex w-fit gap-1 hover:text-toshi-red [&>*]:hover:cursor-pointer">
+            <div className="flex w-fit gap-1 transition-colors hover:text-toshi-green [&>*]:hover:cursor-pointer">
               <input
                 id="includeOutOfStock"
                 type="checkbox"
@@ -458,7 +455,7 @@ const SearchPage: NextPage = (
             ref={includeOutOfStockRef}
           />
         </div>
-        <div className="flex w-full flex-col gap-4 bg-white" id="results">
+        <div className="grid gap-4 bg-white" id="results">
           {data?.products.map((product) => (
             <Product key={product.id} type="alternate" product={product} />
           ))}

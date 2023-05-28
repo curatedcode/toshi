@@ -9,7 +9,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     return (
       <button
         type={type}
-        className={`whitespace-nowrap rounded-md bg-toshi-red px-4 py-1 text-center font-semibold text-white transition-colors hover:bg-toshi-red/95 disabled:cursor-not-allowed disabled:bg-opacity-40 ${className}`}
+        className={`whitespace-nowrap rounded-md bg-toshi-green px-4 py-1 text-center font-semibold text-white transition-colors hover:bg-toshi-green/95 disabled:cursor-not-allowed disabled:bg-opacity-40 ${className}`}
         ref={ref}
         {...props}
       >

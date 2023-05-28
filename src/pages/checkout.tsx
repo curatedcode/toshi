@@ -161,13 +161,13 @@ const CheckoutPage: NextPage = () => {
   return (
     <Layout title="Checkout | Toshi" description="Checkout items on Toshi.com">
       <div
-        className={`mt-16 flex flex-col gap-1 bg-toshi-red/25 px-5 py-2 text-lg md:w-fit md:self-center ${
+        className={`mt-16 flex flex-col gap-1 bg-toshi-green/25 px-5 py-2 text-lg md:w-fit md:self-center ${
           orderComplete ? "" : "hidden"
         }`}
       >
         <h1 className="md:text-2xl">
-          <span className="font-semibold text-toshi-red">Thank you, </span>your
-          order has been placed.
+          <span className="font-semibold text-toshi-green">Thank you, </span>
+          your order has been placed.
         </h1>
         <div className="flex gap-1">
           <span>Order Number:</span>
@@ -183,7 +183,7 @@ const CheckoutPage: NextPage = () => {
         </ul>
         <Link
           href={"/"}
-          className="mb-2 mt-4 self-center rounded-md bg-toshi-red px-4 py-1 text-white"
+          className="mb-2 mt-4 self-center rounded-md bg-toshi-green px-4 py-1 text-white"
         >
           Continue shopping
         </Link>
@@ -255,7 +255,7 @@ const CheckoutPage: NextPage = () => {
                   />
                   <button
                     type="submit"
-                    className="mb-2 mt-2 self-end rounded-md bg-toshi-red px-5 py-1 font-semibold text-white"
+                    className="mb-2 mt-2 self-end rounded-md bg-toshi-green px-5 py-1 font-semibold text-white"
                   >
                     Next
                   </button>
@@ -398,7 +398,7 @@ const CheckoutPage: NextPage = () => {
                   </div>
                   <button
                     type="submit"
-                    className="mb-2 mt-2 self-end rounded-md bg-toshi-red px-5 py-1 font-semibold text-white"
+                    className="mb-2 mt-2 self-end rounded-md bg-toshi-green px-5 py-1 font-semibold text-white"
                   >
                     Next
                   </button>
@@ -441,7 +441,7 @@ const CheckoutPage: NextPage = () => {
                         />
                         <div className="flex flex-col">
                           <span className="text-lg font-semibold">{name}</span>
-                          <span className="text-toshi-red">${price}</span>
+                          <span className="text-toshi-green">${price}</span>
                           <span>Quantity: {quantity}</span>
                           <span>Sold by: {company.name}</span>
                         </div>
@@ -457,7 +457,7 @@ const CheckoutPage: NextPage = () => {
               <Link href={""} className="hidden" ref={linkRef} />
               <button
                 type="button"
-                className="w-full rounded-md bg-toshi-red px-2 py-1 text-center font-semibold text-white disabled:cursor-not-allowed disabled:bg-toshi-red/70"
+                className="w-full rounded-md bg-toshi-green px-2 py-1 text-center font-semibold text-white disabled:cursor-not-allowed disabled:bg-toshi-green/70"
                 onClick={submitOrder}
                 title={
                   !shippingComplete || !paymentComplete
@@ -498,7 +498,7 @@ const CheckoutPage: NextPage = () => {
                 <span>${data?.taxToBeCollected}</span>
               </div>
             </div>
-            <div className="flex justify-between gap-2 p-1 pb-0 text-xl font-semibold text-toshi-red">
+            <div className="flex justify-between gap-2 p-1 pb-0 text-xl font-semibold text-toshi-green">
               <span>Order total:</span>
               <span>${data?.totalAfterTax}</span>
             </div>

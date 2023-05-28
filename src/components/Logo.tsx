@@ -13,7 +13,7 @@ export default function Logo({
         width={width}
         height={height}
         viewBox="0 0 24 24"
-        fill="#a91101"
+        fill="#002733"
         className={className}
         style={{
           minWidth: width,
@@ -31,7 +31,7 @@ export default function Logo({
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill="#a91101"
+      fill="#002733"
       className={className}
       style={{
         minWidth: width,

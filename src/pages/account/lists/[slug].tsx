@@ -9,11 +9,12 @@ import { z } from "zod";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
 import Layout from "~/components/Layout";
-import Product from "~/components/Products/Product";
 import TextInputField from "~/components/Input/TextInputField";
 import { max_list_title_char } from "~/customVariables";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "~/server/auth";
+import Button from "~/components/Input/Button";
+import ListProduct from "~/components/Products/ListProduct";
 
 const schema = z.object({
   title: z
@@ -112,21 +113,12 @@ const ListPage: NextPage = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex gap-2 self-center md:mb-4">
-            <button
-              type="button"
-              disabled={isLoading.current}
-              className="h-fit w-20 rounded-md bg-neutral-200 px-2 py-1 transition-colors focus-within:outline-neutral-500 hover:bg-neutral-300"
-              onClick={resetForm}
-            >
+            <Button onClick={resetForm} disabled={isLoading.current}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading.current}
-              className="h-fit w-20 rounded-md bg-toshi-red px-2 py-1 text-white transition-opacity focus-within:outline-neutral-500 hover:bg-opacity-95"
-            >
+            </Button>
+            <Button type="submit" style="toshi">
               {isLoading.current ? "Saving" : "Save"}
-            </button>
+            </Button>
           </div>
           <div className="my-4 flex flex-col items-center justify-center gap-4 md:flex-row">
             <TextInputField
@@ -163,17 +155,20 @@ const ListPage: NextPage = () => {
                     productsToRemove.includes(product.id) ? "hidden" : ""
                   }`}
                 >
-                  <Product product={product} />
-                  <button
-                    type="button"
-                    title="Remove from list"
+                  <ListProduct product={product} />
+                  <Button
+                    style="toshi"
+                    className="self-end py-1.5"
+                    title="Delete from cart"
                     onClick={() =>
                       setProductsToRemove((prev) => prev.concat([product.id]))
                     }
-                    className="mt-1 w-fit rounded-md bg-toshi-red px-2 py-1 font-semibold text-white"
                   >
-                    <TrashIcon className="w-6" aria-hidden />
-                  </button>
+                    <TrashIcon
+                      className="relative left-1/2 w-6 -translate-x-1/2"
+                      aria-hidden
+                    />
+                  </Button>
                 </div>
               ))}
             </div>
@@ -202,41 +197,39 @@ const ListPage: NextPage = () => {
                 <span>{products ? products.length : 0}</span>
               </div>
               <div className="flex w-full gap-2 md:hidden">
-                <button
+                <Button
                   type="button"
                   onClick={() => setEditing(true)}
-                  className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                  className="w-full"
                 >
                   Edit list
-                </button>
+                </Button>
               </div>
             </div>
             <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
-              <div className="order-last hidden w-48 flex-col gap-2 md:flex">
-                <button
-                  type="button"
-                  onClick={() => setEditing(true)}
-                  className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
-                >
-                  Edit list
-                </button>
-              </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {products?.map((product) => (
                   <div key={product.id}>
-                    <Product product={product} />
+                    <ListProduct product={product} />
                     <button
                       type="button"
                       onClick={() =>
                         addToCart({ productId: product.id, quantity: 1 })
                       }
-                      className="mb-4 mt-2 w-fit rounded-md bg-toshi-red px-6 py-1 font-semibold text-white"
+                      className="mb-4 mt-2 w-fit rounded-md bg-toshi-green px-6 py-1 font-semibold text-white"
                     >
                       Add to cart
                     </button>
                   </div>
                 ))}
               </div>
+              <Button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="h-fit min-w-[12rem]"
+              >
+                Edit list
+              </Button>
             </div>
           </div>
         </>

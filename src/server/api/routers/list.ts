@@ -63,6 +63,7 @@ const listRouter = createTRPCRouter({
               price: true,
               images: { take: 1 },
               reviews: { select: { rating: true } },
+              company: { select: { id: true, name: true } },
             },
           },
         },
@@ -188,6 +189,33 @@ const listRouter = createTRPCRouter({
 
       return;
     }),
+
+  getFiveSimple: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma, session } = ctx;
+    const userId = session.user.id;
+
+    const lists = await prisma.list.findMany({
+      where: { userId },
+      orderBy: { updatedAt: "asc" },
+      select: { id: true, name: true },
+      take: 5,
+    });
+
+    return lists;
+  }),
+
+  getAllSimple: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma, session } = ctx;
+    const userId = session.user.id;
+
+    const lists = await prisma.list.findMany({
+      where: { userId },
+      orderBy: { updatedAt: "asc" },
+      select: { id: true, name: true },
+    });
+
+    return lists;
+  }),
 });
 
 export default listRouter;

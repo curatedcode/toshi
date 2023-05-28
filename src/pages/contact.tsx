@@ -48,7 +48,7 @@ const ContactPage: NextPage = () => {
     const resetForm = setTimeout(() => {
       setSubmitted(false);
       reset();
-    }, 5000);
+    }, 3000);
     return () => clearTimeout(resetForm);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted]);
@@ -105,7 +105,7 @@ const ContactPage: NextPage = () => {
           />
           <button
             type="submit"
-            className="mt-3 w-fit self-end rounded-md bg-toshi-red px-6 py-1 font-semibold text-white"
+            className="mt-3 w-fit self-end rounded-md bg-toshi-green px-6 py-1 font-semibold text-white"
           >
             Submit
           </button>

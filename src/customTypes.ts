@@ -14,7 +14,6 @@ import type {
   Dispatch,
   ImgHTMLAttributes,
   InputHTMLAttributes,
-  SelectHTMLAttributes,
   SetStateAction,
   TextareaHTMLAttributes,
 } from "react";
@@ -46,6 +45,7 @@ export declare type LayoutProps = {
   description: string;
   children: React.ReactNode;
   className?: string;
+  showSecondaryNav?: boolean;
 };
 
 export declare type ImageProps = {
@@ -63,6 +63,7 @@ export declare interface SliderProps extends Partial<SliderOptions> {
   slides: React.ReactNode[];
   smallSlides?: boolean;
   slideShadows?: boolean;
+  slideRounded?: boolean;
 }
 
 export declare type SliderOptions = {
@@ -254,8 +255,8 @@ export declare type TextInputFieldProps = {
 export declare type TextAreaInputFieldProps = {
   internalLabel: string;
   visibleLabel: string;
-  classNameContainer?: string;
   className?: string;
+  classNameContainer?: string;
   maxLength: number;
   error: string | undefined;
 } & DetailedHTMLProps<
@@ -264,16 +265,25 @@ export declare type TextAreaInputFieldProps = {
 >;
 
 export declare type SelectInputFieldProps = {
+  visibleLabel?: string;
   internalLabel: string;
+  classNameContainer?: string;
+  className?: string;
+  options: { id: string; name: string }[];
+  onChange: (value: { id: string; name: string }) => void;
+  title?: string;
+};
+
+export declare type FormSelectInputFieldProps = {
   visibleLabel: string;
+  internalLabel: string;
   classNameContainer?: string;
   className?: string;
   error: string | undefined;
   options: string[] | number[];
-} & DetailedHTMLProps<
-  SelectHTMLAttributes<HTMLSelectElement>,
-  HTMLSelectElement
->;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: any;
+};
 
 export declare type RatingProps = {
   rating: number | null;

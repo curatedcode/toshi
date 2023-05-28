@@ -11,7 +11,7 @@ const InternalLink = forwardRef<HTMLAnchorElement, InternalLinkProps>(
       return (
         <Link
           href={href}
-          className={`w-fit text-base text-sky-600 underline underline-offset-1 transition-colors hover:text-toshi-red ${className}`}
+          className={`w-fit text-base text-sky-600 underline underline-offset-1 transition-colors hover:text-toshi-green ${className}`}
           ref={ref}
           {...props}
         >
@@ -22,7 +22,7 @@ const InternalLink = forwardRef<HTMLAnchorElement, InternalLinkProps>(
     return (
       <Link
         href={href}
-        className={`w-fit text-base text-sky-600 underline underline-offset-1 transition-colors hover:text-toshi-red ${className}`}
+        className={`w-fit text-base text-sky-600 underline underline-offset-1 transition-colors hover:text-toshi-green ${className}`}
         ref={ref}
         {...props}
       />

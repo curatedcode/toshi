@@ -1,6 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
-import Link from "next/link";
 import Avatar from "~/components/Avatar";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
@@ -44,7 +43,7 @@ const AccountPage: NextPage = () => {
           <button
             type="button"
             onClick={() => void signIn()}
-            className="text-sky-600 underline underline-offset-1 transition-colors hover:text-toshi-red"
+            className="text-sky-600 underline underline-offset-1 transition-colors hover:text-toshi-green"
           >
             sign in
           </button>{" "}
@@ -135,16 +134,13 @@ const AccountPage: NextPage = () => {
                       </div>
                       <span>{id.toUpperCase()}</span>
                     </div>
-                    <div className="flex w-full gap-2 md:hidden">
-                      <CustomLink
-                        href={orderLink}
-                        className="w-full min-w-[12rem]"
-                      >
+                    <div className="flex flex-col gap-2 md:hidden">
+                      <CustomLink href={orderLink} className="w-full">
                         Order details
                       </CustomLink>
                       <CustomLink
                         href={`${orderLink}#invoice`}
-                        className="w-full min-w-[12rem]"
+                        className="w-full"
                       >
                         View invoice
                       </CustomLink>
@@ -221,35 +217,35 @@ const AccountPage: NextPage = () => {
                     <span className="mr-2 md:hidden">:</span>
                     <span>{products.length}</span>
                   </div>
-                  <div className="flex w-full gap-2 md:hidden">
-                    <Link
+                  <div className="flex w-full flex-col gap-2 md:hidden">
+                    <CustomLink
                       href={listLink}
-                      className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      className="w-full min-w-[12rem]"
                     >
                       View list
-                    </Link>
-                    <Link
+                    </CustomLink>
+                    <CustomLink
                       href={`${listLink}?edit=true`}
-                      className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      className="w-full min-w-[12rem]"
                     >
                       Edit list
-                    </Link>
+                    </CustomLink>
                   </div>
                 </div>
                 <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
                   <div className="order-last hidden w-48 flex-col gap-2 md:flex">
-                    <Link
+                    <CustomLink
                       href={listLink}
-                      className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      className="w-full min-w-[12rem]"
                     >
                       View list
-                    </Link>
-                    <Link
+                    </CustomLink>
+                    <CustomLink
                       href={`${listLink}?edit=true`}
-                      className="w-full min-w-[12rem] rounded-md bg-neutral-200 px-2 py-1 text-center transition-colors hover:bg-neutral-300"
+                      className="w-full min-w-[12rem]"
                     >
                       Edit list
-                    </Link>
+                    </CustomLink>
                   </div>
                   <div className="flex flex-col gap-4 md:flex-row">
                     {products.map((product, index) => {

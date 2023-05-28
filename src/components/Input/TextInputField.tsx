@@ -20,12 +20,15 @@ const TextInputField = forwardRef(function TextInputField(
 ) {
   return (
     <div className={`flex flex-col ${classNameContainer}`}>
-      <label htmlFor={internalLabel} className="ml-1 w-fit font-semibold">
+      <label
+        htmlFor={internalLabel}
+        className="ml-1 font-semibold hover:cursor-pointer"
+      >
         {visibleLabel}
       </label>
       <input
         id={internalLabel}
-        className={`${className} duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-shadow focus-within:border-neutral-500 focus-within:shadow-md focus-within:shadow-neutral-400 focus-within:outline-none disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 ${
+        className={`${className} duration-50 rounded-md border-2 bg-neutral-100 px-3 py-1 transition-colors focus-within:border-toshi-primary focus-within:outline-none disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 ${
           error ? "border-red-500 focus-within:border-red-500" : ""
         }`}
         maxLength={maxLength}

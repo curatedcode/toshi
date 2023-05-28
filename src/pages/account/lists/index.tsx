@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import getFormattedDate from "~/components/Fn/getFormattedDate";
 import getRelativeTime from "~/components/Fn/getRelativeDate";
-import Button from "~/components/Input/Button";
+import CustomLink from "~/components/Input/CustomLink";
 import InternalLink from "~/components/InternalLink";
 import Layout from "~/components/Layout";
 import Product from "~/components/Products/Product";
@@ -48,34 +48,25 @@ const ListPage: NextPage = () => {
                   <span>{products.length}</span>
                 </div>
                 <div className="flex w-full flex-col gap-2 md:hidden">
-                  <Button
-                    link={{ href: listLink }}
-                    className="w-full min-w-[12rem]"
-                  >
+                  <CustomLink href={listLink} className="w-full">
                     View list
-                  </Button>
-                  <Button
-                    link={{ href: `${listLink}?edit=true` }}
-                    className="w-full min-w-[12rem]"
-                  >
+                  </CustomLink>
+                  <CustomLink href={`${listLink}?edit=true`} className="w-full">
                     Edit list
-                  </Button>
+                  </CustomLink>
                 </div>
               </div>
               <div className="flex flex-col justify-between gap-4 px-4 md:flex-row">
                 <div className="order-last hidden w-48 flex-col gap-2 md:flex">
-                  <Button
-                    link={{ href: listLink }}
-                    className="w-full min-w-[12rem]"
-                  >
+                  <CustomLink href={listLink} className="w-full min-w-[12rem]">
                     View list
-                  </Button>
-                  <Button
-                    link={{ href: `${listLink}?edit=true` }}
+                  </CustomLink>
+                  <CustomLink
+                    href={`${listLink}?edit=true`}
                     className="w-full min-w-[12rem]"
                   >
                     Edit list
-                  </Button>
+                  </CustomLink>
                 </div>
                 <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-4">
                   {products.map((product, index) => {

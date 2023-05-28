@@ -2,7 +2,7 @@ import type { ReviewProps } from "~/customTypes";
 import RatingStars from "./RatingStars";
 import Avatar from "../Avatar";
 import getRelativeTime from "../Fn/getRelativeDate";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { avatarUrls } from "~/customVariables";
 
 function Review({ review }: { review: ReviewProps }) {
@@ -12,6 +12,16 @@ function Review({ review }: { review: ReviewProps }) {
   const name = `${user.firstName} ${shortenedLastName}`;
 
   const [showMore, setShowMore] = useState(false);
+
+  const bodyRef = useRef<HTMLParagraphElement>(null);
+  const [isTextInitiallyClamped, setIsTextInitiallyClamped] = useState(false);
+
+  useEffect(() => {
+    if (!bodyRef.current) return;
+    setIsTextInitiallyClamped(
+      bodyRef.current.scrollHeight > bodyRef.current.clientHeight
+    );
+  }, [bodyRef]);
 
   return (
     <div key={id} className="pb-2 pt-4">
@@ -30,12 +40,16 @@ function Review({ review }: { review: ReviewProps }) {
       </div>
       <div>
         <span className="text-lg font-semibold leading-tight">{title}</span>
-        <p className={showMore ? "" : "line-clamp-3"}>{body}</p>
+        <p className={showMore ? "" : "line-clamp-3"} ref={bodyRef}>
+          {body}
+        </p>
         {body && (
           <button
             type="button"
             onClick={() => setShowMore((prev) => !prev)}
-            className="text-sm text-sky-600 underline underline-offset-1"
+            className={`text-sm text-sky-600 underline underline-offset-1 ${
+              isTextInitiallyClamped ? "" : "hidden"
+            }`}
           >
             {showMore ? "Show less..." : "Show more..."}
           </button>

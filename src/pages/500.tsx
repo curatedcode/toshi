@@ -23,7 +23,7 @@ const Custom500: NextPage = () => {
       <main className="relative flex h-screen flex-col items-center justify-center text-center">
         <div className="mb-2 flex items-center gap-2 text-2xl">
           <span className="border-r border-neutral-500 py-1 pr-3">500</span>
-          <LogoWithText color="red" />
+          <LogoWithText color="primary" />
         </div>
         <h1>Something is wrong on our end.</h1>
         <p>

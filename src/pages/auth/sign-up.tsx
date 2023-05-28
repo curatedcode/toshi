@@ -16,6 +16,7 @@ import {
 } from "~/customVariables";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "~/server/auth";
+import Button from "~/components/Input/Button";
 
 const SignUpPage: NextPage = () => {
   const email = useRef("");
@@ -121,7 +122,7 @@ const SignUpPage: NextPage = () => {
       description="Create an account for Toshi.com"
       className="flex justify-center"
     >
-      <div className="mt-16 flex w-full max-w-xs flex-col rounded-sm border border-neutral-300 px-6 pb-6 pt-4">
+      <div className="mt-16 flex w-full max-w-xs flex-col rounded-md border border-neutral-300 bg-white px-6 pb-6 pt-4">
         <h1 className="mb-2 ml-1 text-2xl font-semibold">Create an account</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -171,13 +172,9 @@ const SignUpPage: NextPage = () => {
             error={confirmPasswordError}
             {...register("confirmPassword")}
           />
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="mt-3 w-full rounded-md bg-toshi-red px-2 py-1 text-lg font-semibold text-white"
-          >
+          <Button style="toshi" className="mt-3 text-lg" disabled={isLoading}>
             Create your account
-          </button>
+          </Button>
         </form>
         <p className="border-t border-neutral-300 pt-2 text-sm">
           By signing up you agree to our{" "}

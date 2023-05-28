@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SimpleLayout from "~/components/SimpleLayout";
@@ -9,6 +8,8 @@ import TextInputField from "~/components/Input/TextInputField";
 import { max_email_char, max_password_char } from "~/customVariables";
 import { getServerAuthSession } from "~/server/auth";
 import type { GetServerSideProps } from "next";
+import Button from "~/components/Input/Button";
+import CustomLink from "~/components/Input/CustomLink";
 
 const schema = z.object({
   email: z
@@ -51,7 +52,7 @@ function SignInPage() {
       description="Sign in to Toshi.com"
       className="flex justify-center"
     >
-      <div className="mt-16 flex w-full max-w-xs flex-col rounded-sm border border-neutral-300 px-6 pb-6 pt-4 md:mt-24 lg:mt-32">
+      <div className="mt-16 flex w-full max-w-xs flex-col rounded-md border border-neutral-300 bg-white px-6 pb-6 pt-4 md:mt-24 lg:mt-32">
         <h1 className="mb-2 ml-1 text-2xl font-semibold">Sign in</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -72,22 +73,16 @@ function SignInPage() {
             error={passwordError}
             {...register("password")}
           />
-          <button
-            type="submit"
-            className="mt-3 w-full rounded-md bg-toshi-red px-2 py-1 text-lg font-semibold text-white"
-          >
+          <Button style="toshi" className="mt-3 text-lg">
             Sign in
-          </button>
+          </Button>
         </form>
         <div className="mb-4 flex w-full items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
           <p className="mx-4 text-center text-neutral-500">New to Toshi?</p>
         </div>
-        <Link
-          href={"/auth/sign-up"}
-          className="w-full rounded-md bg-neutral-200 px-2 py-1 text-center text-lg font-semibold text-neutral-600 transition-colors hover:bg-neutral-300"
-        >
+        <CustomLink href={"/auth/sign-up"} className="text-lg">
           Create an account
-        </Link>
+        </CustomLink>
       </div>
     </SimpleLayout>
   );

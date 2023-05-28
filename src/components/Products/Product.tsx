@@ -34,16 +34,16 @@ function Product({
         <div className="flex flex-col">
           <Link
             href={link}
-            className="line-clamp-2 w-fit text-xl font-medium leading-tight transition-colors hover:text-toshi-red md:text-2xl"
+            className="line-clamp-2 w-fit text-xl font-medium leading-tight transition-colors hover:text-toshi-green md:text-2xl"
           >
             {name}
           </Link>
           {company && (
             <div className="flex gap-1">
-              <span className="whitespace-nowrap text-sm">Sold by:</span>
+              <span className="whitespace-nowrap">Sold by:</span>
               <InternalLink
                 href={`/companies/${company.id}`}
-                className="line-clamp-1 text-sm"
+                className="line-clamp-1"
               >
                 {company.name}
               </InternalLink>
@@ -52,7 +52,7 @@ function Product({
           <Rating rating={rating} _count={_count} link={`${link}#reviews`} />
           <Link
             href={link}
-            className="flex w-fit items-center gap-0.5 text-2xl font-medium transition-colors hover:text-toshi-red"
+            className="flex w-fit items-center gap-0.5 text-2xl font-medium transition-colors hover:text-toshi-green"
           >
             <span className="-mt-1.5 text-base">$</span>
             <span id="price">{price}</span>
@@ -63,7 +63,7 @@ function Product({
   }
 
   return (
-    <div className="flex flex-col gap-2" id="product">
+    <div className="flex flex-col" id="product">
       <Link
         href={link}
         aria-label={`Visit product page for ${name}`}
@@ -78,14 +78,14 @@ function Product({
           className="w-full rounded-md"
         />
       </Link>
-      <div className="flex flex-col">
+      <div className="flex flex-col p-2">
         <InternalLink href={link} className="line-clamp-2 text-xl">
           {name}
         </InternalLink>
         <Rating rating={rating} _count={_count} link={`${link}#reviews`} />
         <Link
           href={link}
-          className="flex w-fit items-center gap-0.5 text-2xl font-medium transition-colors hover:text-toshi-red"
+          className="flex w-fit items-center gap-0.5 text-2xl font-medium transition-colors hover:text-toshi-green"
         >
           <span className="-mt-1.5 text-base">$</span>
           <span id="price">{price}</span>
