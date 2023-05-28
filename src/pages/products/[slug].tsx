@@ -222,11 +222,15 @@ const ProductPage: NextPage = (
       </section>
       <section id="reviews" className="pt-4 md:pt-0">
         <h1 className="whitespace-nowrap text-2xl font-semibold">Reviews</h1>
-        <div className="flex flex-col gap-2">
-          {reviews.data.map((review) => (
-            <Review key={review.id} review={review} />
-          ))}
-        </div>
+        {reviews.data.length > 0 ? (
+          <div className="flex flex-col gap-2">
+            {reviews.data.map((review) => (
+              <Review key={review.id} review={review} />
+            ))}
+          </div>
+        ) : (
+          <span className="text-xl">No reviews for this item</span>
+        )}
       </section>
       {similarProducts && (
         <section className="mt-4">
