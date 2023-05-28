@@ -5,23 +5,25 @@ import type { ImageProps } from "~/customTypes";
 
 function Image({ className = "", ...props }: ImageProps) {
   const [isLoading, setIsLoading] = useState(true);
-
   return (
     <>
       <img
         {...props}
         loading={props.loading ? props.loading : "lazy"}
         onLoad={() => setIsLoading(false)}
-        className={`${isLoading ? "w-0" : ""} ${className}`}
+        className={`relative ${isLoading ? "w-0" : ""} ${className}`}
       />
-      <div className={`relative ${isLoading ? "" : "hidden"}`}>
+      <div className={isLoading ? "relative w-full" : "hidden"}>
         <img
           {...props}
           loading={props.loading ? props.loading : "lazy"}
-          className={`${isLoading ? "" : "w-0"} ${className}`}
+          className={className}
           src="/product-placeholder.png"
         />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div
+          className="absolute left-1/2 top-1/2
+-translate-x-1/2 -translate-y-1/2"
+        >
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-toshi-primary border-r-transparent align-[-0.125em]" />
         </div>
       </div>
