@@ -5,7 +5,7 @@ import { api } from "~/utils/api";
 import Slider from "~/components/Sliders/Slider";
 import Image from "~/components/Image";
 import Product from "~/components/Products/Product";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import { createInnerTRPCContext } from "~/server/api/trpc";
 import { appRouter } from "~/server/api/root";
 import SuperJSON from "superjson";
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const helpers = createProxySSGHelpers({
+  const helpers = createServerSideHelpers({
     ctx: createInnerTRPCContext({ session: null }),
     router: appRouter,
     transformer: SuperJSON,

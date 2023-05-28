@@ -13,7 +13,7 @@ import PaginationButtons from "~/components/Search/PaginationButtons";
 import Link from "next/link";
 import type { getLinkWithAllParamsProps } from "~/customTypes";
 import { type DehydratedState, useQueryClient } from "@tanstack/react-query";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import { createInnerTRPCContext } from "~/server/api/trpc";
 import { appRouter } from "~/server/api/root";
 import SuperJSON from "superjson";
@@ -489,7 +489,7 @@ type SSRReturnType = {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const helpers = createProxySSGHelpers({
+  const helpers = createServerSideHelpers({
     router: appRouter,
     ctx: createInnerTRPCContext({ session: null }),
     transformer: SuperJSON,

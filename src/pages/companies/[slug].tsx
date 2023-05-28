@@ -1,6 +1,6 @@
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { type DehydratedState } from "@tanstack/react-query";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import type {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -76,7 +76,7 @@ type SSRReturnType = {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const helpers = createProxySSGHelpers({
+  const helpers = createServerSideHelpers({
     ctx: createInnerTRPCContext({ session: null }),
     router: appRouter,
     transformer: SuperJSON,

@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import Image from "~/components/Image";
 import Rating from "~/components/Reviews/Rating";
 import Review from "~/components/Reviews/Review";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import { appRouter } from "~/server/api/root";
 import { createInnerTRPCContext } from "~/server/api/trpc";
 import superjson from "superjson";
@@ -245,7 +245,7 @@ const ProductPage: NextPage = (
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const helper = createProxySSGHelpers({
+  const helper = createServerSideHelpers({
     router: appRouter,
     ctx: createInnerTRPCContext({ session: null }),
     transformer: superjson,
