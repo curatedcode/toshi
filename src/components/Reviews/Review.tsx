@@ -40,7 +40,11 @@ function Review({ review }: { review: ReviewProps }) {
       </div>
       <div>
         <span className="text-lg font-semibold leading-tight">{title}</span>
-        <p className={showMore ? "" : "line-clamp-3"} ref={bodyRef}>
+        <p
+          id="reviewBody"
+          className={showMore ? "" : "line-clamp-3"}
+          ref={bodyRef}
+        >
           {body}
         </p>
         {body && (
@@ -50,6 +54,8 @@ function Review({ review }: { review: ReviewProps }) {
             className={`text-sm text-sky-600 underline underline-offset-1 ${
               isTextInitiallyClamped ? "" : "hidden"
             }`}
+            aria-expanded={showMore}
+            aria-controls="reviewBody"
           >
             {showMore ? "Show less..." : "Show more..."}
           </button>
