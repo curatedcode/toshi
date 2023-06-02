@@ -11,9 +11,9 @@ function Image({ className = "", ...props }: ImageProps) {
         {...props}
         loading={props.loading ? props.loading : "lazy"}
         onLoad={() => setIsLoading(false)}
-        className={`relative ${isLoading ? "w-0" : ""} ${className}`}
+        className={`${isLoading ? "w-0 max-w-0" : ""} ${className}`}
       />
-      <div className={isLoading ? "relative w-full" : "hidden"}>
+      <div className={isLoading ? "relative" : "hidden"}>
         <img
           {...props}
           loading={props.loading ? props.loading : "lazy"}
