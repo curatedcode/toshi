@@ -9,7 +9,7 @@ const AttributionPage: NextPage = () => {
       className="items-center pt-12 text-lg"
     >
       <p>
-        Hero image by{" "}
+        Hero image in part by{" "}
         <a
           href="https://pixabay.com/users/huoadg5888-8934889/"
           className="underline underline-offset-1"
