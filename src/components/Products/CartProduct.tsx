@@ -45,9 +45,8 @@ function CartProduct({ data, cookieId, refetch }: CartProductProps) {
             <Image
               src={images && images[0] && images[0].url}
               alt={name}
-              height={150}
-              width={200}
-              loading="eager"
+              height={612}
+              width={612}
               className="w-full rounded-md"
             />
           </div>
