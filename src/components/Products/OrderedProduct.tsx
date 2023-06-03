@@ -21,8 +21,8 @@ import CustomLink from "../Input/CustomLink";
 
 function OrderedProduct({
   product,
-  imageHeight = 150,
-  imageWidth = 200,
+  imageHeight = 612,
+  imageWidth = 612,
   buttons,
 }: OrderedProductProps) {
   const { priceAtPurchase, product: productData } = product;

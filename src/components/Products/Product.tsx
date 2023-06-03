@@ -7,9 +7,8 @@ import InternalLink from "../InternalLink";
 function Product({
   product,
   type = "default",
-  imageHeight = 150,
-  imageWidth = 200,
-  imageLoading = "lazy",
+  imageHeight = 612,
+  imageWidth = 612,
 }: ProductProps) {
   const { id, name, price, images, reviews, company } = product;
   const { rating, _count } = reviews;
@@ -26,7 +25,6 @@ function Product({
               alt={name}
               height={imageHeight}
               width={imageWidth}
-              loading={imageLoading}
               className="w-full rounded-md"
             />
           </div>
@@ -74,7 +72,6 @@ function Product({
           alt={name}
           height={imageHeight}
           width={imageWidth}
-          loading={imageLoading}
           className="w-full rounded-md"
         />
       </Link>

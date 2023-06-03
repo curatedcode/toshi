@@ -27,8 +27,8 @@ function ListProduct({ product }: { product: ProductType }) {
         <Image
           src={images && images[0] && images[0].url}
           alt={name}
-          height={150}
-          width={200}
+          height={612}
+          width={612}
           className="w-full rounded-md"
         />
       </Link>
