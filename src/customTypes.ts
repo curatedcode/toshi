@@ -54,7 +54,6 @@ export declare type ImageProps = {
   className?: string;
   height?: number | string;
   width?: number | string;
-  loading?: "lazy" | "eager";
   style?: CSSProperties;
   onClick?: () => void;
 } & DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
@@ -101,7 +100,6 @@ export declare type ProductProps = {
   type?: "default" | "alternate";
   imageHeight?: number;
   imageWidth?: number;
-  imageLoading?: "lazy" | "eager";
 };
 
 export declare type OrderedProductType = {
