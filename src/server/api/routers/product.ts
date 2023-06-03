@@ -369,7 +369,10 @@ const productRouter = createTRPCRouter({
       if (!category) return null;
 
       const similar = await prisma.product.findMany({
-        where: { categories: { some: { name: category } } },
+        where: {
+          categories: { some: { name: category } },
+          quantity: { gt: 30 },
+        },
         select: {
           id: true,
           name: true,
