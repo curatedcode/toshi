@@ -97,23 +97,24 @@ const ProductPage: NextPage = (
       className="mx-auto max-w-7xl gap-4 md:gap-16"
     >
       <section className="flex flex-col md:flex-row md:gap-4">
-        <div className="flex w-full flex-col gap-3 md:flex-row md:items-start">
-          <Carousel
-            slides={images.map((image) => (
-              <Image
-                key={image.url}
-                alt={name}
-                src={image.url}
-                loading="eager"
-                className="w-full rounded-md"
-                height={150}
-                width={200}
-              />
-            ))}
-            thumbnails={images.length > 1}
-            controls
-          />
-          <div>
+        <div className="flex w-full flex-col gap-3 md:grid md:grid-cols-3">
+          <div className="col-span-1">
+            <Carousel
+              slides={images.map((image) => (
+                <Image
+                  key={image.url}
+                  alt={name}
+                  src={image.url}
+                  className="w-full rounded-md"
+                  height={612}
+                  width={612}
+                />
+              ))}
+              thumbnails={images.length > 1}
+              controls
+            />
+          </div>
+          <div className="col-span-2">
             <h1 className="line-clamp-2 text-2xl font-semibold">{name}</h1>
             <Rating
               rating={reviews.rating}

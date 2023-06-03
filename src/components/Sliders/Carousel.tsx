@@ -49,16 +49,19 @@ function Carousel({ slides, controls, thumbnails }: CarouselProps) {
   }, [emblaMainApi]);
 
   return (
-    <div className="relative flex flex-col gap-3 md:max-w-xs">
+    <div className="relative flex w-full flex-col gap-3 md:max-w-xs">
       <div
-        className="relative overflow-hidden"
+        className="relative w-full overflow-hidden"
         ref={emblaMainRef}
         onMouseEnter={handleMouse}
         onMouseLeave={handleMouse}
       >
-        <div className="flex">
+        <div className="flex w-full">
           {slides.map((slide, index) => (
-            <div key={index} className="relative shrink-0 grow-0 basis-full">
+            <div
+              key={index}
+              className="relative w-full shrink-0 grow-0 basis-full"
+            >
               {slide}
             </div>
           ))}
