@@ -84,7 +84,7 @@ const OrderPage: NextPage = () => {
             <div className="flex items-start md:flex-col">
               <h2 className="md:text-sm">TOTAL</h2>
               <span className="mr-2 md:hidden">:</span>
-              <span>${total}</span>
+              <span>${total?.toFixed(2)}</span>
             </div>
             <div className="flex flex-col items-start md:ml-auto">
               <div className="flex">
@@ -179,16 +179,20 @@ const OrderPage: NextPage = () => {
                 </div>
                 <div className="grid auto-cols-min grid-cols-2">
                   <span className="justify-self-end">Item(s) Subtotal: </span>
-                  <span className="justify-self-end">${subtotal}</span>
+                  <span className="justify-self-end">
+                    ${subtotal?.toFixed(2)}
+                  </span>
                   <span className="justify-self-end">Shipping: </span>
-                  <span className="justify-self-end">${shippingTotal}</span>
+                  <span className="justify-self-end">
+                    ${shippingTotal?.toFixed(2)}
+                  </span>
                   <span className="justify-self-end">Total: </span>
-                  <span className="justify-self-end">${total}</span>
+                  <span className="justify-self-end">${total?.toFixed(2)}</span>
                   <span className="mt-1 justify-self-end border-t border-black pt-1 font-semibold">
                     Grand Total:{" "}
                   </span>
                   <span className="mt-1 border-t border-black pt-1 text-end">
-                    ${total}
+                    ${total?.toFixed(2)}
                   </span>
                 </div>
               </div>
