@@ -10,6 +10,8 @@ import { getServerAuthSession } from "~/server/auth";
 import type { GetServerSideProps } from "next";
 import Button from "~/components/Input/Button";
 import CustomLink from "~/components/Input/CustomLink";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 const schema = z.object({
   email: z
@@ -28,6 +30,7 @@ const schema = z.object({
 });
 
 function SignInPage() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -35,16 +38,29 @@ function SignInPage() {
     getValues,
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
-  const onSubmit = async () =>
-    await signIn("credentials", {
+  const onSubmit = async () => {
+    const success = await signIn("credentials", {
       email: getValues("email"),
       password: getValues("password"),
       callbackUrl: "/",
-      redirect: true,
+      redirect: false,
     });
 
-  const emailError = errors.email?.message;
-  const passwordError = errors.password?.message;
+    if (!success) {
+      return setIncorrectCredentials(
+        "Incorrect email and password combination"
+      );
+    }
+
+    await router.push("/");
+  };
+
+  const [incorrectCredentials, setIncorrectCredentials] = useState<
+    string | undefined
+  >(undefined);
+
+  const emailError = incorrectCredentials ?? errors.email?.message;
+  const passwordError = incorrectCredentials ?? errors.password?.message;
 
   return (
     <SimpleLayout
@@ -73,7 +89,7 @@ function SignInPage() {
             error={passwordError}
             {...register("password")}
           />
-          <Button style="toshi" className="mt-3 text-lg">
+          <Button type="submit" style="toshi" className="mt-3 text-lg">
             Sign in
           </Button>
         </form>
