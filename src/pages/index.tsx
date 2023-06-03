@@ -13,12 +13,12 @@ import SuperJSON from "superjson";
 const Home: NextPage = () => {
   const { data: recommendedData } = api.category.recommended.useQuery();
   const recommended = recommendedData?.map((product) => (
-    <Product key={product.id} product={product} imageLoading="eager" />
+    <Product key={product.id} product={product} />
   ));
 
   const { data: bestDealsData } = api.category.bestDeals.useQuery();
   const bestDeals = bestDealsData?.map((product) => (
-    <Product key={product.id} product={product} imageLoading="eager" />
+    <Product key={product.id} product={product} />
   ));
 
   const { data: topCategoriesData } = api.category.top.useQuery();
