@@ -24,16 +24,16 @@ import {
   Fragment,
 } from "react";
 import LogoWithText from "./LogoWithText";
-import { Source_Sans_3 } from "next/font/google";
+import localFont from "next/font/local";
 import { signIn, signOut, useSession } from "next-auth/react";
 import InternalLink from "./InternalLink";
 import Footer from "./Footer";
 import Button from "./Input/Button";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { createId } from "@paralleldrive/cuid2";
-const font = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const font = localFont({
+  src: "../styles/SourceSans3.ttf",
+  display: "swap",
   adjustFontFallback: false,
 });
 
