@@ -43,12 +43,12 @@ function Slider({
             <div
               className={
                 smallSlides
-                  ? `shrink-0 grow-0 basis-1/3 xs:basis-1/4 sm:basis-1/5 md:basis-1/6 lg:basis-1/7 ${
+                  ? `shrink-0 grow-0 basis-1/3 border border-neutral-200 xs:basis-1/4 sm:basis-1/5 md:basis-1/6 lg:basis-1/7 ${
                       slideShadows ? "shadow-md shadow-neutral-200" : ""
                     }
                     ${slideRounded ? "rounded-md" : ""}
                     `
-                  : `shrink-0 grow-0 basis-[80%] xs:basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 ${
+                  : `shrink-0 grow-0 basis-[80%] border border-neutral-200 xs:basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 ${
                       slideShadows ? "shadow-md shadow-neutral-200" : ""
                     }
                     ${slideRounded ? "rounded-lg" : ""}
