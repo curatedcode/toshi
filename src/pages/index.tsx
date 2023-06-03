@@ -26,7 +26,7 @@ const Home: NextPage = () => {
     <Link
       href={`/search?dept=${category}`}
       key={category}
-      className="flex flex-col items-center text-xl"
+      className="flex flex-col items-center rounded-lg text-xl"
     >
       <Image
         src={`/${category.toLowerCase()}-category.jpg`}
@@ -35,7 +35,7 @@ const Home: NextPage = () => {
         width={50}
         className="aspect-square w-full rounded-t-lg"
       />
-      <span className="w-full bg-white px-1 py-1.5 text-center font-semibold">
+      <span className="w-full rounded-b-lg bg-white px-1 py-1.5 text-center font-semibold">
         {category}
       </span>
     </Link>
