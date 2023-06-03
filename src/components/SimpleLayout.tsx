@@ -3,11 +3,11 @@ import LogoWithText from "./LogoWithText";
 import SkipToContentButton from "./SkipToContentButton";
 import Head from "next/head";
 import type { LayoutProps } from "~/customTypes";
-import { Source_Sans_3 } from "next/font/google";
+import localFont from "next/font/local";
 import Footer from "./Footer";
-const font = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const font = localFont({
+  src: "../styles/SourceSans3.ttf",
+  display: "swap",
   adjustFontFallback: false,
 });
 
