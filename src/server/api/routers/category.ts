@@ -24,7 +24,7 @@ const categoryRouter = createTRPCRouter({
 
     const recommended = await prisma.product.findMany({
       take: 15,
-      skip: 15,
+      skip: 600,
       select: {
         id: true,
         name: true,
@@ -32,6 +32,7 @@ const categoryRouter = createTRPCRouter({
         images: true,
         reviews: { select: { rating: true } },
       },
+      where: { quantity: { gt: 30 } },
     });
 
     const productsWithRatings = recommended.map((data) => ({
@@ -50,6 +51,7 @@ const categoryRouter = createTRPCRouter({
 
     const bestDeals = await prisma.product.findMany({
       take: 15,
+      skip: 1200,
       select: {
         id: true,
         name: true,
@@ -57,6 +59,7 @@ const categoryRouter = createTRPCRouter({
         images: true,
         reviews: { select: { rating: true } },
       },
+      where: { quantity: { gt: 30 } },
     });
 
     const productsWithRatings = bestDeals.map((data) => ({
