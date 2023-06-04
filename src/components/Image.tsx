@@ -10,6 +10,7 @@ function Image({ className = "", ...props }: ImageProps) {
       <img
         {...props}
         onLoad={() => setIsLoading(false)}
+        onError={(el) => (el.currentTarget.src = "/image-fallback.png")}
         className={`${isLoading ? "w-0 max-w-0" : ""} ${className}`}
       />
       <div className={isLoading ? "relative" : "hidden"}>
