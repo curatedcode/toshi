@@ -32,7 +32,7 @@ function Footer({ bgColor }: { bgColor?: "primary" | "none" }) {
   return (
     <footer className="mt-12 flex w-full flex-col items-center gap-2 bg-toshi-primary py-8 text-lg text-white md:gap-4">
       <LogoWithText />
-      <div className="flex flex-col items-center justify-center gap-2 xs:ml-9 xs:flex-row md:gap-8">
+      <div className="flex flex-col items-center justify-center gap-2 xs:flex-row md:gap-8">
         <Link
           href={"/policies#privacy"}
           className="text-white underline underline-offset-1 transition-colors hover:text-neutral-200"
