@@ -82,7 +82,7 @@ export declare type SliderControlProps = {
 
 export declare type ProductType = {
   id: string;
-  images: ProductImage[] | undefined;
+  images: { url: string }[] | undefined;
   name: string;
   price: number;
   reviews: {
@@ -420,3 +420,12 @@ export type UseDimensionsHook = [
 export interface UseDimensionsArgs {
   liveMeasure?: boolean;
 }
+
+export type CategoryFeedQueryData = {
+  id: string;
+  rating: number;
+  rating_count: number;
+  name: string;
+  price: number;
+  image_urls: string[];
+}[];
