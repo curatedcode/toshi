@@ -1,4 +1,4 @@
-import getProductRating from "~/components/Fn/getProductRating";
+import type { CategoryFeedQueryData } from "~/customTypes";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 const categoryRouter = createTRPCRouter({
@@ -22,55 +22,94 @@ const categoryRouter = createTRPCRouter({
   recommended: publicProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
 
-    const recommended = await prisma.product.findMany({
-      take: 15,
-      skip: 600,
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        images: true,
-        reviews: { select: { rating: true } },
-      },
-      where: { quantity: { gt: 30 } },
+    const products: CategoryFeedQueryData = await prisma.$queryRaw`
+      SELECT
+        p.id,
+        AVG(r.rating) AS rating,
+        COUNT(r.rating) AS rating_count,
+        p."name",
+        p.price,
+        array_agg(pi2.url) AS image_urls
+      FROM
+        public."Product" p
+      JOIN public."Review" r 
+      ON
+        r."productId" = p.id
+      JOIN public."ProductImage" pi2
+      ON
+        pi2."productId" = p.id
+      WHERE
+        rating >= 3.5
+        AND MOD(p.quantity,
+        2) = 0
+      GROUP BY
+        p.id
+      LIMIT 15;
+      `;
+
+    const productsFormatted = products.map((data) => {
+      const { id, name, price, rating, rating_count, image_urls } = data;
+
+      const imagesFormatted = image_urls.map((url) => ({ url }));
+      const reviewsFormatted = { rating, _count: Number(rating_count) };
+
+      return {
+        id,
+        name,
+        price,
+        reviews: reviewsFormatted,
+        images: imagesFormatted,
+      };
     });
 
-    const productsWithRatings = recommended.map((data) => ({
-      ...data,
-      reviews: {
-        rating: getProductRating(data.reviews),
-        _count: data.reviews.length,
-      },
-    }));
-
-    return productsWithRatings;
+    return productsFormatted;
   }),
 
   bestDeals: publicProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
 
-    const bestDeals = await prisma.product.findMany({
-      take: 15,
-      skip: 1200,
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        images: true,
-        reviews: { select: { rating: true } },
-      },
-      where: { quantity: { gt: 30 } },
+    const products: CategoryFeedQueryData = await prisma.$queryRaw`
+      SELECT
+        p.id,
+        AVG(r.rating) AS rating,
+        COUNT(r.rating) AS rating_count,
+        p."name",
+        p.price,
+        array_agg(pi2.url) AS image_urls
+      FROM
+        public."Product" p
+      JOIN public."Review" r 
+      ON
+        r."productId" = p.id
+      JOIN public."ProductImage" pi2
+      ON
+        pi2."productId" = p.id
+      WHERE
+        rating >= 3.5
+        AND MOD(p.quantity,
+        2) = 0
+      GROUP BY
+        p.id
+      OFFSET 15
+      LIMIT 15;
+      `;
+
+    const productsFormatted = products.map((data) => {
+      const { id, name, price, rating, rating_count, image_urls } = data;
+
+      const imagesFormatted = image_urls.map((url) => ({ url }));
+      const reviewsFormatted = { rating, _count: Number(rating_count) };
+
+      return {
+        id,
+        name,
+        price,
+        reviews: reviewsFormatted,
+        images: imagesFormatted,
+      };
     });
 
-    const productsWithRatings = bestDeals.map((data) => ({
-      ...data,
-      reviews: {
-        rating: getProductRating(data.reviews),
-        _count: data.reviews.length,
-      },
-    }));
-
-    return productsWithRatings;
+    return productsFormatted;
   }),
 
   topBrands: publicProcedure.query(async ({ ctx }) => {
@@ -90,27 +129,48 @@ const categoryRouter = createTRPCRouter({
   sellingOutFast: publicProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
 
-    const sellingOutFast = await prisma.product.findMany({
-      take: 8,
-      where: { quantity: { lte: 15 } },
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        images: true,
-        reviews: { select: { rating: true } },
-      },
+    const products: CategoryFeedQueryData = await prisma.$queryRaw`
+      SELECT
+        p.id,
+        AVG(r.rating) AS rating,
+        COUNT(r.rating) AS rating_count,
+        p."name",
+        p.price,
+        array_agg(pi2.url) AS image_urls
+      FROM
+        public."Product" p
+      JOIN public."Review" r 
+      ON
+        r."productId" = p.id
+      JOIN public."ProductImage" pi2
+      ON
+        pi2."productId" = p.id
+      WHERE
+        rating >= 3.5
+        AND MOD(p.quantity,
+        2) = 0
+      GROUP BY
+        p.id
+      OFFSET 30
+      LIMIT 15;
+      `;
+
+    const productsFormatted = products.map((data) => {
+      const { id, name, price, rating, rating_count, image_urls } = data;
+
+      const imagesFormatted = image_urls.map((url) => ({ url }));
+      const reviewsFormatted = { rating, _count: Number(rating_count) };
+
+      return {
+        id,
+        name,
+        price,
+        reviews: reviewsFormatted,
+        images: imagesFormatted,
+      };
     });
 
-    const productsWithRatings = sellingOutFast.map((data) => ({
-      ...data,
-      reviews: {
-        rating: getProductRating(data.reviews),
-        _count: data.reviews.length,
-      },
-    }));
-
-    return productsWithRatings;
+    return productsFormatted;
   }),
 });
 
