@@ -168,7 +168,7 @@ const SearchPage: NextPage = (
 
   return (
     <Layout
-      title={`${textParam} | Toshi`}
+      title={`${textParam === "" ? "Search" : textParam} | Toshi`}
       description={`Search results for ${textParam} on Toshi.com`}
       className="!p-0"
     >
