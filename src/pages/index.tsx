@@ -46,7 +46,7 @@ const Home: NextPage = () => {
     <Link
       href={`/companies/${brand.id}`}
       key={brand.name}
-      className="flex flex-col items-center rounded-md"
+      className="flex flex-col items-center rounded-md text-xl"
     >
       <Image
         src={brand.logoURL}
