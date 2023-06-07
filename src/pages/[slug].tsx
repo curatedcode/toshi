@@ -179,14 +179,19 @@ const SearchPage: NextPage = (
       />
       <div className="mb-5 flex items-end justify-between gap-1 px-4 py-1.5 text-sm shadow-md shadow-neutral-300 md:hidden">
         <div className="flex flex-col">
-          {textParam ? (
-            <div>
-              <span>{data?.totalResults} results for </span>
-              <span className="text-toshi-green">&quot;{textParam}&quot;</span>
-            </div>
-          ) : (
-            <span>{data?.totalResults} results</span>
-          )}
+          {data &&
+            data.products &&
+            data.products.length > 0 &&
+            (textParam ? (
+              <div>
+                <span>{data?.totalResults} results for </span>
+                <span className="text-toshi-green">
+                  &quot;{textParam}&quot;
+                </span>
+              </div>
+            ) : (
+              <span>{data?.totalResults} results</span>
+            ))}
           <div className="flex items-center gap-2">
             <label htmlFor="sortBy" className="font-semibold text-toshi-green">
               Sort by:
@@ -455,10 +460,39 @@ const SearchPage: NextPage = (
             ref={includeOutOfStockRef}
           />
         </div>
-        <div className="grid gap-4 bg-white" id="results">
-          {data?.products.map((product) => (
-            <Product key={product.id} type="alternate" product={product} />
-          ))}
+        <div
+          className={
+            data && data.products && data.products.length > 0
+              ? "grid gap-4 bg-white"
+              : "w-full bg-white pt-8"
+          }
+          id="results"
+        >
+          {data && data.products && data.products.length > 0 ? (
+            data?.products.map((product) => (
+              <Product key={product.id} type="alternate" product={product} />
+            ))
+          ) : (
+            <div className="flex flex-col items-center font-semibold">
+              <picture>
+                <source
+                  srcSet="/toshi-sad-desktop.png"
+                  media="(min-width: 768px)"
+                  className="w-max"
+                />
+                <img
+                  src="/toshi-sad-mobile.png"
+                  alt="toshi sad face logo"
+                  className="w-max"
+                />
+              </picture>
+              {textParam ? (
+                <p>We didn&apos;t find any results for {textParam}</p>
+              ) : (
+                <p>We didn&apos;t find any results</p>
+              )}
+            </div>
+          )}
           <SkipToContentButton
             type="inline"
             contentId="#filters"

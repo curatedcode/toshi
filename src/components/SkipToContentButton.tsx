@@ -10,7 +10,7 @@ function SkipToContentButton({
     return (
       <a
         href={contentId}
-        className={`h-0 overflow-hidden whitespace-nowrap px-4 text-center text-sky-600 underline underline-offset-1 focus-within:mt-0 focus-within:h-fit focus-within:ring-2 ${className}`}
+        className={`h-0 overflow-hidden whitespace-nowrap px-4 text-center text-sky-600 underline underline-offset-1 opacity-0 focus-within:mt-0 focus-within:h-fit focus-within:opacity-100 focus-within:ring-2 ${className}`}
       >
         {text}
       </a>
