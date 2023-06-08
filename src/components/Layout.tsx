@@ -72,6 +72,14 @@ function Layout({
     staleTime: Infinity,
   });
 
+  const categoriesCapitalized = categories?.map((category) => {
+    const firstLetter = category.name.slice(0, 1);
+    const firstLetterCapital = firstLetter.toUpperCase();
+
+    const restOfWord = category.name.slice(1);
+    return firstLetterCapital.concat(restOfWord);
+  });
+
   const { data: lists } = api.list.getFiveSimple.useQuery();
   const { data: orders } = api.order.getFiveSimple.useQuery();
 
@@ -167,7 +175,10 @@ function Layout({
           </div>
         </div>
         <div className="col-span-full row-start-3 inline-flex items-center justify-evenly font-semibold md:order-3 md:mr-2 md:gap-1">
-          <CategoryDropdown categories={categories} windowWidth={windowWidth} />
+          <CategoryDropdown
+            categories={categoriesCapitalized}
+            windowWidth={windowWidth}
+          />
           <Link
             href={"/new-releases"}
             className="whitespace-nowrap rounded-md px-2 py-1 transition-colors hover:bg-white/10"
@@ -191,7 +202,7 @@ function Layout({
               >
                 <LogoWithText />
               </Link>
-              <CategoryDisclosure categories={categories} />
+              <CategoryDisclosure categories={categoriesCapitalized} />
               <ListsDisclosure lists={lists} />
               <OrdersDisclosure orders={orders} />
             </div>
@@ -362,7 +373,7 @@ function ListsDisclosure({
 function CategoryDisclosure({
   categories,
 }: {
-  categories: { name: string }[] | undefined;
+  categories: string[] | undefined;
 }) {
   return (
     <Disclosure as="div">
@@ -396,11 +407,11 @@ function CategoryDisclosure({
             <Disclosure.Panel className="flex flex-col gap-1 px-4">
               {categories?.map((category) => (
                 <Link
-                  key={category.name}
-                  href={`/search?dept=${category.name}`}
+                  key={category}
+                  href={`/search?dept=${category}`}
                   className="w-fit"
                 >
-                  {category.name}
+                  {category}
                 </Link>
               ))}
             </Disclosure.Panel>
@@ -505,7 +516,7 @@ function CategoryDropdown({
   categories,
   windowWidth,
 }: {
-  categories: { name: string }[] | undefined;
+  categories: string[] | undefined;
   windowWidth: number;
 }) {
   return (
@@ -528,12 +539,12 @@ function CategoryDropdown({
         <Menu.Items className="absolute -left-16 z-10 mt-1.5 w-72 rounded-md bg-white shadow-lg ring-1 ring-neutral-400 focus:outline-none md:mt-3">
           <div className="grid grid-cols-2">
             {categories?.map((category) => (
-              <Menu.Item key={category.name}>
+              <Menu.Item key={category}>
                 <Link
-                  href={`/search?dept=${category.name}`}
+                  href={`/search?dept=${category}`}
                   className="rounded-md px-4 py-2 text-center text-black transition-colors duration-75 hover:bg-neutral-100"
                 >
-                  {category.name}
+                  {category}
                 </Link>
               </Menu.Item>
             ))}
