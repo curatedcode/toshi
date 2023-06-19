@@ -100,6 +100,7 @@ export declare type ProductProps = {
   type?: "default" | "alternate";
   imageHeight?: number;
   imageWidth?: number;
+  lazyLoading?: boolean;
 };
 
 export declare type OrderedProductType = {

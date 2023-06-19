@@ -9,6 +9,7 @@ function Product({
   type = "default",
   imageHeight = 612,
   imageWidth = 612,
+  lazyLoading = true,
 }: ProductProps) {
   const { id, name, price, images, reviews, company } = product;
   const { rating, _count } = reviews;
@@ -26,6 +27,7 @@ function Product({
               height={imageHeight}
               width={imageWidth}
               className="w-full rounded-md"
+              loading={lazyLoading ? "lazy" : "eager"}
             />
           </div>
         </Link>
@@ -73,6 +75,7 @@ function Product({
           height={imageHeight}
           width={imageWidth}
           className="w-full rounded-md"
+          loading={lazyLoading ? "lazy" : "eager"}
         />
       </Link>
       <div className="flex flex-col p-2">
