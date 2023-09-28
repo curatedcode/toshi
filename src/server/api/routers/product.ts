@@ -90,16 +90,16 @@ const productRouter = createTRPCRouter({
       const querySearchText = `%${text ?? ""}%`;
 
       const allProducts: object[] = await prisma.$queryRaw`
-        SELECT p.id, AVG(r.rating) AS 'rating'
-        FROM Product p
-        JOIN Review r ON p.id = r.productId
-        WHERE p.name
-        LIKE ${querySearchText}
-        AND p.price >= ${price.min ?? 0}
-        AND p.price <= ${price.max ?? 9_999_999}
-        AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-        AND rating >= ${ratingFilter ?? 0}
-        GROUP BY p.id`;
+      SELECT p.id, AVG(r.rating) AS "rating"
+      FROM "Product" p
+      JOIN "Review" r ON p.id = r."productId"  
+      WHERE p."name" 
+      LIKE ${querySearchText}
+      AND p.price >= ${price.min ?? 0}
+      AND p.price <= ${price.max ?? 9_999_999}
+      AND p.quantity >= ${includeOutOfStock ? 0 : 1}
+      AND "rating" >= ${ratingFilter ?? 0}
+      GROUP BY p.id`;
 
       let productSearchResult: ProductSearchResult;
 
@@ -111,164 +111,164 @@ const productRouter = createTRPCRouter({
         switch (sortBy) {
           case "newest":
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              JOIN _CategoryToProduct ctp ON p.id = ctp.B
+              SELECT p."id", p."name", p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS "reviewCount"
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              JOIN "_CategoryToProduct" ctp ON p.id = ctp.B
               WHERE p.name
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
-              AND ctp.A = ${categoryData?.id}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
+              AND ctp."A" = ${categoryData?.id}
               GROUP BY p.id
-              ORDER BY p.createdAt DESC
-              LIMIT ${(page - 1) * limit},${limit}`;
+              ORDER BY p."createdAt" DESC
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
           case "reviews":
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              JOIN _CategoryToProduct ctp ON p.id = ctp.B
-              WHERE p.name
+              SELECT p.id, p."name" , p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS "reviewCount"
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              JOIN "_CategoryToProduct" ctp ON p.id = ctp."B" 
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
-              AND ctp.A = ${categoryData?.id}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
+              AND ctp."A" = ${categoryData?.id}
               GROUP BY p.id
-              ORDER BY rating DESC
-              LIMIT ${(page - 1) * limit},${limit}`;
+              ORDER BY p."createdAt" DESC
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
           case "priceHighToLow":
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              JOIN _CategoryToProduct ctp ON p.id = ctp.B
-              WHERE p.name
+              SELECT p.id, p."name" , p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS "reviewCount"
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              JOIN "_CategoryToProduct" ctp ON p.id = ctp."B" 
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
-              AND ctp.A = ${categoryData?.id}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
+              AND ctp."A" = ${categoryData?.id}
               GROUP BY p.id
               ORDER BY p.price DESC
-              LIMIT ${(page - 1) * limit},${limit}`;
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
           case "priceLowToHigh":
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              JOIN _CategoryToProduct ctp ON p.id = ctp.B
-              WHERE p.name
+              SELECT p.id, p."name" , p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS "reviewCount"
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              JOIN "_CategoryToProduct" ctp ON p.id = ctp."B" 
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
-              AND ctp.A = ${categoryData?.id}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
+              AND ctp."A" = ${categoryData?.id}
               GROUP BY p.id
               ORDER BY p.price ASC
-              LIMIT ${(page - 1) * limit},${limit}`;
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
           default:
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              JOIN _CategoryToProduct ctp ON p.id = ctp.B
-              WHERE p.name
+              SELECT p.id, p."name" , p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS "reviewCount"
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              JOIN "_CategoryToProduct" ctp ON p.id = ctp."B" 
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
-              AND ctp.A = ${categoryData?.id}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
+              AND ctp."A" = ${categoryData?.id}
               GROUP BY p.id
-              LIMIT ${(page - 1) * limit},${limit}`;
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
         }
       } else {
         switch (sortBy) {
           case "newest":
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              WHERE p.name
+              SELECT p.id, p."name", p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS 'reviewCount'
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
               GROUP BY p.id
-              ORDER BY p.createdAt DESC
-              LIMIT ${(page - 1) * limit},${limit}`;
+              ORDER BY p."createdAt" DESC
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
           case "reviews":
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              WHERE p.name
+              SELECT p.id, p."name", p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS 'reviewCount'
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
               GROUP BY p.id
-              ORDER BY rating DESC
-              LIMIT ${(page - 1) * limit},${limit}`;
+              ORDER BY "rating" DESC
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
           case "priceHighToLow":
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              WHERE p.name
+              SELECT p.id, p."name", p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS 'reviewCount'
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
               GROUP BY p.id
               ORDER BY p.price DESC
-              LIMIT ${(page - 1) * limit},${limit}`;
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
           case "priceLowToHigh":
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              WHERE p.name
+              SELECT p.id, p."name", p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS 'reviewCount'
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r.productId
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
               GROUP BY p.id
               ORDER BY p.price ASC
-              LIMIT ${(page - 1) * limit},${limit}`;
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
           default:
             productSearchResult = await prisma.$queryRaw`
-              SELECT p.id, p.name, p.price, p.createdAt, AVG(r.rating) AS 'rating', COUNT(r.id) AS 'reviewCount'
-              FROM Product p
-              JOIN Review r ON p.id = r.productId
-              WHERE p.name
+              SELECT p.id, p."name", p.price, p."createdAt", AVG(r.rating) AS "rating", COUNT(r.id) AS "reviewCount"
+              FROM "Product" p
+              JOIN "Review" r ON p.id = r."productId"
+              WHERE p."name"
               LIKE ${querySearchText}
-              AND p.price >= ${price.min ?? 0}
-              AND p.price <= ${price.max ?? 9_999_999}
-              AND p.quantity >= ${includeOutOfStock ? 0 : 1}
-              AND rating >= ${ratingFilter ?? 0}
+              AND p."price" >= ${price.min ?? 0}
+              AND p."price" <= ${price.max ?? 9_999_999}
+              AND p."quantity" >= ${includeOutOfStock ? 0 : 1}
+              AND "rating" >= ${ratingFilter ?? 0}
               GROUP BY p.id
-              LIMIT ${(page - 1) * limit},${limit}`;
+              LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
             break;
         }
       }
