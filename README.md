@@ -42,7 +42,13 @@ pnpm install
 pnpm prisma db push
 ```
 
-7. Finally build and start the app
+7. (optional) - for testing you can use the pre-made seed for the database
+
+```
+pnpm prisma db seed
+```
+
+8. Finally build and start the app
 
 ```
 pnpm build
