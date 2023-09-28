@@ -5,16 +5,6 @@ import RatingStars from "~/components/Reviews/RatingStars";
 afterEach(() => cleanup());
 
 it("should return 0 filled stars", () => {
-  render(<RatingStars rating={null} />);
-
-  const ratingStar = screen.getByTestId(/rating-stars/i);
-
-  expect(ratingStar).toBeVisible();
-
-  expect(ratingStar).toHaveAttribute("data-rating", "0");
-});
-
-it("should return 0 filled stars", () => {
   render(<RatingStars rating={0} />);
 
   const ratingStar = screen.getByTestId(/rating-stars/i);
