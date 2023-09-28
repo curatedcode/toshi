@@ -9,7 +9,7 @@ function Rating({ rating, link, _count }: RatingProps) {
       className="flex w-fit items-center gap-1 [&>*]:transition-colors [&>*]:hover:text-toshi-green"
       title={rating ? `${rating} out of 5 stars` : "No reviews"}
     >
-      {rating ? (
+      {rating && rating !== null ? (
         <>
           <RatingStars rating={rating} />
           <span className="mt-0.5 w-fit text-sky-600">{_count}</span>
