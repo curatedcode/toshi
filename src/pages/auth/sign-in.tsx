@@ -39,14 +39,14 @@ function SignInPage() {
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
   const onSubmit = async () => {
-    const success = await signIn("credentials", {
+    const authAttempt = await signIn("credentials", {
       email: getValues("email"),
       password: getValues("password"),
       callbackUrl: "/",
       redirect: false,
     });
 
-    if (!success) {
+    if (authAttempt && authAttempt.error) {
       return setIncorrectCredentials(
         "Incorrect email and password combination"
       );
