@@ -487,7 +487,9 @@ const SearchPage: NextPage = (
                 />
               </picture>
               {textParam ? (
-                <p>We didn&apos;t find any results for {textParam}</p>
+                <p>
+                  We didn&apos;t find any results for &quot;{textParam}&quot;
+                </p>
               ) : (
                 <p>We didn&apos;t find any results</p>
               )}
