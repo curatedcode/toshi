@@ -134,6 +134,7 @@ function Layout({
             className="flex w-fit items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-white/10"
             tabIndex={windowWidth >= 768 ? 6 : 2}
             id="Cart"
+            data-testid="cart-link"
           >
             <ShoppingCartIcon className="w-6" aria-hidden />
             <span className="hidden md:block">Cart</span>

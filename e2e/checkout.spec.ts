@@ -12,7 +12,7 @@ test("should be able to complete checkout", async ({ page }) => {
   await page.getByText("add to cart").click();
 
   // get into checkout
-  await page.getByRole("link", { name: "cart" }).click();
+  await page.getByTestId("cart-link").click();
   await page.getByRole("link", { name: "proceed to checkout" }).click();
 
   // fill in all fields
